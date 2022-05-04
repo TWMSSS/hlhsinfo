@@ -7,14 +7,24 @@ function makeAuthCode(sessionID, verifyToken) {
 }
 
 function decodeAuthCode(authCode) {
-    var auth = JSON.parse(Buffer.from(authCode, 'base64').toString('utf8'));
+    try {
+        var auth = JSON.parse(Buffer.from(authCode, 'base64').toString('utf8'));
+    } catch (e) {
+        return false;
+    }
     return {
         sessionID: Buffer.from(auth.cookie, "hex").toString('utf8'),
         verifyToken: Buffer.from(auth.verifyToken, "base64").toString("utf8")
     }
 }
 
+function decodeAuthorization(authCode) {
+    var auth = authCode.replace("Bearer ", "");
+    return decodeAuthCode(auth);
+}
+
 module.exports = {
     makeAuthCode,
-    decodeAuthCode
+    decodeAuthCode,
+    decodeAuthorization
 }

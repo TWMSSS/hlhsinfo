@@ -21,8 +21,8 @@ app.listen(PORT, () => {
 
 app.get("/", (req, res) => { res.send("Hello World!"); });
 
-app.get("/api/getLoginInfo", api.getLoginInfo);
-app.get("/api/getLoginCaptcha", (req, res) => { res.send("Hello World!"); });
+app.get("/api/getLoginInfo", (req, res) => api.getLoginInfo(res, req));
+app.get("/api/getLoginCaptcha", (req, res) => api.getLoginCaptcha(req, res));
 app.post("/api/login", (req, res) => { res.send("Hello World!"); });
 app.get("/api/getUserInfo", (req, res) => { res.send("Hello World!"); });
 app.post("/api/getScoreInfo", (req, res) => { res.send("Hello World!"); });

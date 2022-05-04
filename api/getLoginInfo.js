@@ -19,7 +19,7 @@ function getLoginInfo(res, req) {
             var dom = new JSDOM(iconv.decode(dt, 'big5'));
             verifyToken = dom.window.document.querySelector("input[name=__RequestVerificationToken]").value;
             
-            res.json({ authToken: makeAuthCode(aspSession, verifyToken) });
+            res.status(200).json(makeAuthCode(aspSession, verifyToken));
         });
     });
 }
