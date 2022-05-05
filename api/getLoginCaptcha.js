@@ -1,33 +1,29 @@
 function getLoginCaptcha(req, res) {
-    if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
-
-    const http = require('http');
+    const request = require('request');
+    const iconv = require('iconv-lite');
     const { decodeAuthorization } = require('./util.js');
 
+    if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
     if (!authDt) return res.status(403).json({ message: 'Invalid authorization token!' });
 
-    http.get({
-        host: new URL(global.urls.main).host,
-        path: new URL(global.urls.main).pathname + "image/vcode.asp?vcode=" + Math.floor(Math.random() * 1000000),
-        method: 'GET',
+    request.get({
+        url: global.urls.main + "image/vcode.asp",
+        encoding: null,
         headers: {
-            "cookie": decodeAuthorization(req.headers.authorization).sessionID
+            "cookie": authDt.sessionID,
         }
-    }, (respond) => {
-        respond.setEncoding('binary');
+    }, (err, response, body) => {
+        if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: 'Something went wrong!' });
+        };
 
-        let rawData = [];
-        respond.on('data', (chunk) => {
-            rawData.push(Buffer.from(chunk, 'binary'));
-        });
-        respond.on('end', async () => {
-            var dt = Buffer.concat(rawData);
-            res.writeHead(200, {
-                'Content-Type': 'image/png',
-                'Content-Length': dt.length
-            }).end(dt);
-        });
+        res.writeHead(200, {
+            'Content-Type': 'image/png',
+            'Content-Length': body.length
+        }).end(body);
     });
 }
 
