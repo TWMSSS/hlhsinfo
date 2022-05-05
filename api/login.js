@@ -10,6 +10,10 @@ function login(req, res) {
     
     var { sessionID, verifyToken } = authDt;
 
+    if (!req.body.captcha) return res.status(403).json({ message: 'You need to get your captcha first!' });
+    if (!req.body.username) return res.status(403).json({ message: 'You need to input your username!' });
+    if (!req.body.password) return res.status(403).json({ message: 'You need to input your password!' });
+
     request({
         url: global.urls.login,
         method: 'POST',

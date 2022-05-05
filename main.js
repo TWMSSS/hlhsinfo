@@ -7,10 +7,11 @@ const PORT = process.env.PORT || 1156;
 const defaultURL = "http://shinher.hlhs.hlc.edu.tw/online/";
 const urls = global.urls = {
     main: defaultURL,
-    grade: defaultURL + "selection_student/student_subjects_number.asp?action=%action%&thisyear=%year%&thisterm=1&number=%grade_ID%&exam_name=%exam_name%",
+    grade: defaultURL + "selection_student/student_subjects_number.asp?action=%action%&thisyear=%year%&thisterm=%term%&number=%grade_ID%&exam_name=%exam_name%",
     login: defaultURL + "login.asp",
     availableScore: defaultURL + "selection_student/student_subjects_number.asp?action=open_window_frame",
     profile: defaultURL + "selection_student/fundamental.asp",
+    profileImg: defaultURL + "utility/file1.asp?q=x&id=%imgID%",
     classInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_top&school_class=&division=",
     userShortInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_below&school_class="
 }
@@ -28,11 +29,15 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => { res.send("Hello World!"); });
+app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
 app.get("/api/getLoginInfo", (req, res) => api.getLoginInfo(res, req));
 app.get("/api/getLoginCaptcha", (req, res) => api.getLoginCaptcha(req, res));
 app.post("/api/login", (req, res) => api.login(req, res));
-app.get("/api/getUserInfo", (req, res) => { res.send("Hello World!"); });
-app.post("/api/getScoreInfo", (req, res) => { res.send("Hello World!"); });
+app.get("/api/getUserInfo", (req, res) => api.getUserInfo(req, res));
+app.post("/api/getScoreInfo", (req, res) => api.getScoreInfo(req, res));
 app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res));
+
+app.use(express.static(__dirname + "/public"));
+
+app.get("*", (req, res) => res.sendFile(__dirname + "/public/index.html"));

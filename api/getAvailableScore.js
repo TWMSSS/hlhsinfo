@@ -34,8 +34,9 @@ function getAvailableScore(req, res) {
             var term = url.searchParams.get('thisterm');
             var year = url.searchParams.get('thisyear');
             var testID = url.searchParams.get('number');
+            var times = testID.substring(3, 4);
             var name = e.innerHTML;
-            optt.push({ term, year, testID, name });
+            optt.push({ term, year, testID, name, times });
         });
         optt.sort((a, b) => {
             return a.term - b.term || a.year - b.year || a.testID - b.testID;

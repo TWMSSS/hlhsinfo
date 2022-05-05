@@ -31,9 +31,27 @@ function isNotLogin(document) {
     return true;
 }
 
+function urlEncode(txt, destEncoding) {
+    const iconv = require('iconv-lite');
+    var b = iconv.encode(txt, destEncoding);
+    var req = "";
+    for (var v of b) {
+        if (v !== 0) req += '%' + (v).toString(16).toUpperCase();
+    }
+    return req;
+}
+
+function getN1(year, grade, term) {
+    year = (year - 99) * 2 + term - 1;
+    if (year === 0 || year % 11 === 0) return "10";
+    return "0" + String((year % 11) - 1);
+}
+
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
     decodeAuthorization,
-    isNotLogin
+    isNotLogin,
+    urlEncode,
+    getN1
 }
