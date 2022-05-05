@@ -1,0 +1,18 @@
+:root {
+    --color-font: #000;
+    --color-bg: #fff;
+    --color-bg-blur: #00000030;
+    --color-a: #2d76d6;
+    --color-pagetitle: #2d76d6;
+    --color-border: #707070;
+    --color-button-bg: #008fe2;
+    --color-button-text: #fff;
+    --color-button-hover-bg: #0072b4;
+    --color-input-border: #707070;
+    --color-input-bg: #fff;
+    --color-input-text: #000;
+    --color-input-active: #0aa2fa;
+    --color-label: #727272;
+    --color-footer: #505050;
+    --color-footer-border: #b9b9b9;
+}
