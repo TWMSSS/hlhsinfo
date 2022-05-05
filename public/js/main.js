@@ -5,6 +5,11 @@ const page = [
         id: "home",
     },
     {
+        path: "/404",
+        name: "找不到頁面",
+        id: "404",
+    },
+    {
         path: "/profile",
         name: "個人資料",
         id: "profile"
@@ -22,7 +27,7 @@ const page = [
 ]
 
 function changePathName(name) {
-    if (history.length > 1 && window.history.state !== null) name = "<a href='#' onclick='history.back();'><返回</a> " + name;
+    if (history.length > 1 && window.history.state !== null) name = "<a href='#' onclick='history.go(-1);'><返回</a> " + name;
     document.querySelector("#pathName").innerHTML = name;
 }
 
@@ -30,70 +35,60 @@ function createTaskBox() {
     // Create a progressing task box
     var taskBox = document.createElement("div");
     taskBox.classList.add("taskBox");
+    taskBox.id = "taskBox";
     taskBox.innerHTML = `
         <div class="tskbx">
             <div class="taskBoxTitle">
                 <h1>資料處理中...</h1>
             </div>
-            <div class="taskBoxTasks">
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-check"></i></span>
-                    </div>
-                    <span class="taskName">sfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskj</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-check"></i></span>
-                    </div>
-                    <span class="taskName">Test</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-                    </div>
-                    <span class="taskName">15215916516516515616515616511561651</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-check"></i></span>
-                    </div>
-                    <span class="taskName">5461246216421624612626</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-check"></i></span>
-                    </div>
-                    <span class="taskName">sfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskjsfosng okndskj</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-                    </div>
-                    <span class="taskName">Test</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-circle-xmark"></i></span>
-                    </div>
-                    <span class="taskName">15215916516516515616515616511561651</span>
-                </div>
-                <div class="task">
-                    <div class="taskStatus">
-                        <span class="icon"><i class="fa-solid fa-spinner"></i></span>
-                    </div>
-                    <span class="taskName">5461246216421624612626</span>
-                </div>
-            </div>
+            <div class="taskBoxTasks"></div>
         </div>
     `;
     document.body.appendChild(taskBox);
     return taskBox;
 }
 
-function addRunningList(data) {
-    
+function addTaskList(name) {
+    var taskBox = document.querySelector("#taskBox");
+    if (!taskBox) taskBox = createTaskBox();
+    var taskList = taskBox.querySelector(".taskBoxTasks");
+
+    var taskID = Math.floor(Math.random() * 10000);
+
+    var task = document.createElement("div");
+    task.classList.add("task");
+    task.setAttribute("data-task", taskID);
+    task.innerHTML = `
+        <div class="taskStatus">
+            <span class="icon"><i class="fa-solid fa-spinner"></i></span>
+        </div>
+        <span class="taskName">${name}</span>
+    `;
+    taskList.appendChild(task);
+    return taskID;
 };
+
+function setTaskStatus(taskID, status) {
+    var task = document.querySelector(`[data-task="${taskID}"]`);
+    if (!task) return;
+    var taskStatus = task.querySelector(".taskStatus");
+    if (!taskStatus) return;
+    var icon = taskStatus.querySelector(".icon");
+
+    if (status === "success") {
+        icon.innerHTML = `<i class="fa-solid fa-circle-check"></i>`;
+    } else if (status === "fail") {
+        icon.innerHTML = `<i class="fa-solid fa-circle-xmark"></i>`;
+    } else if (status === "progress") {
+        icon.innerHTML = `<i class="fa-solid fa-spinner"></i>`;
+    }
+}
+
+function finishTask() {
+    var taskBox = document.querySelector("#taskBox");
+    if (!taskBox) return;
+    taskBox.remove();
+}
 
 function loadPageScript(id) {
     if (page.find(e => e.id === id) === undefined) return;
@@ -104,7 +99,9 @@ function loadPageScript(id) {
 };
 
 function loadPage(path, orgPath) {
-    if (path === orgPath) return;
+    // if (path === orgPath) return;
+
+    if (!page.find(e => e.path === path)) path = "/404";
 
     changePathName(page.find(e => e.path === path).name);
     loadPageScript(page.find(e => e.path === path).id);
@@ -142,3 +139,22 @@ document.addEventListener("DOMContentLoaded", () => {
 window.onpopstate = event => {
     loadPage();
 }
+
+function inputStyle() {
+    var inputs = document.getElementsByTagName("input");
+    Array.from(inputs).forEach(e => {
+        e.addEventListener("focusin", ev => {
+            e.parentElement.classList.add("active");
+        });
+
+        e.addEventListener("focusout", ev => {
+            if (e.value === "") {
+                e.parentElement.classList.remove("active");
+            }
+        });
+    });
+}
+
+document.addEventListener("DOMNodeInserted", (ev) => {
+    inputStyle();
+}, false);

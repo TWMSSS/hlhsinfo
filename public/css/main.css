@@ -103,6 +103,7 @@ button {
     width: 100%;
     height: 50px;
     font-size: 20px;
+    margin: 15px;
 }
 
 button:hover {
@@ -141,10 +142,10 @@ button:active {
 
 .taskBox .tskbx .taskBoxTitle {
     width: 100%;
+    margin-bottom: 15px;
 }
 
 .taskBox .tskbx .taskBoxTasks {
-    margin-top: 15px;
     width: 80%;
     overflow-y: auto;
     overflow-x: hidden;
@@ -154,6 +155,7 @@ button:active {
     padding: 0 0 15px 0;
     font-size: 25px;
     display: flex;
+    margin-right: 15px;
 }
 
 .taskBox .tskbx .taskBoxTasks .task:not(:last-child) .taskStatus::after {
@@ -163,7 +165,7 @@ button:active {
     width: 15px;
     height: 100%;
     margin-top: 30px;
-    background-color: #707070;
+    background-color: var(--color-task-status-bar);
 }
 
 .taskBox .tskbx .taskBoxTasks .taskStatus {
@@ -181,7 +183,7 @@ button:active {
     width: 100%;
     height: 35px;
     border-radius: 30px;
-    background-color: #707070;
+    background-color: var(--color-task-status-bg);
     z-index: 1;
     display: flex;
     justify-content: center;
