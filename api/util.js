@@ -23,8 +23,17 @@ function decodeAuthorization(authCode) {
     return decodeAuthCode(auth);
 }
 
+function isNotLogin(document) {
+    const { JSDOM } = require('jsdom');
+    const dom = new JSDOM(document);
+    var d = dom.window.document.querySelector("body>div");
+    if (!d || d.innerHTML.indexOf("未登入") === -1) return false;
+    return true;
+}
+
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
-    decodeAuthorization
+    decodeAuthorization,
+    isNotLogin
 }

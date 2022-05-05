@@ -1,6 +1,5 @@
 function getLoginCaptcha(req, res) {
     const request = require('request');
-    const iconv = require('iconv-lite');
     const { decodeAuthorization } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
@@ -14,11 +13,11 @@ function getLoginCaptcha(req, res) {
             "cookie": authDt.sessionID,
         }
     }, (err, response, body) => {
-        if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
         if (err) {
             console.error(err);
             return res.status(500).json({ message: 'Something went wrong!' });
         };
+        if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
 
         res.writeHead(200, {
             'Content-Type': 'image/png',
