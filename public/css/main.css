@@ -273,6 +273,7 @@ table tr td>div.lackClass {
     border-radius: 15px;
     margin: 15px 0;
     background-color: var(--color-group-bg);
+    color: var(--color-group-text);
 }
 
 table tr td>div span {
