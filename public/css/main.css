@@ -94,6 +94,23 @@ input:focus-visible,
     border-bottom: 2px var(--color-input-active) solid;
 }
 
+select {
+    max-width: 100%;
+    border: 0;
+    line-height: 40px;
+    border-bottom: 2px #707070 solid;
+    color: var(--color-input-text);
+    background-color: var(--color-input-bg);
+    font-size: 20px;
+    padding: 0 0 2px 15px;
+    margin: 15px 0;
+}
+
+select option {
+    color: var(--color-input-text);
+    background-color: var(--color-select-bg);
+}
+
 button {
     transition: .3s;
     display: block;
@@ -222,10 +239,12 @@ table {
 
 table tr {
     text-align: center;
-    display: block;
+    display: inline-flex;
     padding: 15px 0;
     width: 100%;
     border-bottom: 1px solid var(--color-border);
+    justify-content: center;
+    align-items: center;
 }
 
 table tr td {

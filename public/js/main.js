@@ -25,11 +25,26 @@ const page = [
         path: "/score",
         name: "成績查詢",
         id: "score"
+    },
+    {
+        path: "/compare",
+        name: "成績比較",
+        id: "compare"
+    },
+    {
+        path: "/lack",
+        name: "缺曠紀錄",
+        id: "lack"
+    },
+    {
+        path: "/rewandpun",
+        name: "獎懲紀錄",
+        id: "rewandpun"
     }
 ]
 
 function changePathName(name) {
-    if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = "<a href='#' onclick='history.go(-1);'><返回</a> " + name;
+    if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = "<a href='#' onclick='history.back();'><返回</a> " + name;
     document.querySelector("#pathName").innerHTML = name;
 }
 
@@ -94,20 +109,24 @@ function finishTask() {
 
 function loadPageScript(id) {
     if (page.find(e => e.id === id) === undefined) return;
+    window.execute = () => { };
     fetch(`/js/page/${id}.js`).then(res => res.text()).then(res => {
         eval(res);
-        execute();
+        window.execute();
     })
 };
 
 function loadPage(path, orgPath) {
     // if (path === orgPath) return;
+    path = new URL("http://example.com" + path).pathname || location.pathname;
 
     if (!page.find(e => e.path === location.pathname)) path = "/404";
 
     var doc = document.querySelector("#mainContent");
     doc.innerHTML = "";
     changePathName("");
+    window.pageData.function = {};
+    window.pageData.data = {};
 
     changePathName(page.find(e => e.path === path).name);
     loadPageScript(page.find(e => e.path === path).id);
@@ -127,8 +146,8 @@ document.addEventListener("click", event => {
     }
     if (ele) {
         event.preventDefault();
-        var url = ele.href;
-        if (url === undefined || url === "" || url === null) return;
+        var url = ele.href; 
+        if (url === undefined || url === "" || url === null || url === location.href + "#") return;
         var urlObject = new URL(url);
         if (urlObject.host === window.location.host) {
             goPage(urlObject.pathname);

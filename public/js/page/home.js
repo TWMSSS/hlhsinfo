@@ -1,7 +1,7 @@
-async function execute() {
+window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
-    window.pageData.editAccount = (id) => {
+    window.pageData.function.editAccount = (id) => {
         var reslogin = localStorage.getItem("reslogin");
         if (!reslogin) return;
         var reslogin = JSON.parse(reslogin);
@@ -55,7 +55,7 @@ async function execute() {
         });
     }
 
-    window.pageData.useAccount = (id) => {
+    window.pageData.function.useAccount = (id) => {
         var reslogin = localStorage.getItem("reslogin");
         if (!reslogin) return;
         var reslogin = JSON.parse(reslogin);
@@ -68,9 +68,19 @@ async function execute() {
         document.querySelector("#loginBtn").click();
     }
 
+    window.pageData.function.removeAccount = (id) => {
+        var reslogin = localStorage.getItem("reslogin");
+        if (!reslogin) return;
+        var reslogin = JSON.parse(reslogin);
+
+        reslogin.splice(id, 1);
+        localStorage.setItem("reslogin", JSON.stringify(reslogin));
+        goPage("/");
+    }
+
     if (sessionStorage.getItem("auth") === null) {
         var reslogin = "";
-        if (localStorage.getItem("reslogin") === null) {
+        if (localStorage.getItem("reslogin") === null || localStorage.getItem("reslogin") === "[]") {
             reslogin = `
                 <div style="text-align: center;">
                     您還尚未登入過，請先登入。
@@ -82,14 +92,14 @@ async function execute() {
             var i = 0;
             dt.forEach(e => {
                 loginlist += `
-                    <tr style="text-align: center;">
+                    <tr style="text-align: center;display: block;">
                         <td>
-                            <a onclick="window.pageData.useAccount(${i});"><span>${e.displayName}(${e.username})</span></a>
+                            <a onclick="window.pageData.function.useAccount(${i});"><span>${e.displayName}(${e.username})</span></a>
                         </td>
                         <td>
                             <div>
-                                <a onclick="window.pageData.editAccount(${i});"><span><i class="fa-solid fa-pencil"></i></span></a>
-                                <a onclick=""><span><i class="fa-solid fa-trash"></i></span></a>
+                                <a onclick="window.pageData.function.editAccount(${i});"><span><i class="fa-solid fa-pencil"></i></span></a>
+                                <a onclick="window.pageData.function.removeAccount(${i})"><span><i class="fa-solid fa-trash"></i></span></a>
                             </div>
                         </td>
                     </tr>
@@ -252,20 +262,21 @@ async function execute() {
     } else {
         window.pageData.userData = {};
         var task = addTaskList("取得使用者資訊");
-        await fetch("/api/getUserInfoShort", {
+        var d = await fetch("/api/getUserInfoShort", {
             method: "GET",
             headers: {
                 "Authorization": `Bearer ${sessionStorage.getItem("auth")}`
             }
-        }).then(res => res.json()).then(res => {
-            if (res.message !== "Success!") {
-                setTaskStatus(task, "fail");
-                sessionStorage.removeItem("auth");
-                goPage("/");
-                return;
-            }
-            window.pageData.userData = res.data;
-        });
+        }).then(res => res.json());
+
+        if (d.message !== "Success!") {
+            setTaskStatus(task, "fail");
+            sessionStorage.removeItem("auth");
+            goPage("/");
+            return;
+        }
+
+        window.pageData.userData = d.data;
         setTaskStatus(task, "success");
 
         finishTask();
@@ -299,11 +310,11 @@ async function execute() {
             <div class="choseBox">
                 <h1 class="pageTitle">功能選擇</h1>
                 <div class="function">
-                    <button type="button">查詢個人資料</button>
-                    <button type="button">查詢成績資料</button>
-                    <button type="button">查詢獎懲紀錄</button>
-                    <button type="button">查詢缺況紀錄</button>
-                    <button type="button">比較歷史成績</button>
+                    <button type="button" onclick="goPage('/profile');">查詢個人資料</button>
+                    <button type="button" onclick="goPage('/availableScore');">查詢成績資料</button>
+                    <button type="button" onclick="goPage('rewandpun');">查詢獎懲紀錄</button>
+                    <button type="button" onclick="goPage('/lack');">查詢缺曠紀錄</button>
+                    <button type="button" onclick="goPage('/compare');">比較歷史成績</button>
                     <button type="button" style="background-color: red;" onclick="sessionStorage.removeItem('auth');goPage('/');">登出</button>
                 </div>
             </div>

@@ -36,7 +36,9 @@ function getAvailableScore(req, res) {
             var testID = url.searchParams.get('number');
             var times = testID.substring(3, 4);
             var name = e.innerHTML;
-            optt.push({ term, year, testID, name, times });
+            var type = 1;
+            if (name.includes("平時成績")) type = 2;
+            optt.push({ term, year, testID, name, times, type });
         });
         optt.sort((a, b) => {
             return a.term - b.term || a.year - b.year || a.testID - b.testID;
