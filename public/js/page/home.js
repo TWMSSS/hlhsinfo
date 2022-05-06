@@ -280,7 +280,7 @@ window.execute = async () => {
         setTaskStatus(task, "success");
 
         finishTask();
-        changePathName(`您好，${window.pageData.userData.userName}同學`);
+        changePathName(`您好，${window.pageData.userData.userName === "" ? window.pageData.userData.schoolNumber : window.pageData.userData.userName}同學`);
 
         var reslogin = localStorage.getItem("reslogin");
         if (reslogin === null) {

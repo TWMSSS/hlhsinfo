@@ -32,7 +32,7 @@ window.execute = async () => {
         list += `
             <tr>
                 <td>${dt.name}</td>
-                <td>${dt.value}</td>
+                <td>${dt.value === "" ? "(伺服器沒有資料或此訊息不支援BIG5編碼)" : dt.value}</td>
             </tr>
         `;
     });
