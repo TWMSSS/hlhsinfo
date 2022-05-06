@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const api = require('./api/api.js');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT || 1156;
 const defaultURL = "http://shinher.hlhs.hlc.edu.tw/online/";

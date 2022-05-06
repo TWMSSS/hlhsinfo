@@ -26,6 +26,4 @@ function getLoginCaptcha(req, res) {
     });
 }
 
-module.exports = {
-    getLoginCaptcha
-};
+module.exports.getLoginCaptcha = getLoginCaptcha;

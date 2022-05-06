@@ -68,6 +68,4 @@ function getScoreInfo(req, res) {
     });
 }
 
-module.exports = {
-    getScoreInfo
-};
+module.exports.getScoreInfo = getScoreInfo;
