@@ -163,6 +163,10 @@ button:active {
     margin-bottom: 15px;
 }
 
+.taskBox .tskbx .taskBoxContent {
+    width: 80%;
+}
+
 .taskBox .tskbx .taskBoxTasks {
     width: 80%;
     overflow-y: auto;

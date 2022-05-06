@@ -35,6 +35,16 @@ window.execute = async () => {
             finishTask();
             return;
         }
+        if (res.data.data.length === 0) {
+            setTaskStatus(task, "fail");
+            var t = addTaskList("查無資料");
+            setTaskStatus(t, "fail");
+            setTimeout(() => {
+                finishTask();
+                goPage("/");
+            }, 1000);
+            return;
+        }
         scoreData = res.data;
     });
     setTaskStatus(task, "success");

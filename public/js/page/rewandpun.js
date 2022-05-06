@@ -46,21 +46,57 @@ window.execute = async () => {
     var detailList = `
         <tr>
             <td>類別</td>
-            <td>次數</td>
             <td>開始:簽署</td>
-            <td>原因</td>
-            <td>處置</td>
-            <td>銷過日期</td>
+            <td>詳細資料</td>
         </tr>
     `;
+    rewData.detail.map(e => e.id = Math.floor(Math.random() * 1000000));
+
+    window.pageData.function.openDetail = (id) => {
+        var detail = rewData.detail.find(e => e.id === id);
+        var doc = document.createElement("div");
+        doc.classList.add("taskBox");
+        doc.innerHTML = `
+            <div class="tskbx">
+                <div class="taskBoxTitle">
+                    <h1>獎懲詳細</h1>
+                </div>
+                <div class="taskBoxContent">
+                    <div class="group">
+                        <span>類別:</span> <span>${detail.type}</span>
+                    </div>
+                    <div class="group">
+                        <span>開始:</span> <span>${detail.start}</span>
+                    </div>
+                    <div class="group">
+                        <span>簽署:</span> <span>${detail.signed}</span>
+                    </div>
+                    <div class="group">
+                        <span>原因:</span> <span>${detail.reason}</span>
+                    </div>
+                    <div class="group">
+                        <span>銷過日期:</span> <span>${detail.sold === null ? "不適用" : detail.sold}</span>
+                    </div>
+                    <div class="group">
+                        <span>懲處方法:</span> <span>${detail.execute}</span>
+                    </div>
+                    <button type="button" id="close" style="background-color: red;">關閉</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(doc);
+        document.querySelector("#close").addEventListener("click", () => {
+            doc.remove();
+        });
+    };
+
     rewData.detail.forEach(e => {
         detailList += `
             <tr>
                 <td>${e.type}</td>
                 <td>${e.start}:${e.signed}</td>
-                <td>${e.reason}</td>
-                <td>${e.execute}</td>
-                <td>${e.sold === null ? "N/A" : e.sold}</td>
+                <td><a href="#" onclick="window.pageData.function.openDetail(${e.id})">詳細資料</a></td>
             </tr>
         `;
     });

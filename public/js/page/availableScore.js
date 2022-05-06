@@ -110,6 +110,14 @@ window.execute = async () => {
             return true;
         });
 
+        if (sc.length === 0) {
+            list = `
+                <tr>
+                    <td colspan="3">查無資料公開資料，<a href="#" onclick="goPage('/score?score=${year.value}-${term.value}-${times.value}');">直接查</a>?</td>
+                </tr>
+            `;
+        }
+
         sc.forEach(dt => {
             list += `
                 <tr onclick="goPage('/score?score=${dt.year}-${dt.term}-${dt.times}')" style="cursor: pointer">
