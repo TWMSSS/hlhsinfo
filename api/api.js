@@ -5,6 +5,8 @@ const { getAvailableScore } = require('./getAvailableScore.js');
 const { getScoreInfo } = require('./getScoreInfo.js');
 const { getUserInfo } = require('./getUserInfo.js');
 const { getUserInfoShort } = require('./getUserInfoShort.js');
+const { getRewAndPun } = require('./getRewAndPun.js');
+const { getLack } = require('./getLack.js');
 
 module.exports = {
     getLoginInfo,
@@ -13,5 +15,7 @@ module.exports = {
     getAvailableScore,
     getScoreInfo,
     getUserInfo,
-    getUserInfoShort
+    getUserInfoShort,
+    getRewAndPun,
+    getLack
 }

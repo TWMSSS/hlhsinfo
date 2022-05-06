@@ -162,7 +162,7 @@ window.onload = () => {
 }
 
 window.onpopstate = (event) => {
-    event.preventDefault();
+    // event.preventDefault();
     loadPage();
 }
 

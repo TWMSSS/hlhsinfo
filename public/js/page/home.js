@@ -273,6 +273,7 @@ window.execute = async () => {
             setTaskStatus(task, "fail");
             sessionStorage.removeItem("auth");
             goPage("/");
+            finishTask();
             return;
         }
 

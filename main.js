@@ -13,7 +13,9 @@ const urls = global.urls = {
     profile: defaultURL + "selection_student/fundamental.asp",
     profileImg: defaultURL + "utility/file1.asp?q=x&id=%imgID%",
     classInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_top&school_class=&division=",
-    userShortInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_below&school_class="
+    userShortInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_below&school_class=",
+    rewandpun: defaultURL + "selection_student/moralculture_%20bonuspenalty.asp",
+    lack: defaultURL + "selection_student/absentation_skip_school.asp",
 }
 
 app.listen(PORT, () => {
@@ -38,9 +40,11 @@ app.get("/api/getUserInfo", (req, res) => api.getUserInfo(req, res));
 app.get("/api/getUserInfoShort", (req, res) => api.getUserInfoShort(req, res));
 app.post("/api/getScoreInfo", (req, res) => api.getScoreInfo(req, res));
 app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res));
+app.get("/api/getRewAndPun", (req, res) => api.getRewAndPun(req, res));
+app.get("/api/getLack", (req, res) => api.getLack(req, res));
 
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
-module.exports = app;
+module.exports.app = app;
