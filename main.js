@@ -42,3 +42,5 @@ app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res))
 app.use(express.static(__dirname + "/public"));
 
 app.get("*", (req, res) => res.sendFile(__dirname + "/public/index.html"));
+
+module.exports = app;
