@@ -35,6 +35,7 @@ app.get("/api/getLoginInfo", (req, res) => api.getLoginInfo(res, req));
 app.get("/api/getLoginCaptcha", (req, res) => api.getLoginCaptcha(req, res));
 app.post("/api/login", (req, res) => api.login(req, res));
 app.get("/api/getUserInfo", (req, res) => api.getUserInfo(req, res));
+app.get("/api/getUserInfoShort", (req, res) => api.getUserInfoShort(req, res));
 app.post("/api/getScoreInfo", (req, res) => api.getScoreInfo(req, res));
 app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res));
 

@@ -1,19 +1,102 @@
-function execute() {
+async function execute() {
     var pageElement = document.querySelector("#mainContent");
+
+    window.pageData.editAccount = (id) => {
+        var reslogin = localStorage.getItem("reslogin");
+        if (!reslogin) return;
+        var reslogin = JSON.parse(reslogin);
+
+        return new Promise(async resolve => {
+            var doc = document.createElement("div");
+            doc.classList.add("taskBox");
+            doc.innerHTML = `
+                <div class="tskbx">
+                    <div class="taskBoxTitle">
+                        <h1>更新帳號</h1>
+                    </div>
+                    <div class="taskBoxContent">
+                        <div class="form-group">
+                            <div>
+                                <label for="displayName">顯示名稱</label>
+                                <input type="text" id="displayName" name="displayName" value="${reslogin[id].displayName}">
+                            </div>
+                            <div>
+                                <label for="schoolNumber">學號</label>
+                                <input type="text" id="schoolNumber" name="schoolNumber" value="${reslogin[id].username}">
+                            </div>
+                            <div>
+                                <label for="schoolPass">密碼</label>
+                                <input type="text" id="schoolPass" name="schoolPass"  value="${reslogin[id].password}">
+                            </div>
+                            <button type="button" id="submitEdit">確定</button>
+                            <button type="button" id="cancelEdit" style="background-color: red;">取消</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(doc);
+            var submitEdit = doc.querySelector("#submitEdit");
+            var cancelEdit = doc.querySelector("#cancelEdit");
+
+            submitEdit.addEventListener("click", async () => {
+                var displayName = doc.querySelector("#displayName").value;
+                var schoolNumber = doc.querySelector("#schoolNumber").value;
+                var schoolPass = doc.querySelector("#schoolPass").value;
+                reslogin[id].displayName = displayName;
+                reslogin[id].username = schoolNumber;
+                reslogin[id].password = schoolPass;
+                localStorage.setItem("reslogin", JSON.stringify(reslogin));
+                goPage("/");
+                doc.remove();
+            });
+            cancelEdit.addEventListener("click", () => {
+                doc.remove();
+            });
+        });
+    }
+
+    window.pageData.useAccount = (id) => {
+        var reslogin = localStorage.getItem("reslogin");
+        if (!reslogin) return;
+        var reslogin = JSON.parse(reslogin);
+
+        var usernameEle = document.querySelector("#username");
+        var passwordEle = document.querySelector("#password");
+        usernameEle.value = reslogin[id].username;
+        passwordEle.value = reslogin[id].password;
+
+        document.querySelector("#loginBtn").click();
+    }
 
     if (sessionStorage.getItem("auth") === null) {
         var reslogin = "";
-        if (localStorage.getItem("resLogin") === null) {
+        if (localStorage.getItem("reslogin") === null) {
             reslogin = `
                 <div style="text-align: center;">
                     您還尚未登入過，請先登入。
                 </div>
             `;
         } else {
-            var dt = JSON.parse(localStorage.getItem("resLogin"));
+            var dt = JSON.parse(localStorage.getItem("reslogin"));
+            var loginlist = "<table>";
+            var i = 0;
             dt.forEach(e => {
-                
+                loginlist += `
+                    <tr style="text-align: center;">
+                        <td>
+                            <a onclick="window.pageData.useAccount(${i});"><span>${e.displayName}(${e.username})</span></a>
+                        </td>
+                        <td>
+                            <div>
+                                <a onclick="window.pageData.editAccount(${i});"><span><i class="fa-solid fa-pencil"></i></span></a>
+                                <a onclick=""><span><i class="fa-solid fa-trash"></i></span></a>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                i++;
             });
+            reslogin = loginlist + "</table>";
         }
 
         pageElement.innerHTML = `
@@ -29,7 +112,7 @@ function execute() {
                             <label for="password">密碼</label>
                             <input type="password" class="form-control" id="password" name="password">
                         </div>
-                        <button type="submit" class="btn btn-primary">登入</button>
+                        <button type="submit" id="loginBtn">登入</button>
                     </form>
                 </div>
             </div>
@@ -66,7 +149,7 @@ function execute() {
             task = addTaskList("取得驗證碼");
             function getCaptchaDataURL() {
                 return new Promise(resolve => {
-                    fetch("/api/getLoginCaptcha", {
+                    fetch("/api/getLoginCaptcha?" + Math.random(), {
                         method: "GET",
                         headers: {
                             "Authorization": `Bearer ${sessionStorage.getItem("auth")}`
@@ -109,7 +192,7 @@ function execute() {
                     }, false);
                     var submitCaptcha = document.getElementById("submitCaptcha");
                     submitCaptcha.addEventListener("click", ev => {
-                        resolve(captcha.value);
+                        resolve(document.getElementById("captcha").value);
                         doc.remove();
                     });
                     var cancelCaptcha = document.getElementById("cancelCaptcha");
@@ -131,9 +214,99 @@ function execute() {
             setTaskStatus(task, "success");
 
             task = addTaskList("登入至伺服器");
+
+            await fetch("/api/login", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${sessionStorage.getItem("auth")}`,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    username: username,
+                    password: password,
+                    captcha: captcha
+                })
+            }).then(async res => {
+                var dt = await res.json();
+                if (res.status === 200) {
+                    setTaskStatus(task, "success");
+                    window.pageData.loginInfo = {
+                        username: username,
+                        password: password
+                    }
+                    goPage("/");
+                    finishTask();
+                } else {
+                    setTaskStatus(task, "fail");
+                    var t = addTaskList(`伺服器回傳: ${dt.serverMessage}`);
+                    setTaskStatus(t, "fail");
+                    setTimeout(() => {
+                        finishTask();
+                    }, 3000);
+                }
+            }).catch((err) => {
+                console.log(err);
+            });
         });
         return;
     } else {
-        goPage("/");
+        window.pageData.userData = {};
+        var task = addTaskList("取得使用者資訊");
+        await fetch("/api/getUserInfoShort", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem("auth")}`
+            }
+        }).then(res => res.json()).then(res => {
+            if (res.message !== "Success!") {
+                setTaskStatus(task, "fail");
+                sessionStorage.removeItem("auth");
+                goPage("/");
+                return;
+            }
+            window.pageData.userData = res.data;
+        });
+        setTaskStatus(task, "success");
+
+        finishTask();
+        changePathName(`您好，${window.pageData.userData.userName}同學`);
+
+        var reslogin = localStorage.getItem("reslogin");
+        if (reslogin === null) {
+            reslogin = [];
+            reslogin.push({
+                displayName: window.pageData.userData.userName,
+                username: window.pageData.loginInfo.username,
+                password: window.pageData.loginInfo.password
+            });
+        } else {
+            reslogin = JSON.parse(reslogin);
+            if (window.pageData.loginInfo === undefined) {
+                window.pageData.loginInfo = {};
+                window.pageData.loginInfo.username = window.pageData.userData.schoolNumber;
+            };
+            if (!reslogin.find(x => x.username === window.pageData.loginInfo.username)) {
+                reslogin.push({
+                    displayName: window.pageData.userData.userName,
+                    username: window.pageData.loginInfo.username,
+                    password: window.pageData.loginInfo.password
+                });
+            }
+        }
+        localStorage.setItem("reslogin", JSON.stringify(reslogin));
+
+        pageElement.innerHTML = `
+            <div class="choseBox">
+                <h1 class="pageTitle">功能選擇</h1>
+                <div class="function">
+                    <button type="button">查詢個人資料</button>
+                    <button type="button">查詢成績資料</button>
+                    <button type="button">查詢獎懲紀錄</button>
+                    <button type="button">查詢缺況紀錄</button>
+                    <button type="button">比較歷史成績</button>
+                    <button type="button" style="background-color: red;" onclick="sessionStorage.removeItem('auth');goPage('/');">登出</button>
+                </div>
+            </div>
+        `;
     }
 }

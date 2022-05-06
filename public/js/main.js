@@ -1,3 +1,5 @@
+window.pageData = {};
+
 const page = [
     {
         path: "/",
@@ -27,7 +29,7 @@ const page = [
 ]
 
 function changePathName(name) {
-    if (history.length > 1 && window.history.state !== null) name = "<a href='#' onclick='history.go(-1);'><返回</a> " + name;
+    if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = "<a href='#' onclick='history.go(-1);'><返回</a> " + name;
     document.querySelector("#pathName").innerHTML = name;
 }
 
@@ -101,7 +103,11 @@ function loadPageScript(id) {
 function loadPage(path, orgPath) {
     // if (path === orgPath) return;
 
-    if (!page.find(e => e.path === path)) path = "/404";
+    if (!page.find(e => e.path === location.pathname)) path = "/404";
+
+    var doc = document.querySelector("#mainContent");
+    doc.innerHTML = "";
+    changePathName("");
 
     changePathName(page.find(e => e.path === path).name);
     loadPageScript(page.find(e => e.path === path).id);
@@ -132,11 +138,12 @@ document.addEventListener("click", event => {
     }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+window.onload = () => {
     loadPage(location.pathname);
-})
+}
 
-window.onpopstate = event => {
+window.onpopstate = (event) => {
+    event.preventDefault();
     loadPage();
 }
 
