@@ -44,7 +44,7 @@ const page = [
 ]
 
 function changePathName(name) {
-    if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = "<a href='#' onclick='history.back();'><返回</a> " + name;
+    if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = `<a href='#' onclick='goPage("/");'>&lt;回首頁</a> ${name}`;
     document.querySelector("#pathName").innerHTML = name;
 }
 
@@ -147,7 +147,7 @@ document.addEventListener("click", event => {
     if (ele) {
         event.preventDefault();
         var url = ele.href; 
-        if (url === undefined || url === "" || url === null || url === location.href + "#") return;
+        if (url === undefined || url === "" || url === null || url === location.href + "#" || url === location.href) return;
         var urlObject = new URL(url);
         if (urlObject.host === window.location.host) {
             goPage(urlObject.pathname);
@@ -162,8 +162,8 @@ window.onload = () => {
 }
 
 window.onpopstate = (event) => {
-    // event.preventDefault();
-    loadPage();
+    event.preventDefault();
+    goPage(location.pathname);
 }
 
 function inputStyle() {

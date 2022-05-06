@@ -19,6 +19,7 @@ window.execute = async () => {
         if (res.message !== "Success!") {
             setTaskStatus(task, "fail");
             goPage("/");
+            finishTask();
             return;
         }
         scoreData = res.data;
@@ -110,10 +111,16 @@ window.execute = async () => {
             return true;
         });
 
-        if (sc.length === 0) {
+        if (sc.length === 0 && year.value !== "" && term.value !== "0" && times.value !== "0") {
+            list = `
+                <tr onclick="goPage('/score?score=${year.value}-${term.value}-${times.value}');" style="cursor: pointer">
+                    <td colspan="3">查無資料，直接查?</td>
+                </tr>
+            `;
+        } else if (sc.length === 0) {
             list = `
                 <tr>
-                    <td colspan="3">查無資料公開資料，<a href="#" onclick="goPage('/score?score=${year.value}-${term.value}-${times.value}');">直接查</a>?</td>
+                    <td colspan="3">查無資料，輸入年分、學期、考試即可直接查詢成績。</td>
                 </tr>
             `;
         }
