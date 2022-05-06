@@ -265,6 +265,12 @@ table tr td>div {
     flex-wrap: nowrap;
 }
 
+table tr td>div.lackClass {
+    border-radius: 15px;
+    margin: 15px 0;
+    background-color: var(--color-group-bg);
+}
+
 table tr td>div span {
     padding: 5px;
 }

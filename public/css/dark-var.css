@@ -13,9 +13,10 @@
     --color-input-text: #ffffff;
     --color-input-active: #0aa2fa;
     --color-select-bg: #000000;
+    --color-label: #b9b9b9;
     --color-task-status-bg: #0b7ec0;
     --color-task-status-bar: #707070;
-    --color-label: #b9b9b9;
+    --color-group-bg: #707070;
     --color-footer: #d4d4d4;
     --color-footer-border: #6b6b6b;
 }
