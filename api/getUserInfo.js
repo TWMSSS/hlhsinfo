@@ -69,4 +69,6 @@ function getUserInfo(req, res) {
     });
 }
 
-module.exports.getUserInfo = getUserInfo;
+module.exports = {
+    getUserInfo
+};

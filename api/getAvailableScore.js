@@ -47,4 +47,6 @@ function getAvailableScore(req, res) {
     });
 }
 
-module.exports.getAvailableScore = getAvailableScore;
+module.exports = {
+    getAvailableScore
+};

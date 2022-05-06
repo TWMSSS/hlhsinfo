@@ -26,4 +26,6 @@ function getLoginInfo(res, req) {
     });
 }
 
-module.exports.getLoginInfo = getLoginInfo;
+module.exports = {
+    getLoginInfo
+};

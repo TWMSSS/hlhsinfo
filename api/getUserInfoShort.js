@@ -74,4 +74,6 @@ async function getUserInfoShort(req, res) {
     res.status(200).json({ message: "Success!", data: info });
 }
 
-module.exports.getUserInfoShort = getUserInfoShort;
+module.exports = {
+    getUserInfoShort
+};

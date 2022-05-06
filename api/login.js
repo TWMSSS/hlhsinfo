@@ -46,4 +46,6 @@ function login(req, res) {
     });
 }
 
-module.exports.login = login;
+module.exports = {
+    login
+};
