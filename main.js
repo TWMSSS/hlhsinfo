@@ -16,6 +16,7 @@ const urls = global.urls = {
     userShortInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_below&school_class=",
     rewandpun: defaultURL + "selection_student/moralculture_%20bonuspenalty.asp",
     lack: defaultURL + "selection_student/absentation_skip_school.asp",
+    allScores: defaultURL + "selection_student/grade_chart_all.asp",
 }
 
 app.listen(PORT, () => {
@@ -42,6 +43,7 @@ app.post("/api/getScoreInfo", (req, res) => api.getScoreInfo(req, res));
 app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res));
 app.get("/api/getRewAndPun", (req, res) => api.getRewAndPun(req, res));
 app.get("/api/getLack", (req, res) => api.getLack(req, res));
+app.get("/api/getAllScores", (req, res) => api.getAllScores(req, res));
 
 app.use(express.static(__dirname + "/public"));
 

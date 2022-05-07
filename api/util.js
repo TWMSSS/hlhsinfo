@@ -47,11 +47,46 @@ function getN1(year, grade, term) {
     return "0" + String((year % 11) - 1);
 }
 
+function getScoreType(scoreName) {
+    var org = scoreName;
+    scoreName = scoreName.replace(/\[(\d{3})(\W{1})\] (\W*)/gm, "$1 $2 $3");
+    scoreName = scoreName.split(" ");
+    var testID = null;
+    switch (scoreName[2]) {
+        case "期初複習考":
+            testID = 0;
+            break;
+        
+        case "第一次期中考":
+            testID = 1;
+            break;
+        
+        case "第二次期中考":
+            testID = 2;
+            break;
+        
+        case "期末考":
+            testID = 3;
+            break;
+        
+        default:
+            testID = null;
+    }
+
+    return {
+        year: scoreName[0],
+        term: scoreName[1] === "上" ? 1 : 2, 
+        test: testID,
+        name: org
+    }
+}
+
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
     decodeAuthorization,
     isNotLogin,
     urlEncode,
-    getN1
+    getN1,
+    getScoreType
 }
