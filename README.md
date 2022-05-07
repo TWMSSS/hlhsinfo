@@ -22,4 +22,4 @@
 如果你對此有疑問，此程式為公開原始碼的程式，您可以去確認程式是否有不當使用的地方。
 
 ## 其他
-您可以到[https://hlhsinfo.herokuapp.com](https://hlhsinfo.herokuapp.com)來使用此程式的相關資訊。
+您可以到[https://hlhsinfo.ml](https://hlhsinfo.ml)來使用此程式的相關資訊。
