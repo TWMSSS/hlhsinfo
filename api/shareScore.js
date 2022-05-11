@@ -78,6 +78,8 @@ async function shareScore(req, res) {
         createdTimestamp: created
     });
 
+    console.log(global.sharedScores.scores);
+
     setTimeout(() => {
         var index = global.sharedScores.scores.findIndex(dt => dt.id === req.body.id);
         if (index >= 0) {

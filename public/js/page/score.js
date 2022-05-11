@@ -1,7 +1,9 @@
 window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
-    if (sessionStorage.getItem("auth") === null) {
+    var sharedScore = new URL(location.href).searchParams.get("shared");
+
+    if (sessionStorage.getItem("auth") === null && sharedScore === null) {
         goPage("/");
         return;
     }
@@ -15,142 +17,92 @@ window.execute = async () => {
     var scoreTerm = scoreArr[1];
     var scoreTimes = scoreArr[2];
 
-    var sharedScore;
+    if (!sharedScore) {
+        var sharedScore;
 
-    window.pageData.function.shareScore = async () => {
-        if (!sharedScore) {
-            var task = addTaskList("建立分享連結");
-            await fetch("/api/shareScore", {
-                method: "POST",
-                headers: {
-                    "authorization": auth,
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                body: new URLSearchParams({
-                    year: scoreYear,
-                    term: scoreTerm,
-                    times: scoreTimes,
-                    examName: "t"
+        window.pageData.function.shareScore = async () => {
+            if (!sharedScore) {
+                var task = addTaskList("建立分享連結");
+                await fetch("/api/shareScore", {
+                    method: "POST",
+                    headers: {
+                        "authorization": auth,
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: new URLSearchParams({
+                        year: scoreYear,
+                        term: scoreTerm,
+                        times: scoreTimes,
+                        examName: "t"
+                    })
+                }).then(res => res.json()).then(res => {
+                    if (res.message !== "Success!") {
+                        setTaskStatus(task, "fail");
+                        task = addTaskList("建立分享連結失敗");
+                        setTaskStatus(task, "fail");
+                        setTimeout(() => {
+                            finishTask();
+                        }, 3000);
+                        return;
+                    }
+
+                    sharedScore = res.data;
                 })
-            }).then(res => res.json()).then(res => {
-                if (res.message !== "Success!") {
-                    setTaskStatus(task, "fail");
-                    task = addTaskList("建立分享連結失敗");
-                    setTaskStatus(task, "fail");
-                    setTimeout(() => {
-                        finishTask();
-                    }, 3000);
-                    return;
-                }
+            };
 
-                sharedScore = res.data;
-            })
-        };
+            setTaskStatus(task, "success");
+            finishTask();
 
-        var link = `${location.origin}/s/${sharedScore.id}`;
-        
-        var doc = document.createElement("div");
-        doc.classList.add("taskBox");
-        doc.innerHTML = `
-            <div class="tskbx">
-                <div class="taskBoxTitle">
-                    <h1>分享成績</h1>
-                </div>
-                <div class="taskBoxContent">
-                    <div class="group">
-                        <h3>分享連結</h3>
-                        <div class="input">
-                            <input type="text" value="${link}" readonly>
-                            <button onclick="window.pageData.function.shareURL('${link}')">分享</button>
+            var link = `${location.origin}/s/${sharedScore.id}`;
+            
+            var doc = document.createElement("div");
+            doc.classList.add("taskBox");
+            doc.innerHTML = `
+                <div class="tskbx">
+                    <div class="taskBoxTitle">
+                        <h1>分享成績</h1>
+                    </div>
+                    <div class="taskBoxContent" style="overflow: auto;overflow-x: hidden;">
+                        <div class="group">
+                            <h3>分享連結</h3>
+                            <div class="input">
+                                <input type="text" value="${link}" readonly>
+                                <button onclick="window.pageData.function.shareURL('${link}')">分享</button>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <h3>QR Code</h3>
+                            <div class="qr" style="text-align: center;">
+                                <img src="https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${link}" alt="QR Code">
+                            </div>
                         </div>
                     </div>
                     <button type="button" id="close" style="background-color: red;">關閉</button>
                 </div>
-            </div>
-        `;
-        document.body.appendChild(doc);
-        document.querySelector("#close").addEventListener("click", () => {
-            doc.remove();
-        });
-    }
-
-    window.pageData.function.shareURL = (URL) => {
-        if (typeof navigator.share === "undefined") {
-            var input = document.createElement("input");
-            input.value = URL;
-            input.select();
-            navigator.clipboard.writeText(URL);
-            alert("已複製到剪貼簿");
-        } else {
-            navigator.share({
-                title: "分享成績",
-                text: "此成績使用「花中查詢」分享",
-                url: URL
+            `;
+            document.body.appendChild(doc);
+            document.querySelector("#close").addEventListener("click", () => {
+                doc.remove();
             });
         }
-    }
 
-    var task = addTaskList("取得成績");
-    await fetch("/api/getScoreInfo", {
-        method: "POST",
-        headers: {
-            "authorization": auth,
-            "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: new URLSearchParams({
-            year: scoreYear,
-            term: scoreTerm,
-            times: scoreTimes,
-            examName: "t"
-        })
-    }).then(res => res.json()).then(res => {
-        if (res.message !== "Success!") {
-            setTaskStatus(task, "fail");
-            goPage("/");
-            finishTask();
-            return;
+        window.pageData.function.shareURL = (URL) => {
+            if (typeof navigator.share === "undefined") {
+                var input = document.createElement("input");
+                input.value = URL;
+                input.select();
+                navigator.clipboard.writeText(URL);
+                alert("已複製到剪貼簿");
+            } else {
+                navigator.share({
+                    title: "分享成績",
+                    text: "此成績使用「花中查詢」分享",
+                    url: URL
+                });
+            }
         }
-        if (res.data.data.length === 0) {
-            setTaskStatus(task, "fail");
-            var t = addTaskList("查無資料");
-            setTaskStatus(t, "fail");
-            setTimeout(() => {
-                finishTask();
-                goPage("/");
-            }, 1000);
-            return;
-        }
-        scoreData = res.data;
-    });
-    setTaskStatus(task, "success");
 
-    var task = addTaskList("取得已公布成績");
-    var allScores;
-    await fetch("/api/getAvailableScore", {
-        method: "GET",
-        headers: {
-            "authorization": auth
-        },
-    }).then(res => res.json()).then(res => {
-        if (res.message !== "Success!") {
-            setTaskStatus(task, "fail");
-            goPage("/");
-            finishTask();
-            return;
-        }
-        allScores = res.data;
-    });
-    setTaskStatus(task, "success");
-    var allScores = allScores.filter(dt => dt.type == "1");
-
-    var notScore = allScores.findIndex(dt => dt.year === scoreYear && dt.term === scoreTerm && dt.times === scoreTimes && dt.type === 2);
-    var d = allScores.findIndex(dt => dt.year === scoreYear && dt.term === scoreTerm && dt.times === scoreTimes);
-
-    if (d >= 1 && notScore === -1) {
-        var preScore = allScores[d - 1];
-
-        var task = addTaskList("取得上次成績");
-        var lastScore;
+        var task = addTaskList("取得成績");
         await fetch("/api/getScoreInfo", {
             method: "POST",
             headers: {
@@ -158,21 +110,110 @@ window.execute = async () => {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({
-                year: preScore.year,
-                term: preScore.term,
-                times: preScore.times,
+                year: scoreYear,
+                term: scoreTerm,
+                times: scoreTimes,
                 examName: "t"
             })
         }).then(res => res.json()).then(res => {
             if (res.message !== "Success!") {
                 setTaskStatus(task, "fail");
                 goPage("/");
+                finishTask();
                 return;
             }
-            lastScore = res.data;
+            if (res.data.data.length === 0) {
+                setTaskStatus(task, "fail");
+                var t = addTaskList("查無資料");
+                setTaskStatus(t, "fail");
+                setTimeout(() => {
+                    finishTask();
+                    goPage("/");
+                }, 1000);
+                return;
+            }
+            scoreData = res.data;
         });
         setTaskStatus(task, "success");
+
+        var task = addTaskList("取得已公布成績");
+        var allScores;
+        await fetch("/api/getAvailableScore", {
+            method: "GET",
+            headers: {
+                "authorization": auth
+            },
+        }).then(res => res.json()).then(res => {
+            if (res.message !== "Success!") {
+                setTaskStatus(task, "fail");
+                goPage("/");
+                finishTask();
+                return;
+            }
+            allScores = res.data;
+        });
+        setTaskStatus(task, "success");
+        var allScores = allScores.filter(dt => dt.type == "1");
+
+        var notScore = allScores.findIndex(dt => dt.year === scoreYear && dt.term === scoreTerm && dt.times === scoreTimes && dt.type === 2);
+        var d = allScores.findIndex(dt => dt.year === scoreYear && dt.term === scoreTerm && dt.times === scoreTimes);
+
+        if (d >= 1 && notScore === -1) {
+            var preScore = allScores[d - 1];
+
+            var task = addTaskList("取得上次成績");
+            var lastScore;
+            await fetch("/api/getScoreInfo", {
+                method: "POST",
+                headers: {
+                    "authorization": auth,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    year: preScore.year,
+                    term: preScore.term,
+                    times: preScore.times,
+                    examName: "t"
+                })
+            }).then(res => res.json()).then(res => {
+                if (res.message !== "Success!") {
+                    setTaskStatus(task, "fail");
+                    goPage("/");
+                    return;
+                }
+                lastScore = res.data;
+            });
+            setTaskStatus(task, "success");
+        }
+    } else {
+        var task = addTaskList("取得分享的成績");
+
+        await fetch("/api/getShared", {
+            method: "POST",
+            headers: {
+                "authorization": auth,
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                sharedID: sharedScore
+            })
+        }).then(res => res.json()).then(res => {
+            if (res.message !== "Success!") {
+                setTaskStatus(task, "fail");
+                finishTask();
+                goPage("/");
+                return;
+            }
+            scoreData = res.data;
+        });
+        scoreYear = scoreData.scoreInfo.year;
+        scoreTerm = scoreData.scoreInfo.term;
+        scoreTimes = scoreData.scoreInfo.times;
+
+        scoreOwner = scoreData.userInfo;
+        setTaskStatus(task, "success");
     }
+    var scoreOwner = scoreOwner || undefined;
 
     task = addTaskList("分析資料");
     var list = `
@@ -227,8 +268,9 @@ window.execute = async () => {
         <div class="profile">
             <h1 class="pageTitle">成績資料</h1>
             <div class="profileInfo">
-                <h1>${scoreYear}學年度 ${scoreTerm === 1 ? "上" : "下"}學期 第${scoreTimes}次考試</h1>
-                <h1><i class="fa-solid fa-share-from-square" onclick="window.pageData.function.shareScore()"></i></h1>
+                <h1>${scoreYear}學年度 ${scoreTerm === "1" ? "上" : "下"}學期 第${scoreTimes}次考試</h1>
+                ${scoreOwner ? `<h4>此為 ${scoreOwner.className} 班 ${scoreOwner.userName}(${scoreOwner.schoolNumber}) 的成績資料</h4>` : ""}
+                ${scoreOwner ? "" : '<h1><i class="fa-solid fa-share-from-square" onclick="window.pageData.function.shareScore()"></i></h1>'}
                 <table>
                     ${list}
                 </table>

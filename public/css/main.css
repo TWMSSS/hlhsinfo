@@ -292,6 +292,9 @@ header {
 header .md {
     width: 80%;
     max-width: 600px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 header h2 {

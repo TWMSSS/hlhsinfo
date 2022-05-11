@@ -13,6 +13,14 @@ async function getShared(req, res) {
             extra: data.data.userScore.extra,
             unpass: data.data.userScore.unpass,
             userInfo: data.data.userInfo,
+            created: data.created,
+            expired: data.expired,
+            sharedID: data.id,
+            scoreInfo: {
+                year: data.data.year,
+                term: data.data.term,
+                times: data.data.times,
+            }
         }
     });
 }
