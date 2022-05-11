@@ -3,7 +3,7 @@ const app = express();
 const api = require('./api/api.js');
 const bodyParser = require('body-parser');
 
-const PORT = process.env.PORT || 1156;
+const PORT = global.PORT = process.env.PORT || 1156;
 const defaultURL = "http://shinher.hlhs.hlc.edu.tw/online/";
 const urls = global.urls = {
     main: defaultURL,
@@ -18,6 +18,10 @@ const urls = global.urls = {
     lack: defaultURL + "selection_student/absentation_skip_school.asp",
     allScores: defaultURL + "selection_student/grade_chart_all.asp",
 }
+
+const sharedScores = global.sharedScores = {
+    scores: []
+};
 
 app.listen(PORT, () => {
     console.log("".padStart(60, '='));
@@ -44,6 +48,12 @@ app.get("/api/getAvailableScore", (req, res) => api.getAvailableScore(req, res))
 app.get("/api/getRewAndPun", (req, res) => api.getRewAndPun(req, res));
 app.get("/api/getLack", (req, res) => api.getLack(req, res));
 app.get("/api/getAllScores", (req, res) => api.getAllScores(req, res));
+app.post("/api/shareScore", (req, res) => api.shareScore(req, res));
+app.post("/api/getShared", (req, res) => api.getShared(req, res));
+
+app.get("/s/:sharedID", (req, res) => {
+    res.redirect(`/score?shared=${req.params.sharedID}`);
+})
 
 app.use(express.static(__dirname + "/public"));
 

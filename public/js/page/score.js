@@ -15,6 +15,81 @@ window.execute = async () => {
     var scoreTerm = scoreArr[1];
     var scoreTimes = scoreArr[2];
 
+    var sharedScore;
+
+    window.pageData.function.shareScore = async () => {
+        if (!sharedScore) {
+            var task = addTaskList("建立分享連結");
+            await fetch("/api/shareScore", {
+                method: "POST",
+                headers: {
+                    "authorization": auth,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    year: scoreYear,
+                    term: scoreTerm,
+                    times: scoreTimes,
+                    examName: "t"
+                })
+            }).then(res => res.json()).then(res => {
+                if (res.message !== "Success!") {
+                    setTaskStatus(task, "fail");
+                    task = addTaskList("建立分享連結失敗");
+                    setTaskStatus(task, "fail");
+                    setTimeout(() => {
+                        finishTask();
+                    }, 3000);
+                    return;
+                }
+
+                sharedScore = res.data;
+            })
+        };
+
+        var link = `${location.origin}/s/${sharedScore.id}`;
+        
+        var doc = document.createElement("div");
+        doc.classList.add("taskBox");
+        doc.innerHTML = `
+            <div class="tskbx">
+                <div class="taskBoxTitle">
+                    <h1>分享成績</h1>
+                </div>
+                <div class="taskBoxContent">
+                    <div class="group">
+                        <h3>分享連結</h3>
+                        <div class="input">
+                            <input type="text" value="${link}" readonly>
+                            <button onclick="window.pageData.function.shareURL('${link}')">分享</button>
+                        </div>
+                    </div>
+                    <button type="button" id="close" style="background-color: red;">關閉</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(doc);
+        document.querySelector("#close").addEventListener("click", () => {
+            doc.remove();
+        });
+    }
+
+    window.pageData.function.shareURL = (URL) => {
+        if (typeof navigator.share === "undefined") {
+            var input = document.createElement("input");
+            input.value = URL;
+            input.select();
+            navigator.clipboard.writeText(URL);
+            alert("已複製到剪貼簿");
+        } else {
+            navigator.share({
+                title: "分享成績",
+                text: "此成績使用「花中查詢」分享",
+                url: URL
+            });
+        }
+    }
+
     var task = addTaskList("取得成績");
     await fetch("/api/getScoreInfo", {
         method: "POST",
@@ -152,6 +227,8 @@ window.execute = async () => {
         <div class="profile">
             <h1 class="pageTitle">成績資料</h1>
             <div class="profileInfo">
+                <h1>${scoreYear}學年度 ${scoreTerm === 1 ? "上" : "下"}學期 第${scoreTimes}次考試</h1>
+                <h1><i class="fa-solid fa-share-from-square" onclick="window.pageData.function.shareScore()"></i></h1>
                 <table>
                     ${list}
                 </table>

@@ -8,6 +8,8 @@ const { getUserInfoShort } = require('./getUserInfoShort.js');
 const { getRewAndPun } = require('./getRewAndPun.js');
 const { getLack } = require('./getLack.js');
 const { getAllScores } = require('./getAllScores.js');
+const { shareScore } = require('./shareScore.js');
+const { getShared } = require('./getShared.js');
 
 module.exports = {
     getLoginInfo,
@@ -19,5 +21,7 @@ module.exports = {
     getUserInfoShort,
     getRewAndPun,
     getLack,
-    getAllScores
+    getAllScores,
+    shareScore,
+    getShared
 }
