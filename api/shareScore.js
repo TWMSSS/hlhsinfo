@@ -1,5 +1,6 @@
 async function shareScore(req, res) {
     const request = require('request');
+    const crypto = require('crypto');
     const { decodeAuthorization, isNotLogin, makeRandomString } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
@@ -59,11 +60,23 @@ async function shareScore(req, res) {
         });
     }
 
-    await Promise.all([g1(), g2()]);
+    var hashedAuthToken = crypto.createHash('sha256').update(Buffer.from(JSON.stringify(authDt))).digest('hex');
+    var dataTemp = global.sharedScores.scores.find(x => x.data.year === req.body.year && x.data.term === req.body.term && x.data.times === req.body.times && x.hashedAuthToken === hashedAuthToken);
 
-    var expired = Date.now() + 1000 * 60 * 30;
-    var created = Date.now();
-    var sharedID = makeRandomString(6);
+    if (!dataTemp) {
+        await Promise.all([g1(), g2()]);
+
+        var expired = Date.now() + 1000 * 60 * 30;
+        var created = Date.now();
+        var sharedID = makeRandomString(6);
+    } else {
+        var expired = dataTemp.expired;
+        var created = dataTemp.created;
+        var sharedID = dataTemp.id;
+
+        userInfo = dataTemp.data.userInfo;
+        userScore = dataTemp.data.userScore;
+    }
 
     global.sharedScores.scores.push({
         id: sharedID,
@@ -75,10 +88,9 @@ async function shareScore(req, res) {
             userScore
         },
         expiredTimestamp: expired,
-        createdTimestamp: created
+        createdTimestamp: created,
+        hashedAuthToken
     });
-
-    console.log(global.sharedScores.scores);
 
     setTimeout(() => {
         var index = global.sharedScores.scores.findIndex(dt => dt.id === req.body.id);

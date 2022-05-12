@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const fs = require('fs');
 const api = require('./api/api.js');
 const bodyParser = require('body-parser');
 
@@ -19,9 +20,39 @@ const urls = global.urls = {
     allScores: defaultURL + "selection_student/grade_chart_all.asp",
 }
 
-const sharedScores = global.sharedScores = {
-    scores: []
-};
+if (!fs.existsSync("storaged")) {  
+    fs.mkdirSync("storaged");
+}
+
+if (!fs.existsSync("storaged/sharedScore.json")) {
+    fs.writeFileSync("storaged/sharedScore.json", JSON.stringify({
+        scores: []
+    }));
+}
+
+const sharedScores = global.sharedScores = JSON.parse(fs.readFileSync("storaged/sharedScore.json"));
+global.sharedScores.scores.push = (e) => {
+    Array.prototype.push.call(global.sharedScores.scores, e);
+    fs.writeFileSync("storaged/sharedScore.json", JSON.stringify(global.sharedScores));
+}
+global.sharedScores.scores.splice = (e, i) => {
+    Array.prototype.splice.call(global.sharedScores.scores, e, i);
+    fs.writeFileSync("storaged/sharedScore.json", JSON.stringify(global.sharedScores));
+}
+
+global.sharedScores.scores.forEach((e, index) => {
+    if (e.expiredTimestamp < Date.now()) {
+        global.sharedScores.splice(index, 1);
+        return;
+    }
+    setTimeout(() => {
+        var index = global.sharedScores.scores.findIndex(dt => dt.id === e.id);
+        if (index >= 0) {
+            global.sharedScores.scores.splice(index, 1);
+        }
+    }, e.expiredTimestamp - Date.now());
+});
+
 
 app.listen(PORT, () => {
     console.log("".padStart(60, '='));

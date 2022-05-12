@@ -67,6 +67,7 @@ window.execute = async () => {
                             <h3>分享連結</h3>
                             <div class="input">
                                 <input type="text" value="${link}" readonly>
+                                <h5 style="color: orange;">注意: 成績將只存在於伺服器30分鐘</h5>
                                 <button onclick="window.pageData.function.shareURL('${link}')">分享</button>
                             </div>
                         </div>

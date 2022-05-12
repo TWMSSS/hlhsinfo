@@ -3,6 +3,11 @@ async function getShared(req, res) {
     if (!req.body.sharedID) return res.status(403).json({ message: 'You need to provide the sharedID!' });
 
     var data = global.sharedScores.scores.find(x => x.id === req.body.sharedID);
+    if (data.expiredTimestamp < Date.now()) {
+        var index = global.sharedScores.scores.findIndex(dt => dt.id === req.body.id);
+        global.sharedScores.scores.splice(index, 1);
+        return res.status(403).json({ message: 'The shared score is expired!' });
+    }
 
     if (!data) return res.status(404).json({ message: 'The shared score is not found!' });
 
