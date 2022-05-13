@@ -54,6 +54,20 @@ async function shareScore(req, res) {
         var expired = Date.now() + 1000 * 60 * 30;
         var created = Date.now();
         var sharedID = makeRandomString(6);
+
+        global.sharedScores.scores.push({
+            id: sharedID,
+            data: {
+                year: req.body.year,
+                term: req.body.term,
+                times: req.body.times,
+                userInfo,
+                userScore
+            },
+            expiredTimestamp: expired,
+            createdTimestamp: created,
+            hashedTkn
+        });
     } else {
         var expired = dataTemp.expired;
         var created = dataTemp.created;
@@ -62,20 +76,6 @@ async function shareScore(req, res) {
         userInfo = dataTemp.data.userInfo;
         userScore = dataTemp.data.userScore;
     }
-
-    global.sharedScores.scores.push({
-        id: sharedID,
-        data: {
-            year: req.body.year,
-            term: req.body.term,
-            times: req.body.times,
-            userInfo,
-            userScore
-        },
-        expiredTimestamp: expired,
-        createdTimestamp: created,
-        hashedTkn
-    });
 
     setTimeout(() => {
         var index = global.sharedScores.scores.findIndex(dt => dt.id === req.body.id);
