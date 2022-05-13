@@ -3,6 +3,9 @@ const app = express();
 const fs = require('fs');
 const api = require('./api/api.js');
 const bodyParser = require('body-parser');
+const { generateKeyPairSync } = require('crypto');
+
+require('dotenv').config();
 
 const PORT = global.PORT = process.env.PORT || 1156;
 const defaultURL = "http://shinher.hlhs.hlc.edu.tw/online/";
@@ -30,6 +33,22 @@ if (!fs.existsSync("storaged/sharedScore.json")) {
     }));
 }
 
+if (!fs.existsSync("storaged/authPrivate.key") || !fs.existsSync("storaged/authPublic.key")) {
+    const { privateKey, publicKey } = generateKeyPairSync('rsa', {
+        modulusLength: 4096,
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem'
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem'
+        }
+    });
+    fs.writeFileSync("storaged/authPrivate.key", privateKey);
+    fs.writeFileSync("storaged/authPublic.pem", publicKey);
+}
+
 const sharedScores = global.sharedScores = JSON.parse(fs.readFileSync("storaged/sharedScore.json"));
 global.sharedScores.scores.push = (e) => {
     Array.prototype.push.call(global.sharedScores.scores, e);
@@ -42,7 +61,7 @@ global.sharedScores.scores.splice = (e, i) => {
 
 global.sharedScores.scores.forEach((e, index) => {
     if (e.expiredTimestamp < Date.now()) {
-        global.sharedScores.splice(index, 1);
+        global.sharedScores.scores.splice(index, 1);
         return;
     }
     setTimeout(() => {

@@ -6,21 +6,33 @@ function makeAuthCode(sessionID, verifyToken) {
     return { authToken: Buffer.from(auth).toString('base64') }
 }
 
-function decodeAuthCode(authCode) {
-    try {
-        var auth = JSON.parse(Buffer.from(authCode, 'base64').toString('utf8'));
-    } catch (e) {
-        return false;
+function decodeAuthCode(authCode, isnJWT) {
+    if (isnJWT) {
+        try {
+            var auth = JSON.parse(Buffer.from(authCode, 'base64').toString('utf8'));
+        } catch (e) {
+            return false;
+        }
+        return {
+            sessionID: Buffer.from(auth.cookie, "hex").toString('utf8'),
+            verifyToken: Buffer.from(auth.verifyToken, "base64").toString("utf8")
+        }
     }
+    
+    var decode = jwtDecode(authCode);
+    if (!decode) return false;
+    var authtkn = decodeAuthCode(decode.authtoken, true);
+    if (!authtkn) return false;
     return {
-        sessionID: Buffer.from(auth.cookie, "hex").toString('utf8'),
-        verifyToken: Buffer.from(auth.verifyToken, "base64").toString("utf8")
+        sessionID: authtkn.sessionID,
+        verifyToken: authtkn.verifyToken,
+        userInfo: decode.userInfo
     }
 }
 
-function decodeAuthorization(authCode) {
+function decodeAuthorization(authCode, isnJWT) {
     var auth = authCode.replace("Bearer ", "");
-    return decodeAuthCode(auth);
+    return decodeAuthCode(auth, isnJWT);
 }
 
 function isNotLogin(document) {
@@ -92,6 +104,24 @@ function makeRandomString(length) {
    return result;
 }
 
+function jwtEncode(payload) {
+    const jwt = require('jsonwebtoken');
+    const fs = require('fs');
+    var privateKey = fs.readFileSync('storaged/authPrivate.key');
+    return jwt.sign(payload, privateKey, { algorithm: 'RS256', expiresIn: '3h' });
+}
+
+function jwtDecode(token) {
+    const jwt = require('jsonwebtoken');
+    const fs = require('fs');
+    var publicKey = fs.readFileSync('storaged/authPublic.pem');
+    try {
+        return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
+    } catch (e) {
+        console.log(e, token);
+        return false;
+    }
+}
 
 module.exports = {
     makeAuthCode,
@@ -101,5 +131,7 @@ module.exports = {
     urlEncode,
     getN1,
     getScoreType,
-    makeRandomString
+    makeRandomString,
+    jwtEncode,
+    jwtDecode
 }

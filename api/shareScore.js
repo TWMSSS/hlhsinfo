@@ -1,7 +1,7 @@
 async function shareScore(req, res) {
     const request = require('request');
     const crypto = require('crypto');
-    const { decodeAuthorization, isNotLogin, makeRandomString } = require('./util.js');
+    const { decodeAuthorization, makeRandomString } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -11,29 +11,13 @@ async function shareScore(req, res) {
     if (!req.body.term) return res.status(403).json({ message: 'You need to provide the term!' });
     if (!req.body.times) return res.status(403).json({ message: 'You need to provide the times!' });
 
-    var userInfo, userScore;
+    var userInfo = authDt.userInfo;
+    userInfo.userName = Buffer.from(userInfo.userName, "hex").toString('utf8');
+    userInfo.gender = Buffer.from(userInfo.gender, "hex").toString('utf8');
+
+    var userScore;
 
     function g1() {
-        return new Promise((resolve, reject) => {
-            request.get({
-                url: `http://localhost:${global.PORT}/api/getUserInfoShort`,
-                encoding: "utf8",
-                headers: {
-                    "authorization": req.headers.authorization,
-                }
-            }, (err, response, body) => {
-                if (err) {
-                    console.error(err);
-                    return reject(err);
-                }
-                var dt = JSON.parse(body);
-                userInfo = dt.data;
-                resolve();
-            });
-        });
-    }
-
-    function g2() {
         return new Promise((resolve, reject) => {
             request.post({
                 url: `http://localhost:${global.PORT}/api/getScoreInfo`,
@@ -60,11 +44,12 @@ async function shareScore(req, res) {
         });
     }
 
-    var hashedAuthToken = crypto.createHash('sha256').update(Buffer.from(JSON.stringify(authDt))).digest('hex');
-    var dataTemp = global.sharedScores.scores.find(x => x.data.year === req.body.year && x.data.term === req.body.term && x.data.times === req.body.times && x.hashedAuthToken === hashedAuthToken);
+    var verifyText = `${userInfo.schoolNumber}-${req.body.year}-${req.body.term}-${req.body.times}`;
+    var hashedTkn = crypto.createHash('sha256').update(Buffer.from(verifyText)).digest('hex');
+    var dataTemp = global.sharedScores.scores.find(x => x.hashedTkn === hashedTkn);
 
     if (!dataTemp) {
-        await Promise.all([g1(), g2()]);
+        await g1();
 
         var expired = Date.now() + 1000 * 60 * 30;
         var created = Date.now();
@@ -89,7 +74,7 @@ async function shareScore(req, res) {
         },
         expiredTimestamp: expired,
         createdTimestamp: created,
-        hashedAuthToken
+        hashedTkn
     });
 
     setTimeout(() => {

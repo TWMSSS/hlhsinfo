@@ -2,10 +2,14 @@ async function getUserInfoShort(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, urlEncode, getN1 } = require('./util.js');
+    const { decodeAuthorization, isNotLogin } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
-    var authDt = decodeAuthorization(req.headers.authorization);
+    if (req.query.jwt === "false") {
+        var authDt = decodeAuthorization(req.headers.authorization, true);
+    } else {
+        var authDt = decodeAuthorization(req.headers.authorization);
+    }
     if (!authDt) return res.status(403).json({ message: 'Invalid authorization token!' });
 
     var info = {};

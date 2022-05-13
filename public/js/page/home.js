@@ -244,6 +244,7 @@ window.execute = async () => {
                         username: username,
                         password: password
                     }
+                    sessionStorage.setItem("auth", dt.authtoken);
                     goPage("/");
                     finishTask();
                 } else {

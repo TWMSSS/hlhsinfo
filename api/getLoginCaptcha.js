@@ -3,7 +3,7 @@ function getLoginCaptcha(req, res) {
     const { decodeAuthorization } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
-    var authDt = decodeAuthorization(req.headers.authorization);
+    var authDt = decodeAuthorization(req.headers.authorization, true);
     if (!authDt) return res.status(403).json({ message: 'Invalid authorization token!' });
 
     request.get({
