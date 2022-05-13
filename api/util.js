@@ -118,7 +118,6 @@ function jwtDecode(token) {
     try {
         return jwt.verify(token, publicKey, { algorithms: ['RS256'] });
     } catch (e) {
-        console.log(e, token);
         return false;
     }
 }
