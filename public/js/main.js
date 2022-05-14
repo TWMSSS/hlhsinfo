@@ -169,6 +169,7 @@ window.onpopstate = (event) => {
 function inputStyle() {
     var inputs = document.getElementsByTagName("input");
     Array.from(inputs).forEach(e => {
+        if (e.value !== "") e.parentElement.classList.add("active");
         e.addEventListener("focusin", ev => {
             e.parentElement.classList.add("active");
         });

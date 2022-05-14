@@ -39,6 +39,13 @@ function login(req, res) {
         var userInfo;
 
         var dom = new JSDOM(iconv.decode(body, 'big5'));
+        
+        if (response.headers.location != "student/frames.asp") {
+            return res.status(403).json({
+                message: 'Auth failed!',
+                serverMessage: dom.window.document.querySelector("#msg").value
+            });
+        }
 
         function g1() {
             return new Promise((resolve, reject) => {
@@ -64,11 +71,7 @@ function login(req, res) {
         userInfo.userName = Buffer.from(userInfo.userName).toString("hex");
         userInfo.gender = Buffer.from(userInfo.gender).toString("hex");
 
-        if (response.headers.location == "student/frames.asp") {
-            return res.status(200).json({ message: 'Login success!', authtoken: jwtEncode({ userInfo, authtoken: req.headers.authorization.replace("Bearer ", "") }) });
-        } else {
-            return res.status(403).json({ message: 'Auth failed!', serverMessage: dom.window.document.querySelector("#msg").value });
-        }
+        return res.status(200).json({ message: 'Login success!', authtoken: jwtEncode({ userInfo, authtoken: req.headers.authorization.replace("Bearer ", "") }) });
     });
 }
 
