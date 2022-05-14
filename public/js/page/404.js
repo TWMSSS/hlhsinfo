@@ -1,4 +1,4 @@
-async function execute() {
+window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
     pageElement.innerHTML = `

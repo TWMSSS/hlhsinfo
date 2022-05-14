@@ -28,34 +28,14 @@ window.execute = async () => {
 
     task = addTaskList("分析資料");
 
-    var totalRecordUP = `
-        <tr>
-            <td>類別</td>
-            <td>節數</td>
-        </tr>
-    `;
+    var totalRecordUP = "";
     lackData.total.termUp.forEach(dt => {
-        totalRecordUP += `
-            <tr>
-                <td>${dt.name}</td>
-                <td>${dt.value}</td>
-            </tr>
-        `;
+        totalRecordUP += `<div class="dataBox"><span class="dataTitle">${dt.name}</span><span class="dataValue">${dt.value}</span></div>`;
     });
 
-    var totalRecordDOWN = `
-        <tr>
-            <td>類別</td>
-            <td>節數</td>
-        </tr>
-    `;
+    var totalRecordDOWN = "";
     lackData.total.termDown.forEach(dt => {
-        totalRecordDOWN += `
-            <tr>
-                <td>${dt.name}</td>
-                <td>${dt.value}</td>
-            </tr>
-        `;
+        totalRecordDOWN += `<div class="dataBox"><span class="dataTitle">${dt.name}</span><span class="dataValue">${dt.value}</span></div>`;
     });
 
     var lackRecord = `
@@ -96,13 +76,13 @@ window.execute = async () => {
             <h1 class="pageTitle">曠缺統計</h1>
             <div class="totalInfo">
                 <h1>上學期</h1>
-                <table>
+                <div class="dataContent">
                     ${totalRecordUP}
-                </table>
+                </div>
                 <h1>下學期</h1>
-                <table>
+                <div class="dataContent">
                     ${totalRecordDOWN}
-                </table>
+                </div>
             </div>
         </div>
         <div class="total">

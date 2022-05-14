@@ -28,19 +28,9 @@ window.execute = async () => {
 
     task = addTaskList("分析資料");
 
-    var rewList = `
-        <tr>
-            <td>類別</td>
-            <td>次數</td>
-        </tr>
-    `;
+    var rewList = "";
     rewData.status.forEach(e => {
-        rewList += `
-            <tr>
-                <td>${e.type}</td>
-                <td>${e.times}</td>
-            </tr>
-        `;
+        rewList += `<div class="dataBox"><span class="dataTitle">${e.type}</span><span class="dataValue">${e.times}</span></div>`;
     });
 
     var detailList = `
@@ -105,9 +95,9 @@ window.execute = async () => {
         <div class="total">
             <h1 class="pageTitle">獎懲統計</h1>
             <div class="totalInfo">
-                <table>
+                <div class="dataContent">
                     ${rewList}
-                </table>
+                </div>
             </div>
         </div>
         <div class="total">

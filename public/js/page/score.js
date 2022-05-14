@@ -217,24 +217,12 @@ window.execute = async () => {
     var scoreOwner = scoreOwner || undefined;
 
     task = addTaskList("分析資料");
-    var list = `
-        <tr>
-            <td>科目</td>
-            <td>您的成績</td>
-            <td>班級平均</td>
-        </tr>
-    `;
+    var list = "";
 
     scoreData.data.forEach(dt => {
         var unpassScore = scoreData.unpass.find(d => d.name === dt.name && d.type === "score");
         var unpassGPA = scoreData.unpass.find(d => d.name === dt.name && d.type === "gpa");
-        list += `
-            <tr>
-                <td>${dt.name}</td>
-                <td ${unpassScore ? 'style="color: red;"' : ""}>${dt.score}</td>
-                <td ${unpassGPA ? 'style="color: red;"' : ""}>${dt.gpa}</td>
-            </tr>
-        `;
+        list += `<div class="dataBox"><span class="dataTitle">${dt.name}</span><span class="dataValue score" ${unpassScore ? 'style="color: red;"' : ""}>${dt.score}</span><span class="dataExtra">平均 <font ${unpassGPA ? 'style="color: red;"' : ""}>${dt.gpa}</font></span></div>`;
     });
     setTaskStatus(task, "success");
 
@@ -249,20 +237,10 @@ window.execute = async () => {
         return d.type
     });
     var extraInfoValue = scoreData.extra.map(d => d.value);
-    var listExtra = `
-        <tr>
-            <td>資料</td>
-            <td>數值</td>
-        </tr>
-    `;
+    var listExtra = "";
    
     scoreData.extra.forEach(dt => {
-        listExtra += `
-            <tr>
-                <td>${dt.type}</td>
-                <td>${dt.value}</td>
-            </tr>
-        `;
+        listExtra += `<div class="dataBox"><span class="dataTitle">${dt.type}</span><span class="dataValue">${dt.value}</span></div>`;
     });
 
     pageElement.innerHTML = `
@@ -272,17 +250,17 @@ window.execute = async () => {
                 <h1>${scoreYear}學年度 ${scoreTerm === "1" ? "上" : "下"}學期 第${scoreTimes}次考試</h1>
                 ${scoreOwner ? `<h4>此為 ${scoreOwner.className} 班 ${scoreOwner.userName}(${scoreOwner.schoolNumber}) 的成績資料</h4>` : ""}
                 ${scoreOwner ? "" : '<h1><i class="fa-solid fa-share-from-square" onclick="window.pageData.function.shareScore()"></i></h1>'}
-                <table>
+                <div class="dataContent">
                     ${list}
-                </table>
+                </div>
             </div>
         </div>
         <div class="extra">
             <h1 class="pageTitle">其他資料</h1>
             <div class="profileInfo">
-                <table>
+                <div class="dataContent">
                     ${listExtra}
-                </table>
+                </div>
             </div>
         </div>
         <div class="analyse">

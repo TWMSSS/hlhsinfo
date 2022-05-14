@@ -16,6 +16,12 @@
     --color-label: #727272;
     --color-task-status-bg: #0b7ec0;
     --color-task-status-bar: #707070;
+
+    --color-dataContent-bg: #e2e2e2;
+    --color-dataContent-title-color: #3e3e3e;
+    --color-dataContent-value-color: #000;
+    --color-dataContent-extra-color: #707070;
+
     --color-group-bg: #707070;
     --color-group-text: #fff;
     --color-footer: #505050;
