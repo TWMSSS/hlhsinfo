@@ -53,7 +53,9 @@ window.execute = async () => {
             setTaskStatus(task, "success");
             finishTask();
 
-            var link = `${location.origin}/s/${sharedScore.id}`;
+            var sharedID = sharedScore.id;
+            var link = `${location.origin}/s/${sharedID}`;
+            var imageLink = `${location.origin}/api/getScoreImg?shared=${sharedID}`;
             
             var doc = document.createElement("div");
             doc.classList.add("taskBox");
@@ -61,14 +63,21 @@ window.execute = async () => {
                 <div class="tskbx">
                     <div class="taskBoxTitle">
                         <h1>分享成績</h1>
+                        <h5 style="color: orange;">注意: 成績將只存在於伺服器30分鐘</h5>
                     </div>
                     <div class="taskBoxContent" style="overflow: auto;overflow-x: hidden;">
                         <div class="group">
                             <h3>分享連結</h3>
                             <div class="input">
                                 <input type="text" value="${link}" readonly>
-                                <h5 style="color: orange;">注意: 成績將只存在於伺服器30分鐘</h5>
                                 <button onclick="window.pageData.function.shareURL('${link}')">分享</button>
+                            </div>
+                        </div>
+                        <div class="group">
+                            <h3>分享圖片連結</h3>
+                            <div class="input">
+                                <input type="text" value="${imageLink}" readonly>
+                                <button onclick="window.pageData.function.shareURL('${imageLink}')">分享</button>
                             </div>
                         </div>
                         <div class="group">
@@ -77,13 +86,38 @@ window.execute = async () => {
                                 <img src="https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=${link}" alt="QR Code">
                             </div>
                         </div>
+                        <div class="group">
+                            <h3>下載成圖片</h3>
+                            <div class="img" style="text-align: center;">
+                                <img id="scoreImg" src="" alt="Score Image" style="width: 100%;">
+                                <button onclick="window.pageData.function.downloadImg()">下載</button>
+                            </div>
+                        </div>
                     </div>
-                    <button type="button" id="close" style="background-color: red;">關閉</button>
+                    <button type="button" id="close" style="background-color: red;padding: 5px;">關閉</button>
                 </div>
             `;
+
             document.body.appendChild(doc);
             document.querySelector("#close").addEventListener("click", () => {
                 doc.remove();
+            });
+
+            var imgUrl;
+            await fetch("/api/getScoreImg", {
+                method: "POST",
+                headers: {
+                    "authorization": auth,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({
+                    year: scoreYear,
+                    term: scoreTerm,
+                    times: scoreTimes
+                })
+            }).then(res => res.blob()).then(res => {
+                imgUrl = URL.createObjectURL(res);
+                doc.querySelector("#scoreImg").src = imgUrl;
             });
         }
 
@@ -101,6 +135,14 @@ window.execute = async () => {
                     url: URL
                 });
             }
+        }
+
+        window.pageData.function.downloadImg = () => {
+            var img = document.querySelector("#scoreImg");
+            var link = document.createElement("a");
+            link.href = img.src;
+            link.download = "score.png";
+            link.click();
         }
 
         var task = addTaskList("取得成績");

@@ -100,6 +100,8 @@ app.get("/api/getLack", (req, res) => api.getLack(req, res));
 app.get("/api/getAllScores", (req, res) => api.getAllScores(req, res));
 app.post("/api/shareScore", (req, res) => api.shareScore(req, res));
 app.post("/api/getShared", (req, res) => api.getShared(req, res));
+app.post("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
+app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 
 app.get("/s/:sharedID", (req, res) => {
     res.redirect(`/score?shared=${req.params.sharedID}`);

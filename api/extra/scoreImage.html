@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />   </head>
+        <title>Score Image</title>
+        <style>
+            * {
+                margin: 0;
+                font-family: 'Noto Sans TC', sans-serif;
+            }
+            a {
+                text-decoration: none;
+                color: #3d91ff;
+                cursor: pointer;
+            }
+            section {
+                display: flex;
+                justify-content: center;
+            }
+            section .md {
+                width: 75%;
+                max-width: 550px;
+            }
+            section .pageTitle {
+                font-size: 2rem;
+                font-weight: 200;
+                padding: 15px 0;
+                display: inline-block;
+            }
+            section .pageTitle::after {
+                content: '';
+                display: block;
+                width: 100%;
+                height: 4px;
+                background-color: #2d76d6;
+                margin-top: 5px;
+                border-radius: 5px;
+            }
+            .dataContent {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .dataContent .dataBox {
+                display: block;
+                flex: 1 1 auto;
+                min-height: 100px;
+                border-radius: 15px;
+                background-color: #e2e2e2;
+                padding: 15px;
+                margin: 15px;
+            }
+            .dataContent .dataBox .dataTitle {
+                font-size: 1.3rem;
+                font-weight: 600;
+                display: block;
+                color: #3e3e3e;
+            }
+            .dataContent .dataBox .dataValue {
+                display: block;
+                width: 100%;
+                text-align: center;
+                font-size: 2.2rem;
+                font-weight: 600;
+                color: #000;
+            }
+            .dataContent .dataBox .dataValue.score:after {
+                display: inline-block;
+                content: "分";
+                font-size: 1rem;
+                font-weight: 200;
+                color: #3e3e3e;
+                margin-left: 5px;
+            }
+            .dataContent .dataBox .dataExtra {
+                font-size: .8rem;
+                color: #707070;
+            }
+            #pathName {
+                font-size: 25px;
+                line-height: 25px;
+                font-weight: 600;
+            }
+            header {
+                width: 100%;
+                height: 110px;
+                font-weight: 200;
+                display: flex;
+                align-items: center;
+            }
+            header .md {
+                width: 80%;
+                max-width: 600px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin-left: 50px;
+            }
+            header h2 {
+                font-weight: 200;
+            }
+            footer {
+                display: flex;
+                flex-direction: column;
+                flex-wrap: nowrap;
+                align-content: center;
+                justify-content: center;
+                align-items: center;
+                padding: 50px;
+                bottom: 0;
+                font-weight: 100;
+                font-size: .8rem;
+                color: #b9b9b9;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <div class="md">
+                <img src="https://hlhsinfo.ml/img/logo.png" alt="花蓮高中非官方公開資料查詢系統" class="logo" width="50" style="margin-right: 15px;">
+                <div>
+                    <h2>花中查詢</h2>
+                    <h5 style="color: #0099ff;font-weight: 200;">成績分享</h5>
+                </div>
+            </div>
+        </header>
+        <section>
+            <div class="md">
+                <span id="pathName">{{scoreName}}</span>
+                <h4>{{scoreUser}}</h4>
+                <div class="page">
+                    <div id="mainContent">
+                        <div class="conetentBox">
+                            <h1 class="pageTitle">本次成績</h1>
+                            <div class="dataContent">
+                                {{{scoreInfo}}}
+                            </div>
+                        </div>
+                        <div class="conetentBox">
+                            <h1 class="pageTitle">其他資料</h1>
+                            <div class="dataContent">
+                                {{{scoreExtra}}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <span>This is an <a href="https://github.com/DevSomeone/hlhsinfo">Open-Source project</a> by <a href="https://github.com/DevSomeone">@DevSomeone</a></span>
+        </footer>
+    </body>
+</html>
