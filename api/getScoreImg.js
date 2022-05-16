@@ -67,7 +67,6 @@ async function getScoreImg(req, res) {
                 }
                 var dt = JSON.parse(body);
                 userScore = dt.data;
-                userInfo = userScore.userInfo;
                 resolve();
             });
         });
@@ -82,6 +81,8 @@ async function getScoreImg(req, res) {
     } else {
         await g2();
         if (!userScore) return res.status(403).json({ message: 'Invalid shared token!' });
+
+        userInfo = userScore.userInfo;
 
         var year = userScore.scoreInfo.year;
         var term = userScore.scoreInfo.term;
