@@ -4,6 +4,7 @@ const fs = require('fs');
 const api = require('./api/api.js');
 const bodyParser = require('body-parser');
 const { generateKeyPairSync } = require('crypto');
+const cros = require('cors');
 
 require('dotenv').config();
 
@@ -61,7 +62,10 @@ global.sharedScores.scores.splice = (e, i) => {
 
 global.sharedScores.scores.forEach((e, index) => {
     if (e.expiredTimestamp < Date.now()) {
-        global.sharedScores.scores.splice(index, 1);
+        var index = global.sharedScores.scores.findIndex(dt => dt.id === e.id);
+        if (index >= 0) {
+            global.sharedScores.scores.splice(index, 1);
+        }
         return;
     }
     setTimeout(() => {
@@ -85,8 +89,12 @@ app.listen(PORT, () => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cros());
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
+
+app.get("/api", (req, res) => res.sendFile(__dirname + "/api/document.html"));
+app.get("/api/openapi.json", (req, res) => res.sendFile(__dirname + "/api/openapi.json"));
 
 app.get("/api/getLoginInfo", (req, res) => api.getLoginInfo(res, req));
 app.get("/api/getLoginCaptcha", (req, res) => api.getLoginCaptcha(req, res));
@@ -105,7 +113,7 @@ app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 
 app.get("/s/:sharedID", (req, res) => {
     res.redirect(`/score?shared=${req.params.sharedID}`);
-})
+});
 
 app.use(express.static(__dirname + "/public"));
 

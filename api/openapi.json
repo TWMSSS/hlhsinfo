@@ -1,0 +1,1268 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "這是「花中查詢」的API文件檔，您可以使用這個API來進行對於成績系統的查詢。",
+    "version": "1.0.0",
+    "title": "花中查詢API文檔",
+    "contact": {
+      "email": "yurisakadev@gmail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "{server}/api",
+      "variables": {
+        "server": {
+          "default": "https://hlhsinfo.ml"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "系統登入",
+      "description": "登入至成績查詢系統"
+    },
+    {
+      "name": "資料查詢",
+      "description": "查詢在成績查詢系統裡的資料"
+    },
+    {
+      "name": "成績分享",
+      "description": "在伺服器上分享/儲存成績資料"
+    }
+  ],
+  "paths": {
+    "/getLoginInfo": {
+      "get": {
+        "tags": [
+          "系統登入"
+        ],
+        "summary": "取得登入令牌",
+        "description": "在登入至查詢系統之前，需要先取得登入令牌，此登入令牌應放於HTTP Request Headers裡的`authorization`裡",
+        "operationId": "loginInfo",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loginInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/getLoginCaptcha": {
+      "get": {
+        "security": [
+          {
+            "login": []
+          }
+        ],
+        "tags": [
+          "系統登入"
+        ],
+        "summary": "取得登入驗證碼(圖片)",
+        "description": "登入系統之前，您需要先取得登入的驗證碼",
+        "operationId": "loginCaptcha",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "系統登入"
+        ],
+        "summary": "登入至查詢系統",
+        "description": "登入至查詢系統",
+        "operationId": "login",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "description": "學生學號",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "學生密碼",
+                    "type": "string"
+                  },
+                  "captcha": {
+                    "description": "驗證碼",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "captcha"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "description": "學生學號",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "學生密碼",
+                    "type": "string"
+                  },
+                  "captcha": {
+                    "description": "驗證碼",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password",
+                  "captcha"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation (`authtoken` 為之後HTTP Request的`authorization`令牌)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/login"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "login": []
+          }
+        ]
+      }
+    },
+    "/getUserInfo": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢學生的完整資料",
+        "description": "",
+        "operationId": "userInfo",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getUserInfoShort": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢學生的簡短資料",
+        "description": "如姓名、班級、座號、學號等",
+        "operationId": "userInfoShort",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userInfoShort"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getAvailableScore": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者可以存取的成績",
+        "description": "",
+        "operationId": "availableScore",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/availableScore"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getScoreInfo": {
+      "post": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者可以存取的成績",
+        "description": "",
+        "operationId": "scoreInfo",
+        "requestBody": {
+          "description": "查詢成績的資料",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  },
+                  "examName": {
+                    "description": "考試名稱",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times",
+                  "examName"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  },
+                  "examName": {
+                    "description": "考試名稱",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times",
+                  "examName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/scoreInfo"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getRewAndPun": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者的獎懲紀錄",
+        "description": "",
+        "operationId": "rewAndPun",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rewAndPun"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getLack": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者缺曠紀錄",
+        "description": "",
+        "operationId": "lack",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/lack"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getAllScores": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者所有成績",
+        "description": "",
+        "operationId": "allScores",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/allScores"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/shareScore": {
+      "post": {
+        "tags": [
+          "成績分享"
+        ],
+        "summary": "分享當前使用者的成績",
+        "description": "",
+        "operationId": "shareScore",
+        "requestBody": {
+          "description": "查詢成績的資料",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  },
+                  "examName": {
+                    "description": "考試名稱",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times",
+                  "examName"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  },
+                  "examName": {
+                    "description": "考試名稱",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times",
+                  "examName"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation (`id`為成績分享/儲存的識別符)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/shareScore"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getShared": {
+      "post": {
+        "tags": [
+          "成績分享"
+        ],
+        "summary": "取得已分享的成績",
+        "description": "",
+        "operationId": "getShared",
+        "requestBody": {
+          "description": "取得已分享的成績資料",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sharedID": {
+                    "description": "已分享的成績ID",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "sharedID"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "sharedID": {
+                    "description": "已分享的成績ID",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "sharedID"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/getShared"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
+    "/getScoreImg": {
+      "post": {
+        "tags": [
+          "成績分享"
+        ],
+        "summary": "取得成績圖片",
+        "description": "",
+        "operationId": "getScoreImg",
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "year": {
+                    "description": "成績年分",
+                    "type": "integer"
+                  },
+                  "term": {
+                    "description": "成績學期(上/下)",
+                    "type": "integer"
+                  },
+                  "times": {
+                    "description": "考試次數",
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "year",
+                  "term",
+                  "times"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation (為成績圖片)",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "成績分享"
+        ],
+        "summary": "取得已分享的成績圖片",
+        "description": "",
+        "operationId": "getScoreImgShared",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "shared",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "已分享的成績ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation (為成績圖片)",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "login": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "dataAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "loginInfo": {
+        "type": "object",
+        "properties": {
+          "authToken": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "loginInfo"
+        }
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "authtoken": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "login"
+        }
+      },
+      "userInfo": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "profileImg": {
+                "type": "string",
+                "format": "byte",
+                "description": "Base64-encoded 的學生頭貼"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "userInfo"
+        }
+      },
+      "userInfoShort": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "className": {
+                "type": "string"
+              },
+              "classNumber": {
+                "type": "string"
+              },
+              "gender": {
+                "type": "string"
+              },
+              "schoolNumber": {
+                "type": "string"
+              },
+              "userName": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "userInfoShort"
+        }
+      },
+      "availableScore": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "term": {
+                  "type": "string"
+                },
+                "testID": {
+                  "type": "string"
+                },
+                "times": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "integer"
+                },
+                "year": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "availableScore"
+        }
+      },
+      "scoreInfo": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "score": {
+                      "type": "string"
+                    },
+                    "gpa": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "extra": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "unpass": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "scoreInfo"
+        }
+      },
+      "rewAndPun": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "execute": {
+                      "type": "string"
+                    },
+                    "reason": {
+                      "type": "string"
+                    },
+                    "signed": {
+                      "type": "string"
+                    },
+                    "sold": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "start": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "year": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "status": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "times": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "rewAndPun"
+        }
+      },
+      "lack": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "record": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "nullable": true
+                      }
+                    },
+                    "date": {
+                      "type": "string"
+                    },
+                    "week": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "total": {
+                "type": "object",
+                "properties": {
+                  "termDown": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  },
+                  "termUp": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "lack"
+        }
+      },
+      "allScores": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "dataNormal": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "dataTest": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "values": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "allScores"
+        }
+      },
+      "shareScore": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "createdTimestamp": {
+                "type": "integer"
+              },
+              "expiredTimestamp": {
+                "type": "integer"
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "shareScore"
+        }
+      },
+      "getShared": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "score": {
+                      "type": "string"
+                    },
+                    "gpa": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "extra": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "unpass": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "scoreInfo": {
+                "type": "object",
+                "properties": {
+                  "term": {
+                    "type": "string"
+                  },
+                  "times": {
+                    "type": "string"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              },
+              "sharedID": {
+                "type": "string"
+              },
+              "userInfo": {
+                "type": "object",
+                "properties": {
+                  "className": {
+                    "type": "string"
+                  },
+                  "classNumber": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "schoolNumber": {
+                    "type": "string"
+                  },
+                  "userName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "getShared"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  }
+}

@@ -54,8 +54,7 @@ async function getScoreImg(req, res) {
                 url: `http://localhost:${global.PORT}/api/getShared`,
                 encoding: "utf8",
                 headers: {
-                    "authorization": req.headers.authorization,
-                    "Content-Type": "application/x-www-form-urlencoded",
+                    "Content-Type": "application/x-www-form-urlencoded"
                 },
                 form: {
                     sharedID: req.query.shared
