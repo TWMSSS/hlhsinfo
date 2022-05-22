@@ -1109,7 +1109,21 @@
                         "type": "object",
                         "properties": {
                           "name": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "term": {
+                                "type": "integer"
+                              },
+                              "test": {
+                                "type": "integer"
+                              },
+                              "year": {
+                                "type": "string"
+                              }
+                            }
                           },
                           "value": {
                             "type": "integer"
