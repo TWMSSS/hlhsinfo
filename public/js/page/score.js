@@ -53,6 +53,14 @@ window.execute = async () => {
             setTaskStatus(task, "success");
             finishTask();
 
+            function getDuringTime(milisec) {
+                var hour = Math.floor(milisec / 3600000);
+                var min = Math.floor((milisec - hour * 3600000) / 60000);
+                var sec = Math.floor((milisec - hour * 3600000 - min * 60000) / 1000);
+
+                return `${hour}小時${min}分鐘`;
+            }
+
             var sharedID = sharedScore.id;
             var link = `${location.origin}/s/${sharedID}`;
             var imageLink = `${location.origin}/api/getScoreImg?shared=${sharedID}`;
@@ -63,7 +71,7 @@ window.execute = async () => {
                 <div class="tskbx">
                     <div class="taskBoxTitle">
                         <h1>分享成績</h1>
-                        <h5 style="color: orange;">注意: 成績將只存在於伺服器30分鐘</h5>
+                        <h5 style="color: orange;">注意: 成績將在${getDuringTime(sharedScore.expiredTimestamp - Date.now())}後過期</h5>
                     </div>
                     <div class="taskBoxContent" style="overflow: auto;overflow-x: hidden;">
                         <div class="group">

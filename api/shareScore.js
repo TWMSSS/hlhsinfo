@@ -1,7 +1,7 @@
 async function shareScore(req, res) {
     const request = require('request');
     const crypto = require('crypto');
-    const { decodeAuthorization, makeRandomString } = require('./util.js');
+    const { decodeAuthorization, makeRandomString, getExpiredTime } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -51,7 +51,7 @@ async function shareScore(req, res) {
     if (!dataTemp) {
         await g1();
 
-        var expired = Date.now() + 1000 * 60 * 30;
+        var expired = Date.now() + getExpiredTime();
         var created = Date.now();
         var sharedID = makeRandomString(6);
 
@@ -69,8 +69,8 @@ async function shareScore(req, res) {
             hashedTkn
         });
     } else {
-        var expired = dataTemp.expired;
-        var created = dataTemp.created;
+        var expired = dataTemp.expiredTimestamp;
+        var created = dataTemp.createdTimestamp;
         var sharedID = dataTemp.id;
 
         userInfo = dataTemp.data.userInfo;

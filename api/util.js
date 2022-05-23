@@ -122,6 +122,10 @@ function jwtDecode(token) {
     }
 }
 
+function getExpiredTime() {
+    return Number(process.env.SHARE_EXPIRED) || 1800000;
+}
+
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
@@ -132,5 +136,6 @@ module.exports = {
     getScoreType,
     makeRandomString,
     jwtEncode,
-    jwtDecode
+    jwtDecode,
+    getExpiredTime
 }
