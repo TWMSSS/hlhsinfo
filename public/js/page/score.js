@@ -61,6 +61,11 @@ window.execute = async () => {
                 return `${hour ? `${hour}小時` : ""}${min ? `${min}分鐘` : ""}${sec ? `${sec}秒` : ""}`;
             }
 
+            function timestampFormat(timestamp) {
+                var date = new Date(timestamp);
+                return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+            }
+
             var sharedID = sharedScore.id;
             var link = `${location.origin}/s/${sharedID}`;
             var imageLink = `${location.origin}/api/getScoreImg?shared=${sharedID}`;
@@ -71,7 +76,7 @@ window.execute = async () => {
                 <div class="tskbx">
                     <div class="taskBoxTitle">
                         <h1>分享成績</h1>
-                        <h5 style="color: orange;" id="expText">注意: 成績將在<span id="expTime">${getDuringTime(sharedScore.expiredTimestamp - Date.now())}</span>後過期</h5>
+                        <h5 style="color: orange;" id="expText">注意: 成績將在<span id="expTime" data-extra="${timestampFormat(sharedScore.expiredTimestamp)}">${getDuringTime(sharedScore.expiredTimestamp - Date.now())}</span>後過期</h5>
                     </div>
                     <div class="taskBoxContent" style="overflow: auto;overflow-x: hidden;">
                         <div class="group">

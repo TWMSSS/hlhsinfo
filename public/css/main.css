@@ -19,6 +19,24 @@ a {
     cursor: pointer;
 }
 
+[data-extra] {
+    position:relative;
+}
+
+[data-extra]:hover::before {
+    position: absolute;
+    top: -30px;
+    width: calc(100% - 10px);
+    padding-right: 50%;
+    text-align: center;
+    color: #fff;
+    font-size: .8em;
+    background: #202020af;
+    padding: 5px;
+    border-radius: 5px;
+    content: attr(data-extra);
+}
+
 section {
     display: flex;
     min-height: calc(100vh - 116px - 110px);
