@@ -54,11 +54,12 @@ window.execute = async () => {
             finishTask();
 
             function getDuringTime(milisec) {
-                var hour = Math.floor(milisec / 3600000);
-                var min = Math.floor((milisec - hour * 3600000) / 60000);
-                var sec = Math.floor((milisec - hour * 3600000 - min * 60000) / 1000);
+                var day = Math.floor(milisec / (1000 * 60 * 60 * 24));
+                var hour = Math.floor(milisec / (1000 * 60 * 60)) % 24;
+                var min = Math.floor(milisec / (1000 * 60)) % 60;
+                var sec = Math.floor(milisec / 1000) % 60;
 
-                return `${hour ? `${hour}小時` : ""}${min ? `${min}分鐘` : ""}${sec ? `${sec}秒` : ""}`;
+                return `${day ? `${day}天` : ""}${hour ? `${hour}小時` : ""}${min ? `${min}分鐘` : ""}${sec ? `${sec}秒` : ""}`;
             }
 
             function timestampFormat(timestamp) {
