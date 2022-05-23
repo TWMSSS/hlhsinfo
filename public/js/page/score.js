@@ -58,7 +58,7 @@ window.execute = async () => {
                 var min = Math.floor((milisec - hour * 3600000) / 60000);
                 var sec = Math.floor((milisec - hour * 3600000 - min * 60000) / 1000);
 
-                return `${hour}小時${min}分鐘`;
+                return `${hour ? `${hour}小時` : ""}${min ? `${min}分鐘` : ""}${sec ? `${sec}秒` : ""}`;
             }
 
             var sharedID = sharedScore.id;
@@ -71,7 +71,7 @@ window.execute = async () => {
                 <div class="tskbx">
                     <div class="taskBoxTitle">
                         <h1>分享成績</h1>
-                        <h5 style="color: orange;">注意: 成績將在${getDuringTime(sharedScore.expiredTimestamp - Date.now())}後過期</h5>
+                        <h5 style="color: orange;" id="expText">注意: 成績將在<span id="expTime">${getDuringTime(sharedScore.expiredTimestamp - Date.now())}</span>後過期</h5>
                     </div>
                     <div class="taskBoxContent" style="overflow: auto;overflow-x: hidden;">
                         <div class="group">
@@ -107,7 +107,20 @@ window.execute = async () => {
             `;
 
             document.body.appendChild(doc);
+
+            var t = setInterval(() => {
+                var time = sharedScore.expiredTimestamp - Date.now();
+                if (time <= 0) {
+                    doc.querySelector("#expText").innerText = "注意: 本次分享階段已過期";
+                    clearInterval(t);
+                    return;
+                }
+                doc.querySelector("#expTime").innerText = getDuringTime(time);
+            }, 1000);
+
+
             document.querySelector("#close").addEventListener("click", () => {
+                clearInterval(t);
                 doc.remove();
             });
 
