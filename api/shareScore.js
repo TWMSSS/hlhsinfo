@@ -51,13 +51,14 @@ async function shareScore(req, res) {
         global.sharedScores.scores.splice(global.sharedScores.scores.indexOf(dataTemp), 1);
         dataTemp = null;
     }
+    var sharedID;
 
     if (!dataTemp) {
         await g1();
 
         var expired = Date.now() + getExpiredTime();
         var created = Date.now();
-        var sharedID = makeRandomString(6);
+        sharedID = makeRandomString(6);
 
         global.sharedScores.scores.push({
             id: sharedID,
@@ -75,14 +76,14 @@ async function shareScore(req, res) {
     } else {
         var expired = dataTemp.expiredTimestamp;
         var created = dataTemp.createdTimestamp;
-        var sharedID = dataTemp.id;
+        sharedID = dataTemp.id;
 
         userInfo = dataTemp.data.userInfo;
         userScore = dataTemp.data.userScore;
     }
 
     setTimeout(() => {
-        var index = global.sharedScores.scores.findIndex(dt => dt.id === req.body.id);
+        var index = global.sharedScores.scores.findIndex(dt => dt.id === sharedID);
         if (index >= 0) {
             global.sharedScores.scores.splice(index, 1);
         }
