@@ -47,7 +47,7 @@ async function shareScore(req, res) {
     var verifyText = `${userInfo.schoolNumber}-${req.body.year}-${req.body.term}-${req.body.times}`;
     var hashedTkn = crypto.createHash('sha256').update(Buffer.from(verifyText)).digest('hex');
     var dataTemp = global.sharedScores.scores.find(x => x.hashedTkn === hashedTkn);
-    if (dataTemp.expiredTimestamp > Date.now()) {
+    if (dataTemp && dataTemp.expiredTimestamp > Date.now()) {
         global.sharedScores.scores.splice(global.sharedScores.scores.indexOf(dataTemp), 1);
         dataTemp = null;
     }
