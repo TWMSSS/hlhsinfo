@@ -22,6 +22,8 @@ const urls = global.urls = {
     rewandpun: defaultURL + "selection_student/moralculture_%20bonuspenalty.asp",
     lack: defaultURL + "selection_student/absentation_skip_school.asp",
     allScores: defaultURL + "selection_student/grade_chart_all.asp",
+    scheduleList: defaultURL + "student/select_preceptor.asp?action=open_sel",
+    schedule: defaultURL + "student/school_class_tabletime.asp?teacher_classnumber=%class%&teacher_name=%teacher%",
 }
 
 if (!fs.existsSync("storaged")) {  
@@ -110,6 +112,8 @@ app.post("/api/shareScore", (req, res) => api.shareScore(req, res));
 app.post("/api/getShared", (req, res) => api.getShared(req, res));
 app.post("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
+app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
+app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
 
 app.get("/s/:sharedID", (req, res) => {
     res.redirect(`/score?shared=${req.params.sharedID}`);

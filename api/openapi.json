@@ -446,6 +446,86 @@
         ]
       }
     },
+    "/getScheduleList": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者所有課表",
+        "description": "",
+        "operationId": "scheduleList",
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/scheduleList"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
+    "/getSchedule": {
+      "get": {
+        "tags": [
+          "資料查詢"
+        ],
+        "summary": "查詢當前使用者的課表",
+        "description": "",
+        "operationId": "schedule",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "class",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "使用者的班級(可以由`/getScheduleList`取得)"
+          },
+          {
+            "in": "query",
+            "name": "teacher",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "使用者的導師(可以由`/getScheduleList`取得)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/schedule"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "security": [
+          {
+            "dataAuth": []
+          }
+        ]
+      }
+    },
     "/shareScore": {
       "post": {
         "tags": [
@@ -1142,6 +1222,100 @@
         },
         "xml": {
           "name": "allScores"
+        }
+      },
+      "scheduleList": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "schedules": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "class": {
+                      "type": "string"
+                    },
+                    "teacher": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "scheduleList"
+        }
+      },
+      "schedule": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "object",
+              "properties": {
+                "section": {
+                  "type": "string"
+                },
+                "class": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "className": {
+                        "type": "string"
+                      },
+                      "location": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "teacher": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "time": {
+                  "type": "object",
+                  "properties": {
+                    "start": {
+                      "type": "string"
+                    },
+                    "end": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "schedule"
         }
       },
       "shareScore": {

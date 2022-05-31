@@ -11,6 +11,8 @@ const { getAllScores } = require('./getAllScores.js');
 const { shareScore } = require('./shareScore.js');
 const { getShared } = require('./getShared.js');
 const { getScoreImg } = require('./getScoreImg.js');
+const { getScheduleList } = require('./getScheduleList.js');
+const { getSchedule } = require('./getSchedule.js');
 
 module.exports = {
     getLoginInfo,
@@ -25,5 +27,7 @@ module.exports = {
     getAllScores,
     shareScore,
     getShared,
-    getScoreImg
+    getScoreImg,
+    getScheduleList,
+    getSchedule
 }

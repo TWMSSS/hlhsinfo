@@ -40,6 +40,16 @@ const page = [
         path: "/rewandpun",
         name: "獎懲紀錄",
         id: "rewandpun"
+    },
+    {
+        path: "/scheduleList",
+        name: "所有課表",
+        id: "scheduleList"
+    },
+    {
+        path: "/schedule",
+        name: "課表查詢",
+        id: "schedule"
     }
 ]
 
