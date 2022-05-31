@@ -316,6 +316,7 @@ window.execute = async () => {
                     <button type="button" onclick="goPage('/availableScore');">查詢成績資料</button>
                     <button type="button" onclick="goPage('/rewandpun');">查詢獎懲紀錄</button>
                     <button type="button" onclick="goPage('/lack');">查詢缺曠紀錄</button>
+                    <button type="button" onclick="goPage('/scheduleList');">查詢課表</button>
                     <button type="button" onclick="goPage('/compare');">比較歷史成績</button>
                     <button type="button" style="background-color: red;" onclick="sessionStorage.removeItem('auth');goPage('/');">登出</button>
                 </div>

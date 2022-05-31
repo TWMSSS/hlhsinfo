@@ -25,12 +25,19 @@ async function getUserInfoShort(req, res) {
             }, async (err, response, body) => {
                 if (err) {
                     console.error(err);
-                    return res.status(500).json({ message: 'Something went wrong!' });
+                    res.status(500).json({ message: 'Something went wrong!' });
+                    return resolve(false);
                 };
-                if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
+                if (response.statusCode !== 200) {
+                    res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
+                    return resolve(false);
+                };
 
                 var data = iconv.decode(body, 'big5');
-                if (isNotLogin(data)) return res.status(403).json({ message: 'You might need to login again!' });
+                if (isNotLogin(data)) {
+                    res.status(403).json({ message: 'You might need to login again!' });
+                    return resolve(false);
+                };
 
                 var dom = new JSDOM(data);
 
