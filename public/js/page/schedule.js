@@ -159,7 +159,7 @@ window.execute = async () => {
             var classNext = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex + 1].section}</span><span class="dataValue">沒有課程</span>`;
         }
         if (classNowIndex + 1 === scheData.length - 1) {
-            var classLeft = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div>`;
+            var classLeft = `<div class="dataContent"><div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div></div>`;
         } else {
             var classLeft = "";
             for (var i = classNowIndex + 2; i < scheData.length; i++) {
