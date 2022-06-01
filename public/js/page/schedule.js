@@ -10,9 +10,6 @@ window.execute = async () => {
         window.mozIndexedDB ||
         window.webkitIndexedDB;
 
-    var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
-    var IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange;
-
     var db;
 
     function a() {

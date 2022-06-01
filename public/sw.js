@@ -18,7 +18,7 @@ const cacheFiles = [
     '/manifest.json'
 ];
 
-const cacheName = 'static-cache-v1';
+const cacheName = 'static-cache-v1.1';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(

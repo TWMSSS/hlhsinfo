@@ -130,6 +130,13 @@ function finishTask() {
     taskBox.remove();
 }
 
+function loadScript(url, callback) {
+    fetch(url).then(res => res.text()).then(async res => {
+        eval(res);
+        callback(window.pageData.function.execute());
+    });
+}
+
 function loadPageScript(id) {
     if (page.find(e => e.id === id) === undefined) return;
     window.execute = () => { };
@@ -173,7 +180,7 @@ document.addEventListener("click", event => {
         if (url === undefined || url === "" || url === null || url === location.href + "#" || url === location.href) return;
         var urlObject = new URL(url);
         if (urlObject.host === window.location.host) {
-            goPage(urlObject.pathname);
+            goPage(urlObject.pathname + urlObject.search);
             return;
         }
         location.href = url;

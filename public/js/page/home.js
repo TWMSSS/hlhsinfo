@@ -126,6 +126,7 @@ window.execute = async () => {
                     </form>
                 </div>
             </div>
+            <div id="schedule"></div>
             <div class="resLogin">
                 <h1 class="pageTitle">曾經登入的帳號</h1>
                 <div class="loginForm">
@@ -259,6 +260,20 @@ window.execute = async () => {
                 console.log(err);
             });
         });
+        loadScript("/js/page/extra/scheduleForHome.js", async (callback) => {
+            var classDt = await callback;
+            var classNow = "";
+            if (classDt.classNow.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
+            }
+            if (classDt.classNext.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
+            }
+            if (classDt.classNow.section || classDt.classNext.section) {
+                classNow = `<h1 class="pageTitle">課程</h1><div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
+            }
+            document.querySelector("#schedule").innerHTML = classNow;
+        });
         return;
     } else {
         window.pageData.userData = {};
@@ -309,6 +324,11 @@ window.execute = async () => {
         localStorage.setItem("reslogin", JSON.stringify(reslogin));
 
         pageElement.innerHTML = `
+            <div class="schedule">
+                <h1 class="pageTitle">當前課程</h1>
+                <div id="schedule"></div>
+            </div>
+            </div>
             <div class="choseBox">
                 <h1 class="pageTitle">功能選擇</h1>
                 <div class="function">
@@ -322,5 +342,22 @@ window.execute = async () => {
                 </div>
             </div>
         `;
+        loadScript("/js/page/extra/scheduleForHome.js", async (callback) => {
+            var classDt = await callback;
+            var classNow = "";
+            if (classDt.classNow.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
+            }
+            if (classDt.classNext.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
+            }
+            if (classDt.classNow.section || classDt.classNext.section) {
+                classNow = `<div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
+            }
+            if (!classDt.classNow.section && !classDt.classNext.section) {
+                classNow += `<div class="dataContent"><div class="dataBox" onclick="goPage('/scheduleList');" style="cursor: pointer"><span class="dataTitle">課程</span><span class="dataValue">請先選擇你的課程</span></div></div>`;
+            }
+            document.querySelector("#schedule").innerHTML = classNow;
+        });
     }
 }
