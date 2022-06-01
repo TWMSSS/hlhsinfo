@@ -13,6 +13,7 @@ const cacheFiles = [
     '/js/page/rewandpun.js',
     '/js/page/scheduleList.js',
     '/js/page/schedule.js',
+    '/js/page/extra/scheduleForHome.js',
     '/img/logo.png',
     '/index.html',
     '/manifest.json',
@@ -21,7 +22,7 @@ const cacheFiles = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
-const cacheName = 'static-cache-v1.2';
+const cacheName = 'static-cache-v1.2.1';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
