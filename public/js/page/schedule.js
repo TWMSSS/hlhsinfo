@@ -1,11 +1,6 @@
 window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
-    if (sessionStorage.getItem("auth") === null) {
-        goPage("/");
-        return;
-    }
-
     // IndexedDB setting up
     var schedule = new URL(location.href).searchParams.get("schedule");
     var [className, teacher] = schedule.split("-");
@@ -84,6 +79,11 @@ window.execute = async () => {
     var dbStatus = await b();
 
     if (!dbStatus) {
+        if (sessionStorage.getItem("auth") === null) {
+            goPage("/");
+            return;
+        }
+
         await fetch(`/api/getSchedule?class=${className}&teacher=${teacher}`, {
             method: "GET",
             headers: {
@@ -113,6 +113,8 @@ window.execute = async () => {
     setTaskStatus(task, "success");
     task = addTaskList("分析資料");
 
+    localStorage.setItem("nowSchedule", dbKey);
+
     scheData = scheData.map(e => {
         if (!e) return null;
         const todayTime = new Date();
@@ -141,11 +143,11 @@ window.execute = async () => {
     var classNowIndex = scheData.findIndex(b => b !== null && Date.now() > b.time.start && Date.now() < b.time.end);
     var weekDay = new Date().getDay() - 1;
     if (classNowIndex === -1) {
-        classNowIndex = scheData.findIndex(b => b !== null && Date.now() < b.time.end);
+        classNowIndex = scheData.findIndex(b => b !== null && Date.now() < b.time.end) - 1;
         if (classNowIndex === -1) {
             var classNow = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
         } else {
-            var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex - 1].section} 與 ${scheData[classNowIndex].section} 間</span><span class="dataValue">下課</span></div>`;
+            var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間</span><span class="dataValue">下課</span></div>`;
         }
     } else {
         var thisClass = scheData[classNowIndex].class[weekDay];
