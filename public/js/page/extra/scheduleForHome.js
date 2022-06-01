@@ -104,7 +104,7 @@ window.pageData.function.execute = async () => {
         var classNow, classNext;
         if (classNowIndex === -1) {
             classNowIndex = scheData.findIndex(b => b !== null && Date.now() < b.time.end) - 1;
-            if (classNowIndex === -1) {
+            if (classNowIndex === -2) {
                 classNow = {
                     section: "課程",
                     class: "沒有課程",

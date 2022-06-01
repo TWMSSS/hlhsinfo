@@ -141,7 +141,7 @@ window.execute = async () => {
     var weekDay = new Date().getDay() - 1;
     if (classNowIndex === -1) {
         classNowIndex = scheData.findIndex(b => b !== null && Date.now() < b.time.end) - 1;
-        if (classNowIndex === -1) {
+        if (classNowIndex === -2) {
             var classNow = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
         } else {
             var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間</span><span class="dataValue">下課</span></div>`;
