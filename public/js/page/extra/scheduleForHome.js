@@ -128,11 +128,19 @@ window.pageData.function.execute = async () => {
         if (scheData[classNowIndex + 1] && classNowIndex !== -1 || scheData.findIndex(b => b !== null && b.time.end > Date.now()) !== -1) {
             if (classNowIndex === -1) classNowIndex = 0;
             var nextClass = scheData[classNowIndex + 1].class[weekDay];
-            classNext = {
-                section: scheData[classNowIndex + 1].section,
-                class: nextClass.className,
-                teacher: nextClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""
-            };
+            if (nextClass !== null) {
+                classNext = {
+                    section: scheData[classNowIndex + 1].section,
+                    class: nextClass.className,
+                    teacher: nextClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""
+                };
+            } else {
+                classNext = {
+                    section: scheData[classNowIndex + 1].section,
+                    class: "沒有課程",
+                    teacher: ""
+                };
+            }
         } else {
             var classNext = {
                 section: "課程",

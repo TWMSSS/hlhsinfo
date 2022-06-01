@@ -15,10 +15,13 @@ const cacheFiles = [
     '/js/page/schedule.js',
     '/img/logo.png',
     '/index.html',
-    '/manifest.json'
+    '/manifest.json',
+    '/',
+
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
-const cacheName = 'static-cache-v1.1';
+const cacheName = 'static-cache-v1.2';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -44,8 +47,13 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request).then((response) => {
-            return response || fetch(event.request);
+        caches.match(event.request).then(async (response) => {
+            if (event.request.url.indexOf('/api/') === -1 && response) {
+                return response;
+            }
+            return fetch(event.request);
+        }).catch(e => {
+            return caches.match('/');
         })
     );
 });

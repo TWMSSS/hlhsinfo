@@ -153,7 +153,11 @@ window.execute = async () => {
     if (scheData[classNowIndex + 1] && classNowIndex !== -1 || scheData.findIndex(b => b !== null && b.time.end > Date.now()) !== -1) {
         if (classNowIndex === -1) classNowIndex = 0;
         var nextClass = scheData[classNowIndex + 1].class[weekDay];
-        var classNext = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex + 1].section}</span><span class="dataValue">${nextClass.className}</span>${nextClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""}`;
+        if (nextClass !== null) {
+            var classNext = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex + 1].section}</span><span class="dataValue">${nextClass.className}</span>${nextClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""}`;
+        } else {
+            var classNext = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex + 1].section}</span><span class="dataValue">沒有課程</span>`;
+        }
         if (classNowIndex + 1 === scheData.length - 1) {
             var classLeft = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div>`;
         } else {
