@@ -139,11 +139,11 @@ window.execute = async () => {
     var classNowIndex = scheData.findIndex(b => b !== null && Date.now() > b.time.start && Date.now() < b.time.end);
     var weekDay = new Date().getDay() - 1;
     if (classNowIndex === -1) {
-        classNowIndex = scheData.findIndex(b => b !== null && Date.now() - 600000 > b.time.start && Date.now() - 600000 < b.time.end);
+        classNowIndex = scheData.findIndex(b => b !== null && Date.now() < b.time.end);
         if (classNowIndex === -1) {
             var classNow = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
         } else {
-            var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section} 與 ${scheData[classNowIndex].section} 間</span><span class="dataValue">下課</span></div>`;
+            var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex - 1].section} 與 ${scheData[classNowIndex].section} 間</span><span class="dataValue">下課</span></div>`;
         }
     } else {
         var thisClass = scheData[classNowIndex].class[weekDay];

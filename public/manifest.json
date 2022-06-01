@@ -1,0 +1,17 @@
+{
+    "name": "花中查詢",
+    "short_name": "HLHSInfo",
+    "description": "讓你查詢花蓮高中的公開資訊",
+    "icons": [
+        {
+            "src": "./img/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": "/",
+    "id": "/",
+    "display": "standalone",
+    "theme_color": "#0e98e8",
+    "orientation": "portrait"
+}
