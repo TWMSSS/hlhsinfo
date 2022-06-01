@@ -113,7 +113,7 @@ window.execute = async () => {
     setTaskStatus(task, "success");
     task = addTaskList("分析資料");
 
-    window.scheData = scheData.map(e => {
+    scheData = scheData.map(e => {
         if (!e) return null;
         const todayTime = new Date();
         todayTime.setHours(0);
@@ -135,6 +135,8 @@ window.execute = async () => {
 
         return e;
     });
+
+    scheData = scheData.filter(e => e !== null);
 
     var classNowIndex = scheData.findIndex(b => b !== null && Date.now() > b.time.start && Date.now() < b.time.end);
     var weekDay = new Date().getDay() - 1;
