@@ -277,7 +277,7 @@ window.execute = async () => {
             });
         }
         a();
-        setInterval(a, 60000);
+        window.pageData.Interval.push(setInterval(a, 60000));
         return;
     } else {
         window.pageData.userData = {};
@@ -366,6 +366,6 @@ window.execute = async () => {
             });
         }
         a();
-        setInterval(a, 60000);
+        window.pageData.Interval.push(setInterval(a, 60000));
     }
 }

@@ -1,4 +1,7 @@
 window.pageData = {};
+window.pageData.function = {};
+window.pageData.data = {};
+window.pageData.Interval = [];
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
@@ -157,6 +160,10 @@ function loadPage(path, orgPath) {
     changePathName("");
     window.pageData.function = {};
     window.pageData.data = {};
+    if (window.pageData.Interval.length > 0) {
+        window.pageData.Interval.forEach(e => clearInterval(e));
+    }
+    window.pageData.Interval = [];
 
     changePathName(page.find(e => e.path === path).name);
     loadPageScript(page.find(e => e.path === path).id);

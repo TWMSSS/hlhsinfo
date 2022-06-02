@@ -202,5 +202,5 @@ window.execute = async () => {
     setTaskStatus(task, "success");
     finishTask();
 
-    setInterval(c, 60000);
+    window.pageData.Interval.push(setInterval(c, 60000));
 }
