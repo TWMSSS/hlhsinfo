@@ -18,7 +18,7 @@ if ('serviceWorker' in navigator) {
         });
 }
 
-navigator.serviceWorker.addEventListener("controllerchange", () => {
+function setServiceWorkerConversation() {
     navigator.serviceWorker.controller.postMessage({
         type: 'INIT_CONVERSATION',
     }, [messageChannel.port2]);
@@ -26,9 +26,24 @@ navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (event.data.type === 'VERSION') {
             window.pageData.data.version = event.data.payload;
             document.querySelector("#version").innerHTML = `客戶端版本: ${window.pageData.data.version}`;
+        } else if (event.data.type === "INIT_CONVERSATION") {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'VERSION',
+            });
         }
     };
-});
+}
+
+function q() {
+    return new Promise((resolve, reject) => {
+        if (navigator.serviceWorker.controller) {
+            setServiceWorkerConversation();
+        } else {
+            setTimeout(async () => resolve(await q()), 1000);
+        }
+    });
+}
+q();
 
 const page = [
     {
@@ -210,11 +225,6 @@ document.addEventListener("click", event => {
 
 window.onload = () => {
     loadPage(location.pathname);
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-        navigator.serviceWorker.controller.postMessage({
-            type: 'VERSION',
-        });
-    });
 }
 
 window.onpopstate = (event) => {

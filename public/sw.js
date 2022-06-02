@@ -5,7 +5,7 @@
 //
 //
 
-const VERSION = `v1.3.0`;
+const VERSION = `v1.3.2`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -35,11 +35,10 @@ const cacheName = `static-cache-${VERSION}`;
 let getConvePort;
 
 self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(cacheName).then((cache) => {
-            return cache.addAll(cacheFiles);
-        })
-    );
+    self.skipWaiting();
+    caches.open(cacheName).then((cache) => {
+        return cache.addAll(cacheFiles);
+    });
 });
 
 self.addEventListener('activate', (event) => {
@@ -76,6 +75,9 @@ self.addEventListener('message', (event) => {
     if (!event.data) return;
     if (event.data.type === 'INIT_CONVERSATION') {
         getConvePort = event.ports[0];
+        getConvePort.postMessage({
+            type: 'INIT_CONVERSATION'
+        });
     }
 
     if (event.data.type === 'VERSION') {
