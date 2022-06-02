@@ -29,7 +29,7 @@
 此程式為類瀏覽器的操作，使用HTTP Request和DOM分析來取得學生的公開資料，且此程式並不會在使用者使用的時候，不經使用者認可，而去儲存使用者的資料，也不會儲存資料。
 如果你對此有疑問，此程式為公開原始碼的程式，您可以去確認程式是否有不當使用的地方。
 
-我如何分析的: [](/HowToAnalysis.md)
+我如何分析的: [HowToAnalysis.md](/HowToAnalysis.md)
 
 ## 其他
 您可以到[https://hlhsinfo.ml](https://hlhsinfo.ml)來使用此程式的相關資訊。
