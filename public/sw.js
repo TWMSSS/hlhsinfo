@@ -22,7 +22,7 @@ const cacheFiles = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
-const cacheName = 'static-cache-v1.2.2';
+const cacheName = 'static-cache-v1.2.3';
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -36,10 +36,10 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (cacheName !== cacheName) {
-                        console.log('Deleting cache: ' + cacheName);
-                        return caches.delete(cacheName);
+                cacheNames.map((cacheN) => {
+                    if (cacheN !== cacheName) {
+                        console.log('Deleting cache: ' + cacheN);
+                        return caches.delete(cacheN);
                     }
                 })
             );
@@ -48,6 +48,7 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+    // Cache match cacheName
     event.respondWith(
         caches.match(event.request).then(async (response) => {
             if (event.request.url.indexOf('/api/') === -1 && response) {
