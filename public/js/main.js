@@ -18,6 +18,39 @@ if ('serviceWorker' in navigator) {
         });
 }
 
+navigator.serviceWorker.onmessage = (event) => {
+    if (!event.data) return;
+    if (event.data.type === "INIT_CONVERSATION") {
+        navigator.serviceWorker.controller.postMessage({
+            type: 'VERSION'
+        });
+    } else if (event.data.type === "NEW_VERSION") {
+        alertBox(`已安裝新版本${event.data.version}，請到重新啟動應用程式以套用新版本。`);
+    }
+};
+
+function alertBox(message) {
+    // Create a toast box
+    var toastBox = document.querySelector("#toastBox");
+    var toastID = Math.floor(Math.random() * 10000);
+    if (!toastBox) {
+        var toastBox = document.createElement("div");
+        toastBox.classList.add("toastBox");
+        toastBox.id = "toastBox";
+        document.body.appendChild(toastBox);
+    }
+    toastBox.innerHTML += `
+        <div class="toastBoxMessage" data-toast="${toastID}">
+            <p>${message}</p>
+        </div>
+    `;
+    setTimeout(() => {
+        var toast = document.querySelector(`[data-toast="${toastID}"]`);
+        if (!toast) return;
+        toast.remove();
+    }, 5000);
+}
+
 function setServiceWorkerConversation() {
     navigator.serviceWorker.controller.postMessage({
         type: 'INIT_CONVERSATION',
@@ -226,6 +259,7 @@ document.addEventListener("click", event => {
 
 window.onload = () => {
     loadPage(location.pathname);
+    loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js", () => { });  // For some functionalities of HMB Module
 }
 
 window.onpopstate = (event) => {

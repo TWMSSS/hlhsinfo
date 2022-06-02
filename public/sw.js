@@ -5,7 +5,7 @@
 //
 //
 
-const VERSION = `v1.3.3`;
+const VERSION = `v1.3.5`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -26,35 +26,55 @@ const cacheFiles = [
     '/img/logo.png',
     '/index.html',
     '/manifest.json',
-    '/',
-
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
+    '/'
 ];
 
 const cacheName = `static-cache-${VERSION}`;
+var oldVersion = null;
 let getConvePort;
+var isInstallNew = false;
+var isUpdating = false;
 
-self.addEventListener('install', (event) => {
+self.addEventListener('install', async (event) => {
     self.skipWaiting();
+    isUpdating = true;
     caches.open(cacheName).then((cache) => {
         return cache.addAll(cacheFiles);
     });
+    isUpdating = false;
+    isInstallNew = true;
 });
 
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheN) => {
-                    if (cacheN !== cacheName) {
-                        console.log('Deleting cache: ' + cacheN);
-                        return caches.delete(cacheN);
-                    }
-                })
-            );
-        }),
-        self.clients.claim()
-    );
+self.addEventListener('activate', async (event) => {
+    await caches.keys().then((cacheNames) => {
+        return Promise.all(
+            cacheNames.map((cacheN) => {
+                if (cacheN !== cacheName) {
+                    oldVersion = cacheN.split("-")[2];
+                    console.log('Deleting cache: ' + cacheN);
+                    return caches.delete(cacheN);
+                }
+                return new Promise((resolve, reject) => { resolve(); });
+            })
+        );
+    });
+    self.clients.claim();
+    var t = setTimeout(() => {
+        if (isInstallNew) {
+            self.clients.matchAll().then((clients) => {
+                clients.forEach((client) => {
+                    client.postMessage({
+                        type: 'NEW_VERSION',
+                        version: VERSION,
+                    });
+                });
+            });
+            clearTimeout(t);
+            console.log('New version installed');
+        }
+        isInstallNew = false;
+        oldVersion = null;
+    }, 1000);
 });
 
 self.addEventListener('fetch', (event) => {
@@ -83,7 +103,7 @@ self.addEventListener('message', (event) => {
     if (event.data.type === 'VERSION') {
         getConvePort.postMessage({
             type: "VERSION",
-            payload: VERSION
+            payload: oldVersion || VERSION
         });
     }
 });
