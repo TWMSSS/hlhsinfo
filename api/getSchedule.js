@@ -79,9 +79,19 @@ function getSchedule(req, res) {
             return d;
         });
 
+        var dO = dom.window.document.querySelector("div.center[style]").innerHTML.replace(/ /gm, "").replace(/[^\S]+/gm, "").split("：")[2].split("～");
+        var start = dO[0];
+        var end = dO[1];
+
         res.status(200).json({
             message: "Success!",
-            data: l
+            data: {
+                schedule: l,
+                time: {
+                    start,
+                    end
+                }
+            }
         });
     });
 }

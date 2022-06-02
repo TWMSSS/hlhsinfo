@@ -206,7 +206,8 @@ function goPage(path) {
 
 document.addEventListener("click", event => {
     try {
-        var ele = event.path.find(e => e.tagName.toLowerCase() === "a");
+        // var ele = event.path.find(e => e.tagName.toLowerCase() === "a"); is deprecated and will be removed.
+        var ele = event.target.closest("a");
     } catch (err) {
         return;
     }

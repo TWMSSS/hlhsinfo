@@ -63,6 +63,13 @@ window.execute = async () => {
             data.onsuccess = (event) => {
                 if (event.target.result) {
                     scheData = event.target.result.schedule;
+                    if (!event.target.result.time || event.target.result.time.end < Date.now()) {
+                        // remove expired data
+                        var transaction = db.transaction(["class"], "readwrite");
+                        var objectStore = transaction.objectStore("class");
+                        objectStore.delete(dbKey);
+                        return resolve(false);
+                    }
                     return resolve(true);
                 };
                 resolve(false);
@@ -93,7 +100,7 @@ window.execute = async () => {
                 finishTask();
                 return;
             }
-            scheData = res.data;
+            scheData = res.data.schedule;
 
             var transaction = db.transaction(["class"], "readwrite");
             objectStore = transaction.objectStore("class");
@@ -101,7 +108,11 @@ window.execute = async () => {
                 classid: dbKey,
                 class: className,
                 teacher: teacher,
-                schedule: scheData
+                schedule: scheData,
+                time: {
+                    start: new Date(res.data.time.start).getTime(),
+                    end: new Date(res.data.time.end).getTime()
+                }
             });
         });
         

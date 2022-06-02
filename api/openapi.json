@@ -1267,44 +1267,60 @@
             "type": "string"
           },
           "data": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "object",
-              "properties": {
-                "section": {
-                  "type": "string"
-                },
-                "class": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "className": {
-                        "type": "string"
-                      },
-                      "location": {
-                        "type": "string",
-                        "nullable": true
-                      },
-                      "teacher": {
-                        "type": "array",
-                        "items": {
+            "type": "object",
+            "properties": {
+              "schedule": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "section": {
+                      "type": "string"
+                    },
+                    "class": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "className": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "teacher": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "time": {
+                      "type": "object",
+                      "properties": {
+                        "start": {
+                          "type": "string"
+                        },
+                        "end": {
                           "type": "string"
                         }
                       }
                     }
                   }
-                },
-                "time": {
-                  "type": "object",
-                  "properties": {
-                    "start": {
-                      "type": "string"
-                    },
-                    "end": {
-                      "type": "string"
-                    }
+                }
+              },
+              "time": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string"
+                  },
+                  "end": {
+                    "type": "string"
                   }
                 }
               }

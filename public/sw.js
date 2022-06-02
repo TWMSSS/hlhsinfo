@@ -5,7 +5,7 @@
 //
 //
 
-const VERSION = `v1.3.2`;
+const VERSION = `v1.3.3`;
 
 const cacheFiles = [
     '/css/main.css',
