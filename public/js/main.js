@@ -3,18 +3,32 @@ window.pageData.function = {};
 window.pageData.data = {};
 window.pageData.Interval = [];
 
+const messageChannel = new MessageChannel();
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker
         .register('./sw.js', {
             scope: '/'
         })
-        .then(function (reg) {
+        .then((reg) => {
             console.log('Registration succeeded. SW working scope is ' + reg.scope);
         })
-        .catch(function (error) {
+        .catch((error) => {
             console.log('Registration failed with ' + error);
         });
 }
+
+navigator.serviceWorker.addEventListener("controllerchange", () => {
+    navigator.serviceWorker.controller.postMessage({
+        type: 'INIT_CONVERSATION',
+    }, [messageChannel.port2]);
+    messageChannel.port1.onmessage = (event) => {
+        if (event.data.type === 'VERSION') {
+            window.pageData.data.version = event.data.payload;
+            document.querySelector("#version").innerHTML = `客戶端版本: ${window.pageData.data.version}`;
+        }
+    };
+});
 
 const page = [
     {
@@ -196,6 +210,11 @@ document.addEventListener("click", event => {
 
 window.onload = () => {
     loadPage(location.pathname);
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+        navigator.serviceWorker.controller.postMessage({
+            type: 'VERSION',
+        });
+    });
 }
 
 window.onpopstate = (event) => {

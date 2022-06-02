@@ -381,6 +381,12 @@ footer {
     color: var(--color-footer);
 }
 
+footer div span:not(:last-child)::after {
+    display: inline-block;
+    content: "|";
+    margin: 0 5px;
+}
+
 ::-webkit-scrollbar {
     height: 5px;
     width: 5px;

@@ -136,6 +136,7 @@ window.execute = async () => {
     });
 
     scheData = scheData.filter(e => e !== null);
+    var choose = new Date().getDate() + 2;
 
     function c() {
         var classNowIndex = scheData.findIndex(b => b !== null && Date.now() > b.time.start && Date.now() < b.time.end);
@@ -174,8 +175,30 @@ window.execute = async () => {
             var classLeft = `<div class="dataContent"><div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div></div>`;
         }
 
+        var week = ["星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+
+        week.forEach((e, index) => {
+            if (choose === index) {
+                week[index] = `<option value="${index}" selected>${e}</option>`;
+            } else {
+                week[index] = `<option value="${index}">${e}</option>`;
+            }
+        });
+
+        function rdNDSch() {
+            var classNextDay = "";
+            for (var i = 0; i < scheData.length; i++) {
+                if (scheData[i] === null) continue;
+                var nextDayClass = scheData[i].class[choose];
+                classNextDay += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">${scheData[i].section}</span><span class="dataValue">${nextDayClass ? nextDayClass.className : "沒有課程"}</span>${nextDayClass ? nextDayClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextDayClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : "" : ""}</div></div>`;
+            }
+
+            return classNextDay;
+        }
+        classNextDay = rdNDSch();
+
         pageElement.innerHTML = `
-            <div class="profile">
+            <div class="schedule">
                 <h1 class="pageTitle">當前課程</h1>
                 <div class="profileInfo">
                     <div class="dataContent">
@@ -195,7 +218,25 @@ window.execute = async () => {
                     ${classLeft}
                 </div>
             </div>
+            <div class="otherSchedule">
+                <h1 class="pageTitle">其他課程</h1>
+                <div class="ct">
+                    <select id="wkd" name="weekDay">
+                        ${week.join("")}
+                    </select>
+                    <div id="wkdSchedule">
+                        ${classNextDay}
+                    </div>
+                </div>
+            </div>
         `;
+
+        var weekDay = document.getElementById("wkd");
+        weekDay.addEventListener("change", function () {
+            choose = weekDay.value;
+            classNextDay = rdNDSch();
+            document.querySelector("#wkdSchedule").innerHTML = classNextDay;
+        });
     }
     c();
 

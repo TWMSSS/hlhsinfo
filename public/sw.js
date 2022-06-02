@@ -1,3 +1,12 @@
+//
+//
+// Service Worker for HLHSInfo
+// Created by: DevSomeone <yurisakadev@gmail.com>
+//
+//
+
+const VERSION = `v1.3.0`;
+
 const cacheFiles = [
     '/css/main.css',
     '/css/dark-var.css',
@@ -22,7 +31,8 @@ const cacheFiles = [
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
-const cacheName = 'static-cache-v1.2.3';
+const cacheName = `static-cache-${VERSION}`;
+let getConvePort;
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -43,7 +53,8 @@ self.addEventListener('activate', (event) => {
                     }
                 })
             );
-        })
+        }),
+        self.clients.claim()
     );
 });
 
@@ -59,4 +70,18 @@ self.addEventListener('fetch', (event) => {
             return caches.match('/');
         })
     );
+});
+
+self.addEventListener('message', (event) => {
+    if (!event.data) return;
+    if (event.data.type === 'INIT_CONVERSATION') {
+        getConvePort = event.ports[0];
+    }
+
+    if (event.data.type === 'VERSION') {
+        getConvePort.postMessage({
+            type: "VERSION",
+            payload: VERSION
+        });
+    }
 });
