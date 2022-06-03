@@ -16,34 +16,57 @@ if ('serviceWorker' in navigator) {
         .catch((error) => {
             console.log('Registration failed with ' + error);
         });
+    
+    navigator.serviceWorker.onmessage = (event) => {
+        if (!event.data) return;
+        if (event.data.type === "INIT_CONVERSATION") {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'VERSION'
+            });
+        } else if (event.data.type === "NEW_VERSION") {
+            alertBox(`已安裝新版本${event.data.version}，請到重新啟動應用程式以套用新版本。`, "success");
+        } else if (event.data.type === "INSTALLED") {
+            alertBox(`已安裝版本${event.data.version}`, "success");
+        }
+    };
 }
 
-navigator.serviceWorker.onmessage = (event) => {
-    if (!event.data) return;
-    if (event.data.type === "INIT_CONVERSATION") {
-        navigator.serviceWorker.controller.postMessage({
-            type: 'VERSION'
-        });
-    } else if (event.data.type === "NEW_VERSION") {
-        alertBox(`已安裝新版本${event.data.version}，請到重新啟動應用程式以套用新版本。`);
-    }
-};
-
-function alertBox(message) {
-    // Create a toast box
+function createAlertBox() {
     var toastBox = document.querySelector("#toastBox");
-    var toastID = Math.floor(Math.random() * 10000);
     if (!toastBox) {
         var toastBox = document.createElement("div");
         toastBox.classList.add("toastBox");
         toastBox.id = "toastBox";
         document.body.appendChild(toastBox);
     }
-    toastBox.innerHTML += `
-        <div class="toastBoxMessage" data-toast="${toastID}">
-            <p>${message}</p>
-        </div>
-    `;
+
+    return toastBox;
+}
+
+function alertBox(message, type = "info") {
+    var toastID = Math.floor(Math.random() * 10000);
+    var toastBox = createAlertBox();
+    var doc = document.createElement("div");
+    doc.classList.add("toastBoxMessage");
+    doc.setAttribute("data-toast", toastID);
+    doc.innerHTML = `<p>${message}</p>`;
+
+    switch (type) {
+        case "info":
+            doc.classList.add("info");
+            break;
+        case "success":
+            doc.classList.add("success");
+            break;
+        case "error":
+            doc.classList.add("error");
+            break;
+        case "warning":
+            doc.classList.add("warning");
+            break;
+    }
+    toastBox.appendChild(doc);
+
     setTimeout(() => {
         var toast = document.querySelector(`[data-toast="${toastID}"]`);
         if (!toast) return;

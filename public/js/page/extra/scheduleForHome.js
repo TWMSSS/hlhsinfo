@@ -118,11 +118,19 @@ window.pageData.function.execute = async () => {
                     teacher: ""
                 };
             } else {
-                classNow = {
-                    section: `${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間`,
-                    class: "下課",
-                    teacher: ""
-                };
+                if (!scheData[classNowIndex]) {
+                    classNow = {
+                        section: "課程",
+                        class: "沒有課程",
+                        teacher: ""
+                    };
+                } else {
+                    classNow = {
+                        section: `${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間`,
+                        class: "下課",
+                        teacher: ""
+                    };
+                }
             }
         } else {
             var thisClass = scheData[classNowIndex].class[weekDay];

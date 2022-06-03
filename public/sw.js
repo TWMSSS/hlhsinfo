@@ -5,7 +5,7 @@
 //
 //
 
-const VERSION = `v1.3.5`;
+const VERSION = `v1.3.7`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -60,7 +60,7 @@ self.addEventListener('activate', async (event) => {
     });
     self.clients.claim();
     var t = setTimeout(() => {
-        if (isInstallNew) {
+        if (isInstallNew && oldVersion !== null) {
             self.clients.matchAll().then((clients) => {
                 clients.forEach((client) => {
                     client.postMessage({
@@ -70,8 +70,17 @@ self.addEventListener('activate', async (event) => {
                 });
             });
             clearTimeout(t);
-            console.log('New version installed');
+        } else {
+            self.clients.matchAll().then((clients) => {
+                clients.forEach((client) => {
+                    client.postMessage({
+                        type: 'INSTALLED',
+                        version: VERSION,
+                    });
+                });
+            });
         }
+        console.log('New version installed');
         isInstallNew = false;
         oldVersion = null;
     }, 1000);

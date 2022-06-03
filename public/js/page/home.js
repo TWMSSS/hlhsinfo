@@ -137,13 +137,14 @@ window.execute = async () => {
         var loginForm = document.getElementById("lognForm");
         loginForm.addEventListener("submit", async ev => {
             ev.preventDefault();
+            if (!navigator.onLine) return alertBox("請確認你的網路連線狀態，然後再試一次。");
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
 
             var task = addTaskList("檢查登入資訊");
             if (username === "" || password === "") {
                 setTaskStatus(task, "fail");
-                alert("請輸入學號及密碼");
+                alertBox("請輸入學號及密碼");
                 setTimeout(() => {
                     finishTask();
                 }, 3000);

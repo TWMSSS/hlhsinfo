@@ -157,7 +157,11 @@ window.execute = async () => {
             if (classNowIndex === -2) {
                 var classNow = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
             } else {
-                var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間</span><span class="dataValue">下課</span></div>`;
+                if (!scheData[classNowIndex]) {
+                    var classNow = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
+                } else {
+                    var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section} 與 ${scheData[classNowIndex + 1].section} 間</span><span class="dataValue">下課</span></div>`;
+                }
             }
         } else {
             var thisClass = scheData[classNowIndex].class[weekDay];
