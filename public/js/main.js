@@ -24,7 +24,7 @@ if ('serviceWorker' in navigator) {
                 type: 'VERSION'
             });
         } else if (event.data.type === "NEW_VERSION") {
-            alertBox(`已安裝新版本${event.data.version}，請到重新啟動應用程式以套用新版本。`, "success");
+            alertBox(`已安裝新版本${event.data.version}，請重新啟動應用程式以套用新版本。`, "success");
         } else if (event.data.type === "INSTALLED") {
             alertBox(`已安裝版本${event.data.version}`, "success");
         }
