@@ -307,6 +307,7 @@ button:active {
     bottom: 0;
     right: 30px;
     max-width: 250px;
+    width: calc(100% - 60px);
     z-index: 999999;
     margin: 10px;
 }
