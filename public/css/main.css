@@ -1,12 +1,10 @@
-@import url(./dark-var.css) screen and (prefers-color-scheme: dark);
-@import url(./light-var.css) screen and (prefers-color-scheme: light);
-
 * {
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans TC', sans-serif;
     color: var(--color-font);
     overflow-wrap: break-word;
+    transition: .3s;
 }
 
 body {
@@ -320,11 +318,14 @@ button:active {
     height: 100%;
     background-color: #fff;
     border: 3px solid rgb(182, 182, 182);
-    color: #fff;
     padding: 10px;
     border-radius: 5px;
     word-break: break-word;
     margin: 5px 0;
+}
+
+.toastBox .toastBoxMessage p {
+    color: #fff !important;
 }
 
 .toastBox .toastBoxMessage.success {
