@@ -221,7 +221,7 @@ function finishTask() {
 function loadScript(url, callback) {
     fetch(url).then(res => res.text()).then(async res => {
         eval(res);
-        callback(window.pageData.function.execute());
+        if (typeof callback === "function") callback(window.pageData.function.execute());
     });
 }
 
