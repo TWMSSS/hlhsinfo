@@ -389,6 +389,7 @@ table tr td>div.lackClass {
 
 table tr td>div span {
     padding: 5px;
+    color: var(--color-group-text);
 }
 
 header {

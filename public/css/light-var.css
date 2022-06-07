@@ -9,7 +9,7 @@
     --color-button-text: #fff;
     --color-button-hover-bg: #0072b4;
     --color-input-border: #707070;
-    --color-input-bg: #fff;
+    --color-input-bg: unset;
     --color-input-text: #000;
     --color-input-active: #0aa2fa;
     --color-select-bg: #ffffff;

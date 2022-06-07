@@ -147,7 +147,7 @@ window.execute = async () => {
     });
 
     scheData = scheData.filter(e => e !== null);
-    var choose = new Date().getDate() + 2;
+    var choose = new Date().getDay() > 5 ? 0 : new Date().getDay();
 
     function c() {
         var classNowIndex = scheData.findIndex(b => b !== null && Date.now() > b.time.start && Date.now() < b.time.end);
