@@ -5,7 +5,7 @@
 //
 //
 
-const VERSION = `v1.3.8-update3`;
+const VERSION = `v1.3.9`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -26,7 +26,10 @@ const cacheFiles = [
     '/img/logo.png',
     '/index.html',
     '/manifest.json',
-    '/'
+    '/',
+
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/webfonts/fa-solid-900.woff2',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css'
 ];
 
 const cacheName = `static-cache-${VERSION}`;

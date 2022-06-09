@@ -182,8 +182,10 @@ window.execute = async () => {
                 for (var i = classNowIndex + 2; i < scheData.length; i++) {
                     if (scheData[i] === null) continue;
                     var leftClass = scheData[i].class[weekDay];
-                    classLeft += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">${scheData[i].section}</span><span class="dataValue">${leftClass ? leftClass.className : "沒有課程"}</span>${leftClass ? leftClass.teacher.length > 0 ? `<span class="dataExtra">由 ${leftClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : "" : ""}</div></div>`;
+                    if (!leftClass) continue;
+                    classLeft += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">${scheData[i].section}</span><span class="dataValue">${leftClass.className}</span>${leftClass.teacher.length > 0 ? `<span class="dataExtra">由 ${leftClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""}</div></div>`;
                 }
+                classLeft += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div></div>`;
             }
         } else {
             var classNext = `<div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">沒有課程</span></div>`;
@@ -205,8 +207,10 @@ window.execute = async () => {
             for (var i = 0; i < scheData.length; i++) {
                 if (scheData[i] === null) continue;
                 var nextDayClass = scheData[i].class[choose];
-                classNextDay += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">${scheData[i].section}</span><span class="dataValue">${nextDayClass ? nextDayClass.className : "沒有課程"}</span>${nextDayClass ? nextDayClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextDayClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : "" : ""}</div></div>`;
+                if (!nextDayClass) continue;
+                classNextDay += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">${scheData[i].section}</span><span class="dataValue">${nextDayClass.className}</span>${nextDayClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextDayClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""}</div></div>`;
             }
+            classNextDay += `<div class="dataContent"><div class="dataBox"><span class="dataTitle">課程</span><span class="dataValue">放學</span></div></div>`;
 
             return classNextDay;
         }

@@ -218,6 +218,10 @@ function finishTask() {
     taskBox.remove();
 }
 
+function toPageTop() {
+    window.scrollTo(0, 0);
+}
+
 function loadScript(url, callback) {
     fetch(url).then(res => res.text()).then(async res => {
         eval(res);
@@ -252,6 +256,7 @@ function loadPage(path, orgPath) {
 
     changePathName(page.find(e => e.path === path).name);
     loadPageScript(page.find(e => e.path === path).id);
+    toPageTop();
 }
 
 function goPage(path) {
@@ -283,6 +288,10 @@ document.addEventListener("click", event => {
 window.onload = () => {
     loadPage(location.pathname);
     loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js", () => { });  // For some functionalities of HMB Module
+    localStorage.getItem("theme") ? updateThemeMode(localStorage.getItem("theme")) : (window.matchMedia('(prefers-color-scheme: dark)').matches ? updateThemeMode("dark") : updateThemeMode("light"));
+    document.querySelector(".theme-icon").addEventListener("click", () => {
+        toggleLocalStorageItem();
+    });
 }
 
 window.onpopstate = (event) => {
@@ -309,3 +318,12 @@ function inputStyle() {
 document.addEventListener("DOMNodeInserted", (ev) => {
     inputStyle();
 }, false);
+
+function toggleLocalStorageItem() {
+    var theme = localStorage.getItem("theme");
+    if (theme === "dark") {
+        updateThemeMode("light");
+    } else {
+        updateThemeMode("dark");
+    }
+}

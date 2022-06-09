@@ -35,6 +35,48 @@ a {
     content: attr(data-extra);
 }
 
+.theme-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 0.5rem;
+    border-color: rgba(226, 232, 240, 0);
+    background-color: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.theme-icon:hover .fa-moon, .theme-icon:hover .fa-sun {
+    color: #fff !important;
+}
+
+:root:not(.light) .theme-icon .fa-moon {
+    display: none;
+}
+
+:root:not(.light) .theme-icon .fa-sun {
+    display: inline-block;
+    color: var(--color-font);
+}
+
+:root.light .theme-icon .fa-sun {
+    display: none;
+}
+
+:root.light .theme-icon .fa-moon {
+    display: inline-block;
+}
+
+.sr-only {
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+}
+
 section {
     display: flex;
     min-height: calc(100vh - 116px - 110px);
@@ -191,7 +233,7 @@ button:hover {
 }
 
 button:active {
-    box-shadow: inset #000 0px 0px 5px 3px;
+    box-shadow: inset #000 0px 0px 4px 2px;
     background-color: var(--color-button-hover-bg);
 }
 

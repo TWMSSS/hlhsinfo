@@ -14,7 +14,8 @@
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;900&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />   </head>
         <script src="/js/main.js"></script>
-        <script type="module" src="https://unpkg.com/dark-mode-toggle"></script>
+        <!-- <script type="module" src="https://unpkg.com/dark-mode-toggle@0.10.0/dist/dark-mode-toggle.min.mjs"></script> -->
+        <script src="/js/darkLight.js" defer></script>
         <link rel="manifest" href="/manifest.json">
         <link rel="icon" type="image/png" href="/img/logo.png">
 
@@ -37,7 +38,20 @@
                     <h5 style="color: #ffa600;font-weight: 200;">Beta</h5>
                 </div>
                 <div style="flex: 1 1 auto;"></div>
-                <dark-mode-toggle remember="記住我的選擇"></dark-mode-toggle>
+                <!-- <dark-mode-toggle remember="記住我的選擇"></dark-mode-toggle> -->
+                <button type="button" class="theme-icon">
+                    <i
+                        aria-hidden="true"
+                        class="fas fa-moon"
+                        title="Toggle between dark and light mode"
+                    ></i>
+                    <i
+                        aria-hidden="true"
+                        class="fas fa-sun"
+                        title="Toggle between dark and light mode"
+                    ></i>
+                    <span class="sr-only">Toggle between dark and light mode</span>
+                </button>
             </div>
         </header>
         <section>

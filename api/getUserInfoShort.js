@@ -34,10 +34,12 @@ async function getUserInfoShort(req, res) {
                 };
 
                 var data = iconv.decode(body, 'big5');
-                if (isNotLogin(data)) {
-                    res.status(403).json({ message: 'You might need to login again!' });
-                    return resolve(false);
-                };
+                try {
+                    if (isNotLogin(data)) {
+                        res.status(403).json({ message: 'You might need to login again!' });
+                        return resolve(false);
+                    };
+                } catch (err) { return; }
 
                 var dom = new JSDOM(data);
 
