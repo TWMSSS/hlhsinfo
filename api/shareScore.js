@@ -47,7 +47,7 @@ async function shareScore(req, res) {
     var verifyText = `${userInfo.schoolNumber}-${req.body.year}-${req.body.term}-${req.body.times}`;
     var hashedTkn = crypto.createHash('sha256').update(Buffer.from(verifyText)).digest('hex');
     var dataTemp = global.sharedScores.scores.find(x => x.hashedTkn === hashedTkn);
-    if (dataTemp && dataTemp.expiredTimestamp > Date.now()) {
+    if (dataTemp && dataTemp.expiredTimestamp <= Date.now()) {
         global.sharedScores.scores.splice(global.sharedScores.scores.indexOf(dataTemp), 1);
         dataTemp = null;
     }
@@ -73,6 +73,13 @@ async function shareScore(req, res) {
             createdTimestamp: created,
             hashedTkn
         });
+
+        setTimeout(() => {
+            var index = global.sharedScores.scores.findIndex(dt => dt.id === sharedID);
+            if (index >= 0) {
+                global.sharedScores.scores.splice(index, 1);
+            }
+        }, expired - created);
     } else {
         var expired = dataTemp.expiredTimestamp;
         var created = dataTemp.createdTimestamp;
@@ -81,13 +88,6 @@ async function shareScore(req, res) {
         userInfo = dataTemp.data.userInfo;
         userScore = dataTemp.data.userScore;
     }
-
-    setTimeout(() => {
-        var index = global.sharedScores.scores.findIndex(dt => dt.id === sharedID);
-        if (index >= 0) {
-            global.sharedScores.scores.splice(index, 1);
-        }
-    }, expired - created);
 
     res.status(200).json({
         message: "Success!",

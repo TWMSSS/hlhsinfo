@@ -103,7 +103,7 @@ window.execute = async () => {
                         <div class="group">
                             <h3>下載成圖片</h3>
                             <div class="img" style="text-align: center;">
-                                <img id="scoreImg" src="" alt="Score Image" style="width: 100%;">
+                                <div id="scoreImg"><span style="font-weight: 900;">正在生成圖片...</span></div>
                                 <button onclick="window.pageData.function.downloadImg()">下載</button>
                             </div>
                         </div>
@@ -144,7 +144,7 @@ window.execute = async () => {
                 })
             }).then(res => res.blob()).then(res => {
                 imgUrl = URL.createObjectURL(res);
-                doc.querySelector("#scoreImg").src = imgUrl;
+                document.querySelector("#scoreImg").innerHTML = `<img src="${imgUrl}" alt="Score Image" style="width: 100%;">`;
             });
         }
 

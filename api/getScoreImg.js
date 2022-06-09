@@ -41,6 +41,9 @@ async function getScoreImg(req, res) {
                     console.error(err);
                     return reject(err);
                 }
+                if (response.statusCode !== 200) {
+                    return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
+                }
                 var dt = JSON.parse(body);
                 userScore = dt.data;
                 resolve();
