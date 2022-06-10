@@ -1,3 +1,11 @@
+/*
+ * Dark/Light Theme Switcher
+ * Copyright 2022 The HLHSInfo Authors.
+ * Copyright 2022 DevSomeone Developer.
+ * 
+ * Repository: https://github.com/DevSomeone/hlhsinfo
+ */
+
 window.pageData = {};
 window.pageData.function = {};
 window.pageData.data = {};
@@ -288,7 +296,7 @@ document.addEventListener("click", event => {
 window.onload = () => {
     loadPage(location.pathname);
     loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js", () => { });  // For some functionalities of HMB Module
-    localStorage.getItem("theme") ? updateThemeMode(localStorage.getItem("theme")) : (window.matchMedia('(prefers-color-scheme: dark)').matches ? updateThemeMode("dark") : updateThemeMode("light"));
+    localStorage.getItem("theme") ? window.updateThemeMode(localStorage.getItem("theme")) : (window.matchMedia('(prefers-color-scheme: dark)').matches ? window.updateThemeMode("dark") : window.updateThemeMode("light"));
     document.querySelector(".theme-icon").addEventListener("click", () => {
         toggleLocalStorageItem();
     });
@@ -322,8 +330,8 @@ document.addEventListener("DOMNodeInserted", (ev) => {
 function toggleLocalStorageItem() {
     var theme = localStorage.getItem("theme");
     if (theme === "dark") {
-        updateThemeMode("light");
+        window.updateThemeMode("light");
     } else {
-        updateThemeMode("dark");
+        window.updateThemeMode("dark");
     }
 }
