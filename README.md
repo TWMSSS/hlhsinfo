@@ -1,6 +1,11 @@
 # hlhsinfo
 這是一個可以取得學校公開資料的一個類Proxy伺服器，並包含了許多官方沒有的新功能。
 
+立刻於Google Play下載  
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-tw_badge_print_generic.png" width="25%">](https://play.google.com/store/apps/details?id=ml.hlhsinfo.twa)
+
+___IOS等其他系統 可以至[hlhsinfo.ml](https://hlhsinfo.ml)安裝PWA應用___
+
 ## 特色
 
  * 可以取得學校公開資料(理論上可以在所有「欣河資訊」所製作的成績查詢網站上使用)

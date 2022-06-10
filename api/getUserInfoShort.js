@@ -66,7 +66,16 @@ async function getUserInfoShort(req, res) {
                 if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
 
                 var data = iconv.decode(body, 'big5');
-                if (isNotLogin(data)) return res.status(403).json({ message: 'You might need to login again!' });
+                try {
+                    if (isNotLogin(data)) {
+                        res.status(403).json({
+                            message: 'You might need to login again!'
+                        });
+                        return resolve(false);
+                    };
+                } catch (err) {
+                    return;
+                }
 
                 var dom = new JSDOM(data);
 
