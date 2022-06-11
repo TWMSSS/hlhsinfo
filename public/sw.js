@@ -5,13 +5,14 @@
 //
 //
 
-const VERSION = `v1.3.9-update`;
+const VERSION = `v1.3.9-update2`;
 
 const cacheFiles = [
     '/css/main.css',
     '/css/dark-var.css',
     '/css/light-var.css',
     '/js/main.js',
+    '/js/darkLight.js',
     '/js/page/home.js',
     '/js/page/404.js',
     '/js/page/profile.js',
