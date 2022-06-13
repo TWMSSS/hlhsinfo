@@ -1,5 +1,5 @@
 /*
- * Dark/Light Theme Switcher
+ * HLHSInfo Public Page Main Script
  * Copyright 2022 The HLHSInfo Authors.
  * Copyright 2022 DevSomeone Developer.
  * 
