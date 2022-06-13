@@ -1,5 +1,5 @@
 /*
- * HLHSInfo Public Page Main Script
+ * HLHSInfo Public Page Main Script.
  * Copyright 2022 The HLHSInfo Authors.
  * Copyright 2022 DevSomeone Developer.
  * 
