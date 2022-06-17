@@ -1,114 +1,18 @@
 /*
  * HLHSInfo Public Page Main Script
+ * Created by: DevSomeone <yurisakadev@gmail.com>, Muisnow <muisnowbusiness@gmail.com>
+ *
  * Copyright 2022 The HLHSInfo Authors.
  * Copyright 2022 DevSomeone Developer.
  * 
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
+// Initialize functions
 window.pageData = {};
 window.pageData.function = {};
 window.pageData.data = {};
 window.pageData.Interval = [];
-
-const messageChannel = new MessageChannel();
-
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker
-        .register('./sw.js', {
-            scope: '/'
-        })
-        .then((reg) => {
-            console.log('Registration succeeded. SW working scope is ' + reg.scope);
-        })
-        .catch((error) => {
-            console.log('Registration failed with ' + error);
-        });
-    
-    navigator.serviceWorker.onmessage = (event) => {
-        if (!event.data) return;
-        if (event.data.type === "INIT_CONVERSATION") {
-            navigator.serviceWorker.controller.postMessage({
-                type: 'VERSION'
-            });
-        } else if (event.data.type === "NEW_VERSION") {
-            alertBox(`已安裝新版本${event.data.version}，請重新啟動應用程式以套用新版本。`, "success");
-        } else if (event.data.type === "INSTALLED") {
-            alertBox(`已安裝版本${event.data.version}`, "success");
-        }
-    };
-}
-
-function createAlertBox() {
-    var toastBox = document.querySelector("#toastBox");
-    if (!toastBox) {
-        var toastBox = document.createElement("div");
-        toastBox.classList.add("toastBox");
-        toastBox.id = "toastBox";
-        document.body.appendChild(toastBox);
-    }
-
-    return toastBox;
-}
-
-function alertBox(message, type = "info") {
-    var toastID = Math.floor(Math.random() * 10000);
-    var toastBox = createAlertBox();
-    var doc = document.createElement("div");
-    doc.classList.add("toastBoxMessage");
-    doc.setAttribute("data-toast", toastID);
-    doc.innerHTML = `<p>${message}</p>`;
-
-    switch (type) {
-        case "info":
-            doc.classList.add("info");
-            break;
-        case "success":
-            doc.classList.add("success");
-            break;
-        case "error":
-            doc.classList.add("error");
-            break;
-        case "warning":
-            doc.classList.add("warning");
-            break;
-    }
-    toastBox.appendChild(doc);
-
-    setTimeout(() => {
-        var toast = document.querySelector(`[data-toast="${toastID}"]`);
-        if (!toast) return;
-        toast.remove();
-    }, 5000);
-}
-
-function setServiceWorkerConversation() {
-    navigator.serviceWorker.controller.postMessage({
-        type: 'INIT_CONVERSATION',
-    }, [messageChannel.port2]);
-    messageChannel.port1.onmessage = (event) => {
-        if (event.data.type === 'VERSION') {
-            window.pageData.data.version = event.data.payload;
-            document.querySelector("#version").innerHTML = `客戶端版本: ${window.pageData.data.version}`;
-        } else if (event.data.type === "INIT_CONVERSATION") {
-            navigator.serviceWorker.controller.postMessage({
-                type: 'VERSION',
-            });
-        }
-    };
-}
-
-function q() {
-    return new Promise((resolve, reject) => {
-        if (navigator.serviceWorker.controller) {
-            setServiceWorkerConversation();
-        } else {
-            setTimeout(async () => resolve(await q()), 1000);
-        }
-    });
-}
-q();
-
 const page = [
     {
         path: "/",
@@ -160,13 +64,113 @@ const page = [
         name: "課表查詢",
         id: "schedule"
     }
-]
+];
+
+const messageChannel = new MessageChannel();
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker
+        .register('./sw.js', {
+            scope: '/'
+        })
+        .then((reg) => {
+            console.log('Registration succeeded. SW working scope is ' + reg.scope);
+        })
+        .catch((error) => {
+            console.log('Registration failed with ' + error);
+        });
+    
+    navigator.serviceWorker.onmessage = (event) => {
+        if (!event.data) return;
+        if (event.data.type === "INIT_CONVERSATION") {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'VERSION'
+            });
+        } else if (event.data.type === "NEW_VERSION") {
+            alertBox(`已安裝新版本${event.data.version}，請重新啟動應用程式以套用新版本。`, "success");
+        } else if (event.data.type === "INSTALLED") {
+            alertBox(`已安裝版本${event.data.version}`, "success");
+        }
+    };
+}
+
+// Initialize Alert Box
+function createAlertBox() {
+    var toastBox = document.querySelector("#toastBox");
+    if (!toastBox) {
+        var toastBox = document.createElement("div");
+        toastBox.classList.add("toastBox");
+        toastBox.id = "toastBox";
+        document.body.appendChild(toastBox);
+    }
+
+    return toastBox;
+}
+
+function alertBox(message, type = "info") {
+    var toastID = Math.floor(Math.random() * 10000);
+    var toastBox = createAlertBox();
+    var doc = document.createElement("div");
+    doc.classList.add("toastBoxMessage");
+    doc.setAttribute("data-toast", toastID);
+    doc.innerHTML = `<p>${message}</p>`;
+
+    switch (type) {
+        case "info":
+            doc.classList.add("info");
+            break;
+        case "success":
+            doc.classList.add("success");
+            break;
+        case "error":
+            doc.classList.add("error");
+            break;
+        case "warning":
+            doc.classList.add("warning");
+            break;
+    }
+    toastBox.appendChild(doc);
+
+    setTimeout(() => {
+        var toast = document.querySelector(`[data-toast="${toastID}"]`);
+        if (!toast) return;
+        toast.remove();
+    }, 5000);
+}
+
+// Initialize Service Worker Conversation
+function setServiceWorkerConversation() {
+    navigator.serviceWorker.controller.postMessage({
+        type: 'INIT_CONVERSATION',
+    }, [messageChannel.port2]);
+    messageChannel.port1.onmessage = (event) => {
+        if (event.data.type === 'VERSION') {
+            window.pageData.data.version = event.data.payload;
+            document.querySelector("#version").innerHTML = `客戶端版本: ${window.pageData.data.version}`;
+        } else if (event.data.type === "INIT_CONVERSATION") {
+            navigator.serviceWorker.controller.postMessage({
+                type: 'VERSION',
+            });
+        }
+    };
+}
+
+function q() {
+    return new Promise((resolve, reject) => {
+        if (navigator.serviceWorker.controller) {
+            setServiceWorkerConversation();
+        } else {
+            setTimeout(async () => resolve(await q()), 1000);
+        }
+    });
+}
+q();
 
 function changePathName(name) {
     if (history.length > 1 && window.history.state !== null && location.pathname !== "/") name = `<a href='#' onclick='goPage("/");'>&lt;回首頁</a> ${name}`;
     document.querySelector("#pathName").innerHTML = name;
 }
 
+// Initialize Task Box.
 function createTaskBox() {
     // Create a progressing task box
     var taskBox = document.createElement("div");

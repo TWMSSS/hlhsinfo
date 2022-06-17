@@ -1,3 +1,14 @@
+/*
+ * HLHSInfo Server API Definition
+ * Created by: DevSomeone <yurisakadev@gmail.com>
+ *
+ * Copyright 2022 The HLHSInfo Authors.
+ * Copyright 2022 DevSomeone Developer.
+ * 
+ * Repository: https://github.com/DevSomeone/hlhsinfo
+ */
+
+// Import APIs
 const { getLoginInfo } = require('./getLoginInfo.js');
 const { getLoginCaptcha } = require('./getLoginCaptcha.js');
 const { login } = require('./login.js');

@@ -1,3 +1,14 @@
+/*
+ * HLHSInfo Server Main Script
+ * Created by: DevSomeone <yurisakadev@gmail.com>, Muisnow <muisnowbusiness@gmail.com>
+ *
+ * Copyright 2022 The HLHSInfo Authors.
+ * Copyright 2022 DevSomeone Developer.
+ * 
+ * Repository: https://github.com/DevSomeone/hlhsinfo
+ */
+
+// Modules definition
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -6,6 +17,7 @@ const bodyParser = require('body-parser');
 const { generateKeyPairSync } = require('crypto');
 const cros = require('cors');
 
+// Initilize the server
 require('dotenv').config();
 
 const PORT = global.PORT = process.env.PORT || 1156;
@@ -78,7 +90,6 @@ global.sharedScores.scores.forEach((e, index) => {
     }, e.expiredTimestamp - Date.now());
 });
 
-
 app.listen(PORT, () => {
     console.log("".padStart(60, '='));
     console.log("\x1b[32m\x1b[5m" + "[Server Started".padStart(37, " ") + "]\x1b[0m");
@@ -88,6 +99,7 @@ app.listen(PORT, () => {
     console.log();
     console.log("".padStart(60, '='));
 });
+// End of Initilize the server
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -95,6 +107,7 @@ app.use(cros());
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
+// API Routes
 app.get("/api", (req, res) => res.sendFile(__dirname + "/api/document.html"));
 app.get("/api/openapi.json", (req, res) => res.sendFile(__dirname + "/api/openapi.json"));
 
@@ -115,6 +128,7 @@ app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
 app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
 
+// Score Share Redirect
 app.get("/s/:sharedID", (req, res) => {
     res.redirect(`/score?shared=${req.params.sharedID}`);
 });

@@ -1,5 +1,7 @@
 /*
  * Dark/Light Theme Switcher
+ * Created by: DevSomeone <yurisakadev@gmail.com>
+ *
  * Copyright 2022 The HLHSInfo Authors.
  * Copyright 2022 DevSomeone Developer.
  * 
@@ -9,8 +11,8 @@
 "use strict";
 
 (() => {
-    var _darkCSS = document.querySelectorAll(`link[rel=stylesheet][media*=prefers-color-scheme][media*="dark"]`);
-    var _lightCSS = document.querySelectorAll(`link[rel=stylesheet][media*=prefers-color-scheme][media*="light"]`);
+    const _darkCSS = document.querySelectorAll(`link[rel=stylesheet][media*=prefers-color-scheme][media*="dark"]`);
+    const _lightCSS = document.querySelectorAll(`link[rel=stylesheet][media*=prefers-color-scheme][media*="light"]`);
 
     window.updateThemeMode = (mode) => {
         if (mode === "light") {

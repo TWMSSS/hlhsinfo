@@ -1,9 +1,12 @@
-//
-//
-// Service Worker for HLHSInfo
-// Created by: DevSomeone <yurisakadev@gmail.com>
-//
-//
+/*
+ * Service Worker for HLHSInfo
+ * Created by: DevSomeone <yurisakadev@gmail.com>
+ * 
+ * Copyright 2022 The HLHSInfo Authors.
+ * Copyright 2022 DevSomeone Developer.
+ *
+ * Repository: https://github.com/DevSomeone/hlhsinfo
+ */
 
 const VERSION = `v1.3.9-update2`;
 
