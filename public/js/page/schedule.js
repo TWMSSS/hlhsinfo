@@ -5,6 +5,7 @@ window.execute = async () => {
     var schedule = new URL(location.href).searchParams.get("schedule");
     var [className, teacher] = schedule.split("-");
     var dbKey = className + [...teacher].map(e => e.charCodeAt().toString(16)).join("");
+    var isExpired = false;
 
     var idb = window.indexedDB ||
         window.mozIndexedDB ||
@@ -114,6 +115,10 @@ window.execute = async () => {
                     end: new Date(res.data.time.end).getTime()
                 }
             });
+            var expried = new Date(res.data.time.end).getTime();
+            if (expried <= Date.now()) {
+                isExpired = true;
+            }
         });
         
     }
@@ -219,6 +224,7 @@ window.execute = async () => {
         pageElement.innerHTML = `
             <div class="schedule">
                 <h1 class="pageTitle">當前課程</h1>
+                ${isExpired ? "<p style='color: orange;font-weight: 600;font-size: 1.5rem;'>注意: 這個課程表已過期了!</p>" : ""}
                 <div class="profileInfo">
                     <div class="dataContent">
                         ${classNow}

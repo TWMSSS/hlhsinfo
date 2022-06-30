@@ -131,6 +131,7 @@ window.execute = async () => {
                 <h1 class="pageTitle">曾經登入的帳號</h1>
                 <div class="loginForm">
                     ${reslogin}
+                </div>
             </div>
         `;
 
@@ -261,21 +262,19 @@ window.execute = async () => {
                 console.log(err);
             });
         });
-        function a() {
-            loadScript("/js/page/extra/scheduleForHome.js", async (callback) => {
-                var classDt = await callback;
-                var classNow = "";
-                if (classDt.classNow.section) {
-                    classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
-                }
-                if (classDt.classNext.section) {
-                    classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
-                }
-                if (classDt.classNow.section || classDt.classNext.section) {
-                    classNow = `<h1 class="pageTitle">課程</h1><div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
-                }
-                document.querySelector("#schedule").innerHTML = classNow;
-            });
+        async function a() {
+            var classDt = await (await loadScript("/js/page/extra/scheduleForHome.js"))();
+            var classNow = "";
+            if (classDt.classNow.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
+            }
+            if (classDt.classNext.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
+            }
+            if (classDt.classNow.section || classDt.classNext.section) {
+                classNow = `<h1 class="pageTitle">課程</h1><div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
+            }
+            document.querySelector("#schedule").innerHTML = classNow;
         }
         a();
         window.pageData.Interval.push(setInterval(a, 60000));
@@ -343,28 +342,27 @@ window.execute = async () => {
                     <button type="button" onclick="goPage('/lack');">查詢缺曠紀錄</button>
                     <button type="button" onclick="goPage('/scheduleList');">查詢課表</button>
                     <button type="button" onclick="goPage('/compare');">比較歷史成績</button>
+                    <button type="button" style="background-color: green;" onclick="goPage('/donation');">支持開發者!</button>
                     <button type="button" style="background-color: red;" onclick="sessionStorage.removeItem('auth');goPage('/');">登出</button>
                 </div>
             </div>
         `;
-        function a() {
-            loadScript("/js/page/extra/scheduleForHome.js", async (callback) => {
-                var classDt = await callback;
-                var classNow = "";
-                if (classDt.classNow.section) {
-                    classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
-                }
-                if (classDt.classNext.section) {
-                    classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
-                }
-                if (classDt.classNow.section || classDt.classNext.section) {
-                    classNow = `<div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
-                }
-                if (!classDt.classNow.section && !classDt.classNext.section) {
-                    classNow += `<div class="dataContent"><div class="dataBox" onclick="goPage('/scheduleList');" style="cursor: pointer"><span class="dataTitle">課程</span><span class="dataValue">請先選擇你的課程</span></div></div>`;
-                }
-                document.querySelector("#schedule").innerHTML = classNow;
-            });
+        async function a() {
+            var classDt = await (await loadScript("/js/page/extra/scheduleForHome.js"))();
+            var classNow = "";
+            if (classDt.classNow.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">本節課程 (${classDt.classNow.section})</span><span class="dataValue">${classDt.classNow.class}</span>${classDt.classNow.teacher}</div>`;
+            }
+            if (classDt.classNext.section) {
+                classNow += `<div class="dataBox"><span class="dataTitle">下節課程 (${classDt.classNext.section})</span><span class="dataValue">${classDt.classNext.class}</span>${classDt.classNext.teacher}</div>`;
+            }
+            if (classDt.classNow.section || classDt.classNext.section) {
+                classNow = `<div class="dataContent">${classNow}</div><h4>詳情請看<a href="/schedule?schedule=${classDt.info.className}-${classDt.info.teacher}">課程表</a></h4>`;
+            }
+            if (!classDt.classNow.section && !classDt.classNext.section) {
+                classNow += `<div class="dataContent"><div class="dataBox" onclick="goPage('/scheduleList');" style="cursor: pointer"><span class="dataTitle">課程</span><span class="dataValue">請先選擇你的課程</span></div></div>`;
+            }
+            document.querySelector("#schedule").innerHTML = classNow;
         }
         a();
         window.pageData.Interval.push(setInterval(a, 60000));

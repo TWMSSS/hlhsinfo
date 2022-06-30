@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.3.9-update2`;
+const VERSION = `v1.4.2`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -26,7 +26,9 @@ const cacheFiles = [
     '/js/page/rewandpun.js',
     '/js/page/scheduleList.js',
     '/js/page/schedule.js',
+    '/js/page/donation.js',
     '/js/page/extra/scheduleForHome.js',
+    '/js/page/extra/inAppPurchase.js',
     '/img/logo.png',
     '/index.html',
     '/manifest.json',
