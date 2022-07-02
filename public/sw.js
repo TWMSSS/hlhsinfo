@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.5.0-release`;
+const VERSION = `v1.5.3-release`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -43,18 +43,34 @@ var oldVersion = null;
 let getConvePort;
 var isInstallNew = false;
 var isUpdating = false;
-var latestNotify = null;
+var isNotifyFetched = false;
+
+var idb = globalThis.indexedDB ||
+    globalThis.mozIndexedDB ||
+    globalThis.webkitIndexedDB;
+
+var db;
+
+(async () => {
+    await initIndexedDB();
+})();
 
 function getNotify() {
-    fetch("/api/notify").then(e => e.json()).then(e => {
-        var data = e.slice(-1)[0];
-        if (!latestNotify || data.id !== latestNotify.id && data.expire > Date.now()) {
-            self.registration.showNotification(data.title, {
-                body: data.description,
-                icon: '/img/logo.png'
-            });
-            latestNotify = data;
-        }
+    return new Promise((resolve, reject) => {
+        fetch("/api/notify").then(e => e.json()).then(async e => {
+            var data = e.slice(-1)[0];
+            var notifyData = await getNotifyDB();
+            var lastNotify = notifyData.slice(-1)[0];
+            if (notifyData.length === 0 || data.id !== lastNotify.id && data.expire > Date.now()) {
+                self.registration.showNotification(data.title, {
+                    body: data.description,
+                    icon: '/img/logo.png'
+                });
+                addNotifyBD(data);
+            }
+            isNotifyFetched = true;
+            resolve(true);
+        });
     });
 }
 
@@ -82,7 +98,7 @@ self.addEventListener('activate', async (event) => {
         );
     });
     self.clients.claim();
-    getNotify();
+    await getNotify();
     var t = setTimeout(() => {
         if (isInstallNew && oldVersion !== null) {
             self.clients.matchAll().then((clients) => {
@@ -124,7 +140,7 @@ self.addEventListener('fetch', (event) => {
     );
 });
 
-self.addEventListener('message', (event) => {
+self.addEventListener('message', async (event) => {
     if (!event.data) return;
     if (event.data.type === 'INIT_CONVERSATION') {
         getConvePort = event.ports[0];
@@ -140,11 +156,107 @@ self.addEventListener('message', (event) => {
         });
     }
     if (event.data.type === "NOTIFY") {
+        function waitForFetched() {
+            return new Promise(async (resolve, reject) => {
+                if (isNotifyFetched) {
+                    resolve();
+                } else {
+                    setTimeout(async () => resolve(await waitForFetched()), 300);
+                }
+            });
+        }
+        await waitForFetched();
+        var notifyData = (await getNotifyDB()).slice(-1)[0];
         getConvePort.postMessage({
             type: "NOTIFY",
-            payload: latestNotify
+            payload: notifyData
         });
     }
 });
+
+async function initIndexedDB() {
+    function a() {
+        return new Promise((resolve, reject) => {
+            var request = idb.open("serviceWorker", 1);
+            var t = false;
+            request.onupgradeneeded = (upgradeDb) => {
+                t = true;
+                db = request.result;
+                if (!db.objectStoreNames.contains('notify')) {
+                    var objectStore = upgradeDb.currentTarget.result.createObjectStore('notify', { keyPath: "notifyid", autoIncrement: true });
+                    objectStore.createIndex('notifyid', 'notifyid', { unique: true });
+                    objectStore.createIndex('title', 'title', { unique: false });
+                    objectStore.createIndex('description', 'description', { unique: false });
+                    objectStore.createIndex('expire', 'expire', { unique: false });
+                }
+                setTimeout(() => {
+                    return resolve(true);
+                }, 500);
+            };
+            request.onsuccess = (event) => {
+                db = request.result;
+                setTimeout(() => {
+                    return resolve(true);
+                }, 500);
+            };
+            request.onerror = (event) => {
+                console.log(event)
+            };
+        });
+    }
+    await a();
+    return db;
+}
+
+async function addNotifyBD(data) {
+    var transaction = db.transaction(["notify"], "readwrite");
+    objectStore = transaction.objectStore("notify");
+    objectStore.add({
+        notifyid: data.id,
+        title: data.title,
+        description: data.description,
+        expire: data.expire,
+        showInHome: data.showInHome
+    });
+
+    return true;
+}
+
+async function getNotifyDB(dbKey) {
+    function b() {
+        return new Promise((resolve, reject) => {
+            var transaction = db.transaction(["notify"], "readwrite");
+
+            transaction.onerror = (event) => {
+                console.error(event)
+            };
+
+            objectStore = transaction.objectStore("notify");
+            try {
+                if (!dbKey) {
+                    var data = objectStore.getAll();
+                } else {
+                    var data = objectStore.get(dbKey);
+                }
+            } catch (e) {
+                return resolve(false);
+            }
+            data.onsuccess = (event) => {
+                if (event.target.result) {
+                    return resolve(event.target.result);
+                };
+                resolve(false);
+            }
+            data.onerror = (event) => {
+                resolve(false);
+            }
+        });
+    }
+    var dbStatus = await b();
+    if (dbStatus) {
+        return dbStatus;
+    }
+    return false;
+}
 
 setInterval(getNotify, 3600000)

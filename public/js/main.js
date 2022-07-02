@@ -326,8 +326,10 @@ window.onload = async () => {
     document.querySelector(".theme-icon").addEventListener("click", () => {
         toggleLocalStorageItem();
     });
+    
+    loadPage(location.pathname);
 
-    if (document.referrer.includes('android-app://ml.hlhsinfo.twa') || localStorage.getItem("billingTesting")) // remove this line if you want to create your own hlhsinfo.
+    if (document.referrer.includes('android-app://ml.hlhsinfo.twa') && navigator.onLine || localStorage.getItem("billingTesting")) // remove this line if you want to create your own hlhsinfo.
         if ('getDigitalGoodsService' in window) {
             window.goodsService = await window.getDigitalGoodsService('https://play.google.com/billing');
             if (window.goodsService) {
@@ -335,8 +337,7 @@ window.onload = async () => {
                 window.products = itemDetails;
             }
         }
-
-    loadPage(location.pathname);
+    
     loadScript("/js/page/extra/inAppPurchase.js");
     loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js");  // For some functionalities of HMB Module
 
