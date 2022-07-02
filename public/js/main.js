@@ -163,7 +163,7 @@ function setServiceWorkerConversation() {
             });
         }
         if (event.data.type === "NOTIFY") {
-            if (event.data.payload.showInHome && event.data.payload.expire > Date.now()) {
+            if (event.data && event.data.payload.showInHome && event.data.payload.expire > Date.now()) {
                 notify(event.data.payload.showInHome);
             }
         }

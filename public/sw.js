@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.5.3-release`;
+const VERSION = `v1.5.5-release`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -44,6 +44,8 @@ let getConvePort;
 var isInstallNew = false;
 var isUpdating = false;
 var isNotifyFetched = false;
+var isNotifyFetching = false;
+var isInitDB = false;
 
 var idb = globalThis.indexedDB ||
     globalThis.mozIndexedDB ||
@@ -56,12 +58,24 @@ var db;
 })();
 
 function getNotify() {
-    return new Promise((resolve, reject) => {
+    if (isNotifyFetching) return;
+    return new Promise(async (resolve, reject) => {
+        isNotifyFetching = true;
+        function waitForDBInit() {
+            return new Promise(async (resolve, reject) => {
+                if (isInitDB) {
+                    resolve();
+                } else {
+                    setTimeout(async () => resolve(await waitForDBInit()), 300);
+                }
+            });
+        }
+        await waitForDBInit();
         fetch("/api/notify").then(e => e.json()).then(async e => {
             var data = e.slice(-1)[0];
             var notifyData = await getNotifyDB();
             var lastNotify = notifyData.slice(-1)[0];
-            if (notifyData.length === 0 || data.id !== lastNotify.id && data.expire > Date.now()) {
+            if (notifyData.length === 0 || data.id !== lastNotify.notifyid && data.expire > Date.now()) {
                 self.registration.showNotification(data.title, {
                     body: data.description,
                     icon: '/img/logo.png'
@@ -69,6 +83,7 @@ function getNotify() {
                 addNotifyBD(data);
             }
             isNotifyFetched = true;
+            isNotifyFetching = false;
             resolve(true);
         });
     });
@@ -162,6 +177,7 @@ self.addEventListener('message', async (event) => {
                     resolve();
                 } else {
                     setTimeout(async () => resolve(await waitForFetched()), 300);
+                    getNotify();
                 }
             });
         }
@@ -190,12 +206,14 @@ async function initIndexedDB() {
                     objectStore.createIndex('expire', 'expire', { unique: false });
                 }
                 setTimeout(() => {
+                    isInitDB = true;
                     return resolve(true);
                 }, 500);
             };
             request.onsuccess = (event) => {
                 db = request.result;
                 setTimeout(() => {
+                    isInitDB = true;
                     return resolve(true);
                 }, 500);
             };
