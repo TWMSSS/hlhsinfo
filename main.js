@@ -128,6 +128,8 @@ app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
 app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
 
+app.get("/api/notify", (req, res) => res.sendFile(__dirname + "/notify.json"));
+
 // Score Share Redirect
 app.get("/s/:sharedID", (req, res) => {
     res.redirect(`/score?shared=${req.params.sharedID}`);

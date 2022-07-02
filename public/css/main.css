@@ -358,6 +358,23 @@ button:active {
     margin-left: 15px;
 }
 
+#notify .notification {
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #e67600;
+    margin: 15px;
+}
+
+#notify .notification * {
+    color: #fff;
+}
+
+#notify .notification::before {
+    content: "\f06a";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
 .toastBox {
     display: block;
     position: fixed;

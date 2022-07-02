@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.4.2`;
+const VERSION = `v1.4.3`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -43,6 +43,20 @@ var oldVersion = null;
 let getConvePort;
 var isInstallNew = false;
 var isUpdating = false;
+var latestNotify = null;
+
+function getNotify() {
+    fetch("/api/notify").then(e => e.json()).then(e => {
+        var data = e.slice(-1)[0];
+        if (!latestNotify || data.id !== latestNotify.id && data.expire > Date.now()) {
+            self.registration.showNotification(data.title, {
+                body: data.description,
+                icon: '/img/logo.png'
+            });
+            latestNotify = data;
+        }
+    });
+}
 
 self.addEventListener('install', async (event) => {
     self.skipWaiting();
@@ -68,6 +82,7 @@ self.addEventListener('activate', async (event) => {
         );
     });
     self.clients.claim();
+    getNotify();
     var t = setTimeout(() => {
         if (isInstallNew && oldVersion !== null) {
             self.clients.matchAll().then((clients) => {
@@ -124,4 +139,12 @@ self.addEventListener('message', (event) => {
             payload: oldVersion || VERSION
         });
     }
+    if (event.data.type === "NOTIFY") {
+        getConvePort.postMessage({
+            type: "NOTIFY",
+            payload: latestNotify
+        });
+    }
 });
+
+setInterval(getNotify, 3600000)

@@ -90,9 +90,11 @@ if ('serviceWorker' in navigator) {
             navigator.serviceWorker.controller.postMessage({
                 type: 'VERSION'
             });
-        } else if (event.data.type === "NEW_VERSION") {
+        }
+        if (event.data.type === "NEW_VERSION") {
             alertBox(`已安裝新版本${event.data.version}，請重新啟動應用程式以套用新版本。`, "success");
-        } else if (event.data.type === "INSTALLED") {
+        }
+        if (event.data.type === "INSTALLED") {
             alertBox(`已安裝版本${event.data.version}`, "success");
         }
     };
@@ -151,10 +153,19 @@ function setServiceWorkerConversation() {
         if (event.data.type === 'VERSION') {
             window.pageData.data.version = event.data.payload;
             document.querySelector("#version").innerHTML = `客戶端版本: ${window.pageData.data.version}`;
-        } else if (event.data.type === "INIT_CONVERSATION") {
+        }
+        if (event.data.type === "INIT_CONVERSATION") {
             navigator.serviceWorker.controller.postMessage({
                 type: 'VERSION',
             });
+            navigator.serviceWorker.controller.postMessage({
+                type: 'NOTIFY',
+            });
+        }
+        if (event.data.type === "NOTIFY") {
+            if (event.data.payload.showInHome && event.data.payload.expire > Date.now()) {
+                notify(event.data.payload.showInHome);
+            }
         }
     };
 }
@@ -239,6 +250,13 @@ function toPageTop() {
     window.scrollTo(0, 0);
 }
 
+function notify(message) {
+    document.querySelector("#notify").innerHTML = `
+    <div class="notification">
+        <span>${message}</span>
+    </div>`;
+}
+
 async function loadScript(url) {
     return new Promise((resolve, reject) => {
         fetch(url).then(res => res.text()).then(async res => {
@@ -313,15 +331,23 @@ window.onload = async () => {
         if ('getDigitalGoodsService' in window) {
             window.goodsService = await window.getDigitalGoodsService('https://play.google.com/billing');
             if (window.goodsService) {
-                const itemDetails = await window.goodsService.getDetails(['donation30', 'donation70', 'donation120']);
+                const itemDetails = await window.goodsService.getDetails(['donation30', 'donation70', 'donation120', 'donationm', 'donationy']);
                 window.products = itemDetails;
             }
         }
 
     loadPage(location.pathname);
     loadScript("/js/page/extra/inAppPurchase.js");
-
     loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js");  // For some functionalities of HMB Module
+
+    // require for the notification permission
+    if ('Notification' in window) {
+        Notification.requestPermission((permission) => {
+            if (permission === "denied" || permission === "default") {
+                alertBox("您未開啟通知權限，可能會錯過一些重要通知。", "warning");
+            }
+        });
+    }
 }
 
 window.onpopstate = (event) => {
