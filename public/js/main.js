@@ -313,7 +313,7 @@ document.addEventListener("click", event => {
         var url = ele.href; 
         if (url === undefined || url === "" || url === null || url === location.href + "#" || url === location.href) return;
         var urlObject = new URL(url);
-        if (urlObject.host === window.location.host) {
+        if (urlObject.host === window.location.host && !urlObject.pathname.endsWith(".html")) {
             goPage(urlObject.pathname + urlObject.search);
             return;
         }

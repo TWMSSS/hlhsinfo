@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.5.5-release`;
+const VERSION = `v1.5.6-release`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -30,7 +30,12 @@ const cacheFiles = [
     '/js/page/extra/scheduleForHome.js',
     '/js/page/extra/inAppPurchase.js',
     '/img/logo.png',
+    '/img/deny.webp',
+    '/img/deny-large.webp',
+    '/img/operational.webp',
+    '/img/operational-large.webp',
     '/index.html',
+    '/status.html',
     '/manifest.json',
     '/',
 

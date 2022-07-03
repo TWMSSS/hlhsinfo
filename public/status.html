@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Service Status</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                font-family: poppins,inter,-apple-system,BlinkMacSystemFont,segoe ui,Roboto,helvetica neue,Arial,noto sans,sans-serif,apple color emoji,segoe ui emoji,segoe ui symbol,noto color emoji;
+                word-break: break-word;
+            }
+            body {
+                font-family: sans-serif;
+                font-size: 14px;
+                line-height: 1.5;
+                color: #fff;
+                background-color: #182230;
+            }
+            header {
+                display: flex;
+                width: 100%;
+                height: 150px;
+                align-items: center;
+                justify-content: center;
+            }
+            header .innerHeader {
+                display: flex;
+                width: 80%;
+                max-width: 1000px;
+                height: 100%;
+                align-items: center;
+            }
+            header .innerHeader .logo {
+                display: flex;
+                align-items: center;
+            }
+            header .innerHeader .logo *:not(:last-child)::after {
+                content: "|";
+                margin: 0 10px;
+                font-weight: 100;
+                color: #798dbd;
+            }
+            header .innerHeader .logo span {
+                display: inline;
+                font-size: 1.5rem;
+                color: #798dbd;
+            }
+            section {
+                min-height: calc(100vh - 250px);
+                display: flex;
+                justify-content: center;
+                padding: 15px;
+            }
+            footer {
+                height: 100px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-top: 1px solid #2f384e;
+                color: #2f384e;
+            }
+            section .innerSection {
+                margin-top: 15px;
+                width: 80%;
+                max-width: 800px;
+            }
+            .ctr {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                margin-bottom: 60px;
+            }
+            h1 {
+                font-size: 2.5rem;
+                margin-bottom: 15px;
+            }
+            .ctr span {
+                font-weight: 800;
+                color: #798dbd;
+            }
+            .status {
+                background-color: #fff;
+                border-radius: 15px;
+                color: #000;
+                padding: 15px 30px;
+            }
+            .statusList {
+                margin-top: 15px;
+            }
+            .statusBox {
+                margin: 5px;
+                padding: 15px;
+            }
+            .statusBox:not(:last-child) {
+                border-bottom: 1px solid #b5b5b5;
+            }
+        </style>
+        <script>
+            // jdfreder - pingjs
+            // https://github.com/jdfreder/pingjs/blob/master/ping.js
+
+            // The following lines allow the ping function to be loaded via commonjs, AMD,
+            // and script tags, directly into window globals.
+            // Thanks to https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+            (function (root, factory) { if (typeof define === 'function' && define.amd) { define([], factory); } else if (typeof module === 'object' && module.exports) { module.exports = factory(); } else { root.ping = factory(); }}(this, function () {
+                /**
+                 * Creates and loads an image element by url.
+                 * @param  {String} url
+                 * @return {Promise} promise that resolves to an image element or
+                 *                   fails to an Error.
+                 */
+                function request_image(url) {
+                    return new Promise(function(resolve, reject) {
+                        var img = new Image();
+                        img.onload = function() { resolve(img); };
+                        img.onerror = function() { reject(url); };
+                        img.src = url + '?random-no-cache=' + Math.floor((1 + Math.random()) * 0x10000).toString(16);
+                    });
+                }
+
+                /**
+                 * Pings a url.
+                 * @param  {String} url
+                 * @param  {Number} multiplier - optional, factor to adjust the ping by.  0.3 works well for HTTP servers.
+                 * @return {Promise} promise that resolves to a ping (ms, float).
+                 */
+                function ping(url, multiplier) {
+                    return new Promise(function(resolve, reject) {
+                        var start = (new Date()).getTime();
+                        var response = function() { 
+                            var delta = ((new Date()).getTime() - start);
+                            delta *= (multiplier || 1);
+                            resolve(delta); 
+                        };
+                        request_image(url).then(response).catch(response);
+                        
+                        // Set a timeout for max-pings, 5s.
+                        setTimeout(function() { reject(Error('Timeout')); }, 5000);
+                    });
+                }
+                
+                return ping;
+            }));
+        </script>
+        <script>
+            window.onload = async () => {
+                var mainStatus = document.querySelector('#mainStatus');
+                var mainPing = document.querySelector('#mainPing');
+                var shinerStatus = document.querySelector("#shinerStatus");
+                var shinerPing = document.querySelector("#shinerPing");
+                var homeStatus = document.querySelector("#homeStatus");
+                var homePing = document.querySelector("#homePing");
+
+                var status = [
+                    {
+                        type: "offline",
+                        value: '<img src="/img/deny.webp" width="30"> Offline'
+                    },
+                    {
+                        type: "operating",
+                        value: '<img src="/img/operational.webp" width="30"> Operational'
+                    },
+                    {
+                        type: "offline",
+                        value: '<img src="/img/deny.webp" width="30"> You are offline'
+                    }
+                ];
+                var down = 0;
+
+                if (!navigator.onLine) {
+                    mainStatus.innerHTML = status[0].value;
+                    mainPing.innerHTML = "N/A";
+                    shinerStatus.innerHTML = status[0].value;
+                    shinerPing.innerHTML = "N/A";
+                    homeStatus.innerHTML = status[0].value;
+                    homePing.innerHTML = "N/A";
+                    down = 1;
+                }
+
+                function pingMain() {
+                    return new Promise((resolve, reject) => {
+                        if (!navigator.onLine) return resolve();
+                        ping('/').then((ms) => {
+                            mainStatus.innerHTML = status[1].value;
+                            mainPing.innerHTML = ms + 'ms';
+                            resolve(ms);
+                        }).catch((err) => {
+                            mainStatus.innerHTML = status[0].value;
+                            mainPing.innerHTML = 'N/A';
+                            down++;
+                            resolve(err);
+                        });
+                    });
+                }
+
+                function pingRemote() {
+                    return new Promise(async (resolve, reject) => {
+                        if (!navigator.onLine) return resolve();
+                        await fetch("/api/status").then(e => e.json()).then(data => {
+                            var data = data.data;
+                            
+                            if (data.remote.shiner.online) {
+                                shinerStatus.innerHTML = status[1].value;
+                                shinerPing.innerHTML = data.remote.shiner.ping.end.toFixed() + 'ms';
+                                resolve(data.ping);
+                            } else {
+                                shinerStatus.innerHTML = status[0].value;
+                                shinerPing.innerHTML = 'N/A';
+                                down++;
+                                resolve();
+                            }
+
+                            if (data.remote.homePage.online) {
+                                homeStatus.innerHTML = status[1].value;
+                                homePing.innerHTML = data.remote.homePage.ping.end.toFixed() + 'ms';
+                                resolve(data.ping);
+                            } else {
+                                homeStatus.innerHTML = status[0].value;
+                                homePing.innerHTML = 'N/A';
+                                down++;
+                                resolve();
+                            }
+                            resolve(data);
+                        }).catch(err => {
+                            shinerStatus.innerHTML = status[2].value;
+                            shinerPing.innerHTML = 'N/A';
+                            homeStatus.innerHTML = status[2].value;
+                            homePing.innerHTML = 'N/A';
+                            down++;
+                            resolve(err);
+                        });
+                    });
+                }
+
+                Promise.all([pingMain(), pingRemote()]).then(e => {
+                    var summary = document.querySelector("#summary");
+                    if (down > 0) {
+                        summary.innerHTML = `
+                            <img src="/img/deny-large.webp" alt="" width="150" height="150">
+                            <h1>Some services are down</h1>
+                            <span>${Date().toString()}</span>
+                        `;
+                    } else {
+                        summary.innerHTML = `
+                            <img src="/img/operational-large.webp" alt="" width="150" height="150">
+                            <h1>All services are operating.</h1>
+                        `;
+                    }
+                });
+
+                setInterval(pingMain, 3000);
+            }
+        </script>
+    </head>
+    <body>
+        <header>
+            <div class="innerHeader">
+                <div class="logo">
+                    <h1>花中查詢</h1>
+                    <span>Status</span>
+                </div>
+            </div>
+        </header>
+        <section>
+            <div class="innerSection">
+                <div class="ctr" id="summary">
+                    
+                </div>
+                <div class="status">
+                    <h1 style="font-weight: 200;">All Status</h1>
+                    <div class="statusList">
+                        <div class="statusBox">
+                            <div class="statusHeader">
+                                <h3>hlhsinfo.ml</h3>
+                                <h1 id="mainStatus"></h1>
+                            </div>
+                            <div class="statusBody">
+                                <span>Ping <span id="mainPing"></span></span>
+                            </div>
+                        </div>
+                        <div class="statusBox">
+                            <div class="statusHeader">
+                                <h3>Remote: shiner.hlhs.hlc.edu.tw</h3>
+                                <h1 id="shinerStatus"></h1>
+                            </div>
+                            <div class="statusBody">
+                                <span>Ping <span id="shinerPing"></span></span>
+                            </div>
+                        </div>
+                        <div class="statusBox">
+                            <div class="statusHeader">
+                                <h3>Remote: www.hlhs.hlc.edu.tw</h3>
+                                <h1 id="homeStatus"></h1>
+                            </div>
+                            <div class="statusBody">
+                                <span>Ping <span id="homePing"></span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer>
+            <div class="innerFooter">
+                <span>HLHSInfo Status</span>
+            </div>
+        </footer>
+    </body>
+</html>
