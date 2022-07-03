@@ -24,6 +24,7 @@ const { getShared } = require('./getShared.js');
 const { getScoreImg } = require('./getScoreImg.js');
 const { getScheduleList } = require('./getScheduleList.js');
 const { getSchedule } = require('./getSchedule.js');
+const { status } = require('./status.js');
 
 module.exports = {
     getLoginInfo,
@@ -40,5 +41,6 @@ module.exports = {
     getShared,
     getScoreImg,
     getScheduleList,
-    getSchedule
+    getSchedule,
+    status
 }

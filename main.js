@@ -36,7 +36,8 @@ const urls = global.urls = {
     allScores: defaultURL + "selection_student/grade_chart_all.asp",
     scheduleList: defaultURL + "student/select_preceptor.asp?action=open_sel",
     schedule: defaultURL + "student/school_class_tabletime.asp?teacher_classnumber=%class%&teacher_name=%teacher%",
-}
+};
+const homePage = global.homePage = "https://www.hlhs.hlc.edu.tw/";
 
 if (!fs.existsSync("storaged")) {  
     fs.mkdirSync("storaged");
@@ -129,6 +130,7 @@ app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
 app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
 
 app.get("/api/notify", (req, res) => res.sendFile(__dirname + "/notify.json"));
+app.get("/api/status", (req, res) => api.status(req, res));
 
 // Score Share Redirect
 app.get("/s/:sharedID", (req, res) => {
