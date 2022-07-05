@@ -361,18 +361,21 @@ button:active {
 #notify .notification {
     padding: 15px;
     border-radius: 5px;
-    background-color: #e67600;
+    background-color: var(--color-notify-bg);
     margin: 15px;
 }
 
-#notify .notification * {
-    color: #fff;
+#notify .notification *,
+#notify .notification *:before,
+#notify .notification *:after {
+    color: var(--color-notify-font);
 }
 
 #notify .notification::before {
     content: "\f06a";
     font-family: "Font Awesome 6 Free";
     font-weight: 900;
+    color: var(--color-notify-font);
 }
 
 .toastBox {
