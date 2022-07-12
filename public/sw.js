@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.5.6-release`;
+const VERSION = `v1.5.8-release`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -27,6 +27,7 @@ const cacheFiles = [
     '/js/page/scheduleList.js',
     '/js/page/schedule.js',
     '/js/page/donation.js',
+    '/js/page/statement.js',
     '/js/page/extra/scheduleForHome.js',
     '/js/page/extra/inAppPurchase.js',
     '/img/logo.png',
@@ -195,6 +196,12 @@ self.addEventListener('message', async (event) => {
     }
 });
 
+self.addEventListener('sync', function (event) {
+    if (event.tag === 'syncNotify') {
+        event.waitUntil(getNotify());
+    }
+});
+
 async function initIndexedDB() {
     function a() {
         return new Promise((resolve, reject) => {
@@ -282,4 +289,4 @@ async function getNotifyDB(dbKey) {
     return false;
 }
 
-setInterval(getNotify, 3600000)
+// setInterval(getNotify, 3600000)

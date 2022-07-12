@@ -197,14 +197,14 @@ label {
 }
 
 input {
-    width: 100%;
+    width: calc(100% - 30px);
     border: 0;
     line-height: 40px;
     border-bottom: 2px #707070 solid;
     color: var(--color-input-text);
     background-color: var(--color-input-bg);
     font-size: 20px;
-    padding: 0 0 2px 15px;
+    padding: 2px 15px;
     margin: 15px 0;
 }
 
@@ -239,7 +239,7 @@ button {
     border: 0;
     color: var(--color-button-text);
     border-radius: 5px;
-    width: calc(100% - 15px);
+    width: calc(100% - 30px);
     height: 50px;
     font-size: 20px;
     margin: 15px;

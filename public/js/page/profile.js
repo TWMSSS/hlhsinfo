@@ -32,7 +32,7 @@ window.execute = async () => {
         list += `
             <tr>
                 <td>${dt.name}</td>
-                <td>${dt.value === "" ? "(伺服器沒有資料或此訊息不支援BIG5編碼)" : dt.value}</td>
+                <td>${dt.value === "" ? "N/A" : dt.value}</td>
             </tr>
         `;
     });
@@ -42,7 +42,7 @@ window.execute = async () => {
         <div class="profile">
             <h1 class="pageTitle">個人資料</h1>
             <div class="profileInfo">
-                <img src="${userData.profileImg}" width="250">
+                <img src="${userData.profileImg}" width="250" style="border-radius: 15px;">
                 <table>
                     ${list}
                 </table>

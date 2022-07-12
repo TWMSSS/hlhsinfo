@@ -68,6 +68,11 @@ const page = [
         path: "/donation",
         name: "支持開發者",
         id: "donation"
+    },
+    {
+        path: "/statement",
+        name: "開發者聲明",
+        id: "statement"
     }
 ];
 
@@ -83,6 +88,10 @@ if ('serviceWorker' in navigator) {
         .catch((error) => {
             console.log('Registration failed with ' + error);
         });
+    
+    try {
+        navigator.serviceWorker.ready.then(registration => registration.sync.register('syncNotify'));
+    } catch (e) { };
     
     navigator.serviceWorker.onmessage = (event) => {
         if (!event.data) return;
