@@ -91,6 +91,8 @@ global.sharedScores.scores.forEach((e, index) => {
     }, e.expiredTimestamp - Date.now());
 });
 
+const loginFailed = global.loginFailed = [];
+
 app.listen(PORT, () => {
     console.log("".padStart(60, '='));
     console.log("\x1b[32m\x1b[5m" + "[Server Started".padStart(37, " ") + "]\x1b[0m");

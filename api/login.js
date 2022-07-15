@@ -2,7 +2,7 @@ function login(req, res) {
     const request = require('request');
     const iconv = require('iconv-lite');
     const { JSDOM } = require('jsdom');
-    const { decodeAuthorization, jwtEncode } = require('./util.js');
+    const { decodeAuthorization, jwtEncode, getFailedExpiredTime, getFailedTimesLock } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization, true);
@@ -13,6 +13,12 @@ function login(req, res) {
     if (!req.body.captcha) return res.status(403).json({ message: 'You need to get your captcha first!' });
     if (!req.body.username) return res.status(403).json({ message: 'You need to input your username!' });
     if (!req.body.password) return res.status(403).json({ message: 'You need to input your password!' });
+
+    var failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+    if (failed && failed.expire > Date.now() && failed.count > getFailedTimesLock()) return res.status(403).json({
+        message: 'Auth failed!',
+        serverMessage: "你的登入失敗次數過多，請稍後再試。"
+    });
 
     request({
         url: global.urls.login,
@@ -41,6 +47,17 @@ function login(req, res) {
         var dom = new JSDOM(iconv.decode(body, 'big5'));
         
         if (response.headers.location != "student/frames.asp") {
+            var failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+            if (failed && failed.expire < Date.now()) {
+                global.loginFailed.splice(global.loginFailed.indexOf(failed), 1);
+                global.loginFailed.push({ ip: req.ip, device: req.headers['user-agent'], start: Date.now(), count: 0 });
+            } else if (!failed) {
+                global.loginFailed.push({ ip: req.ip, device: req.headers['user-agent'], start: Date.now(), count: 0 });
+                failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+            }
+            failed.expire = Date.now() + getFailedExpiredTime();
+            failed.count++;
+
             return res.status(403).json({
                 message: 'Auth failed!',
                 serverMessage: dom.window.document.querySelector("#msg").value

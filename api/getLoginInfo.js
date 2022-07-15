@@ -2,9 +2,15 @@ function getLoginInfo(res, req) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { makeAuthCode } = require('./util.js');
+    const { makeAuthCode, getFailedTimesLock } = require('./util.js');
 
     var aspSession, verifyToken;
+
+    var failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+    if (failed && failed.expire > Date.now() && failed.count > getFailedTimesLock()) return res.status(403).json({
+        message: 'Auth failed!',
+        serverMessage: "你的登入失敗次數過多，請稍後再試。"
+    });
 
     request.get({
         url: global.urls.main,

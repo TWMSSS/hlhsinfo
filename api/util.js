@@ -126,6 +126,14 @@ function getExpiredTime() {
     return Number(process.env.SHARE_EXPIRED) || 1800000;
 }
 
+function getFailedExpiredTime() {
+    return Number(process.env.FAILED_EXPIRED) || 3600000;
+}
+
+function getFailedTimesLock() {
+    return Number(process.env.FAILED_TIMES_LOCK) || 5;
+}
+
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
@@ -137,5 +145,7 @@ module.exports = {
     makeRandomString,
     jwtEncode,
     jwtDecode,
-    getExpiredTime
+    getExpiredTime,
+    getFailedExpiredTime,
+    getFailedTimesLock
 }

@@ -154,9 +154,20 @@ window.execute = async () => {
             setTaskStatus(task, "success");
 
             task = addTaskList("取得登入資訊");
-            await fetch("/api/getLoginInfo").then(res => res.json()).then(res => {
-                sessionStorage.setItem("auth", res.authToken);
+            var g = await fetch("/api/getLoginInfo").then(async res => {
+                resData = await res.json();
+                if (res.status === 403) {
+                    setTaskStatus(task, "fail");
+                    alertBox(`取得登入資訊失敗: ${resData.serverMessage}`, "error");
+                    setTimeout(() => {
+                        finishTask();
+                    }, 3000);
+                    return false;
+                }
+                sessionStorage.setItem("auth", resData.authToken);
+                return true;
             });
+            if (!g) return;
             setTaskStatus(task, "success");
 
             task = addTaskList("取得驗證碼");
