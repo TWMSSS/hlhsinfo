@@ -196,10 +196,6 @@
                     {
                         type: "operating",
                         value: '<img src="/img/operational.webp" width="30"> Operational'
-                    },
-                    {
-                        type: "offline",
-                        value: '<img src="/img/deny.webp" width="30"> You are offline'
                     }
                 ];
                 var down = 0;
@@ -259,9 +255,9 @@
                             }
                             resolve(data);
                         }).catch(err => {
-                            shinerStatus.innerHTML = status[2].value;
+                            shinerStatus.innerHTML = status[0].value;
                             shinerPing.innerHTML = 'N/A';
-                            homeStatus.innerHTML = status[2].value;
+                            homeStatus.innerHTML = status[0].value;
                             homePing.innerHTML = 'N/A';
                             down++;
                             resolve(err);

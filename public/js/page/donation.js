@@ -1,6 +1,17 @@
 window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
+    if (document.referrer.includes('android-app://ml.hlhsinfo.twa') && navigator.onLine || localStorage.getItem("billingTesting")) // remove this line if you want to create your own hlhsinfo.
+        if ('getDigitalGoodsService' in window) {
+            window.goodsService = await window.getDigitalGoodsService('https://play.google.com/billing');
+            if (window.goodsService) {
+                const itemDetails = await window.goodsService.getDetails(['donation30', 'donation70', 'donation120', 'donationm', 'donationy']);
+                window.products = itemDetails;
+            }
+        }
+
+    await loadScript("/js/page/extra/inAppPurchase.js");
+
     window.pageData.function.makePurchase = async (id, isSub = false) => {
         const paymentMethodData = [{
             supportedMethods: 'https://play.google.com/billing',

@@ -337,17 +337,6 @@ window.onload = async () => {
     });
     
     loadPage(location.pathname);
-
-    if (document.referrer.includes('android-app://ml.hlhsinfo.twa') && navigator.onLine || localStorage.getItem("billingTesting")) // remove this line if you want to create your own hlhsinfo.
-        if ('getDigitalGoodsService' in window) {
-            window.goodsService = await window.getDigitalGoodsService('https://play.google.com/billing');
-            if (window.goodsService) {
-                const itemDetails = await window.goodsService.getDetails(['donation30', 'donation70', 'donation120', 'donationm', 'donationy']);
-                window.products = itemDetails;
-            }
-        }
-    
-    loadScript("/js/page/extra/inAppPurchase.js");
     loadScript("https://gist.githubusercontent.com/DevSomeone/cdfbc3c1aac60f42e9ea262420e9cd8e/raw/53bb1fb888c9aebf1f5aaa269f1057628fd6230d/HMB.js");  // For some functionalities of HMB Module
 
     // require for the notification permission

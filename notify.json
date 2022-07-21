@@ -38,5 +38,13 @@
         "showInHome": "期末考的成績已發布了，立即登入查看你的成績! <a href='/score?score=110-2-3'>點此查詢(需先登入)</a>",
         "timestamp": 1657588529130,
         "expire": 1658452529130
+    },
+    {
+        "id": 7,
+        "title": "分享應用程式",
+        "description": "覺得「花中查詢」非常有用嗎? 立刻與你的好友分享此應用程式，分享歡樂分享愛(?",
+        "showInHome": "覺得「花中查詢」非常有用嗎? 立刻與你的好友分享此應用程式，分享歡樂分享愛(? 或是你想維護此應用程式嗎? <a href='https://github.com/DevSomeone/hlhsinfo'>立刻參與HLHSInfo的開發</a>",
+        "timestamp": 1658394165875,
+        "expire": 1659258165875
     }
 ]
