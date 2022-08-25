@@ -257,8 +257,8 @@ window.execute = async () => {
         `;
 
         var weekDay = document.getElementById("wkd");
-        weekDay.addEventListener("change", function () {
-            choose = weekDay.value;
+        weekDay.addEventListener("change", () => {
+            choose = Number(weekDay.value);
             classNextDay = rdNDSch();
             document.querySelector("#wkdSchedule").innerHTML = classNextDay;
         });
