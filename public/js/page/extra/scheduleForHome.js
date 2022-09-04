@@ -143,7 +143,7 @@ window.pageData.function.execute = async () => {
         if (scheData[classNowIndex + 1] && classNowIndex !== -1 || scheData.findIndex(b => b !== null && b.time.end > Date.now()) !== -1) {
             if (classNowIndex === -1) classNowIndex = 0;
             var nextClass = scheData[classNowIndex + 1].class[weekDay];
-            if (nextClass !== null) {
+            if (nextClass !== null && nextClass !== undefined) {
                 classNext = {
                     section: scheData[classNowIndex + 1].section,
                     class: nextClass.className,
