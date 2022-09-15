@@ -63,13 +63,13 @@ window.pageData.function.execute = async () => {
                     scheData = event.target.result.schedule;
                     teacher = event.target.result.teacher;
                     className = event.target.result.class;
-                    if (!event.target.result.time || event.target.result.time.end < Date.now()) {
-                        // remove expired data
-                        var transaction = db.transaction(["class"], "readwrite");
-                        var objectStore = transaction.objectStore("class");
-                        objectStore.delete(dbKey);
-                        return resolve(false);
-                    }
+                    // if (!event.target.result.time || event.target.result.time.end < Date.now()) {
+                    //     // remove expired data
+                    //     var transaction = db.transaction(["class"], "readwrite");
+                    //     var objectStore = transaction.objectStore("class");
+                    //     objectStore.delete(dbKey);
+                    //     return resolve(false);
+                    // }
                     return resolve(true);
                 };
                 resolve(false);
