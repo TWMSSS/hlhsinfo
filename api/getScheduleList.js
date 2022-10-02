@@ -33,7 +33,7 @@ function getScheduleList(req, res) {
             return {
                 name: e.innerHTML.replace(/ /gm, ""),
                 class: o.searchParams.get("teacher_classnumber"),
-                teacher: o.searchParams.get("teacher_name")
+                teacher: e.innerHTML.replace(/ /gm, "").split("│")[2]
             }
         })
 

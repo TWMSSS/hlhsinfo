@@ -8,7 +8,7 @@
  * Repository: https://github.com/DevSomeone/hlhsinfo
  */
 
-const VERSION = `v1.6.8-release`;
+const VERSION = `v1.7.0-release`;
 
 const cacheFiles = [
     '/css/main.css',

@@ -133,7 +133,7 @@ window.pageData.function.execute = async () => {
                 }
             }
         } else {
-            var thisClass = scheData[classNowIndex].class[weekDay];
+            var thisClass = scheData[classNowIndex].class[weekDay] ?? null;
             classNow = {
                 section: scheData[classNowIndex].section,
                 class: thisClass !== null ? thisClass.className : "沒有課程",
@@ -142,7 +142,7 @@ window.pageData.function.execute = async () => {
         }
         if (scheData[classNowIndex + 1] && classNowIndex !== -1 || scheData.findIndex(b => b !== null && b.time.end > Date.now()) !== -1) {
             if (classNowIndex === -1) classNowIndex = 0;
-            var nextClass = scheData[classNowIndex + 1].class[weekDay];
+            var nextClass = scheData[classNowIndex + 1].class[weekDay] ?? null;
             if (nextClass !== null && nextClass !== undefined) {
                 classNext = {
                     section: scheData[classNowIndex + 1].section,

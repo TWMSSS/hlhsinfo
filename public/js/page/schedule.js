@@ -169,13 +169,12 @@ window.execute = async () => {
                 }
             }
         } else {
-            var thisClass = scheData[classNowIndex].class[weekDay];
+            var thisClass = scheData[classNowIndex].class[weekDay] ?? null;
             var classNow = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex].section}</span><span class="dataValue">${thisClass !== null ? thisClass.className : "沒有課程"}</span>${thisClass !== null ? thisClass.teacher.length > 0 ? `<span class="dataExtra">由 ${thisClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : "" : ""}</span></div>`;
         }
         if (scheData[classNowIndex + 1] && classNowIndex !== -1 || scheData.findIndex(b => b !== null && b.time.end > Date.now()) !== -1) {
             if (classNowIndex === -1) classNowIndex = 0;
-            var nextClass = scheData[classNowIndex + 1].class[weekDay];
-            console.log(nextClass)
+            var nextClass = scheData[classNowIndex + 1].class[weekDay] ?? null;
             if (nextClass !== null && nextClass !== undefined) {
                 var classNext = `<div class="dataBox"><span class="dataTitle">${scheData[classNowIndex + 1].section}</span><span class="dataValue">${nextClass.className}</span>${nextClass.teacher.length > 0 ? `<span class="dataExtra">由 ${nextClass.teacher.join("老師, ")}老師 授課<span class="dataExtra">` : ""}`;
             } else {

@@ -66,6 +66,7 @@ function getSchedule(req, res) {
                     }
                 });
                 if (t.length === 0) t = [null, null];
+                t = t.map(e => e.replace(/<span class=\"eudcFont\">(.*)<\/span>/gm, "$1"));
 
                 return {
                     className: t.shift().replace(/ /gm, ""),
