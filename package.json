@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DevSomeone/hlhsinfo.git"
+    "url": "git+https://github.com/TWMSSS/hlhsinfo.git"
   },
   "author": "Yurisaka <yurisakadev@gmail.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/DevSomeone/hlhsinfo/issues"
+    "url": "https://github.com/TWMSSS/hlhsinfo/issues"
   },
-  "homepage": "https://github.com/DevSomeone/hlhsinfo#readme",
+  "homepage": "https://github.com/TWMSSS/hlhsinfo#readme",
   "dependencies": {
     "body-parser": "^1.20.0",
     "cors": "^2.8.5",

@@ -5,7 +5,7 @@
  * Copyright 2022 The HLHSInfo Authors.
  * Copyright 2022 DevSomeone Developer.
  * 
- * Repository: https://github.com/DevSomeone/hlhsinfo
+ * Repository: https://github.com/TWMSSS/hlhsinfo
  */
 
 // Import APIs

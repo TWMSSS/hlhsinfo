@@ -37,12 +37,12 @@ window.execute = async () => {
                     <li>分析成績查詢系統的網頁資料</li>
                     <li>將分析結果放至你的眼前</li>
                 </ol>
-                <p>跟其他的爬蟲並沒有不同，頂多就是爬的網站不同，所需的功能不同。詳細資料你可以至 <a href="https://github.com/DevSomeone/hlhsinfo/blob/master/HowToAnalysis.md">https://github.com/DevSomeone/hlhsinfo/blob/master/HowToAnalysis.md</a> 查看。</p>
+                <p>跟其他的爬蟲並沒有不同，頂多就是爬的網站不同，所需的功能不同。詳細資料你可以至 <a href="https://github.com/TWMSSS/hlhsinfo/blob/master/HowToAnalysis.md">https://github.com/TWMSSS/hlhsinfo/blob/master/HowToAnalysis.md</a> 查看。</p>
             </div>
             <h1 class="pageTitle">開源是真的嗎?</h1>
             <div>
                 <p>母庸置疑，查詢器確實是開源的。</p>
-                <p>你可以在<a href="https://github.com/DevSomeone/hlhsinfo">https://github.com/DevSomeone/hlhsinfo</a>看到開源的程式碼，你也可以協助開發，或建立你自己的查詢器。</p>
+                <p>你可以在<a href="https://github.com/TWMSSS/hlhsinfo">https://github.com/TWMSSS/hlhsinfo</a>看到開源的程式碼，你也可以協助開發，或建立你自己的查詢器。</p>
             </div>
             <h1 class="pageTitle">我的資料會被蒐集嗎?</h1>
             <div>
