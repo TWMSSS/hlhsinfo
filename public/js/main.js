@@ -13,6 +13,8 @@ window.pageData = {};
 window.pageData.function = {};
 window.pageData.data = {};
 window.pageData.Interval = [];
+var hash = new URLSearchParams(location.hash);
+if (hash.has("#token")) sessionStorage.setItem("auth", hash.get("#token"));
 const page = [
     {
         path: "/",
