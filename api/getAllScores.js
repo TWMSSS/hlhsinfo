@@ -59,7 +59,7 @@ function getAllScores(req, res) {
         }
 
         dataTest.map(e => e.values.sort((a, b) => {
-            return a.name.term - b.name.term || a.name.year - b.name.year || a.name.test - b.name.test;
+            return a.name.year - b.name.year || a.name.term - b.name.term || a.name.test - b.name.test;
         }));
 
         res.status(200).json({
