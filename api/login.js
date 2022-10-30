@@ -8,9 +8,9 @@ function login(req, res) {
     var authDt = decodeAuthorization(req.headers.authorization, true);
     if (!authDt) return res.status(403).json({ message: 'Invalid authorization token!' });
     
-    var { sessionID, verifyToken } = authDt;
+    var { sessionID, verifyToken, url } = authDt;
 
-    if (!req.body.captcha) return res.status(403).json({ message: 'You need to get your captcha first!' });
+    // if (!req.body.captcha) return res.status(403).json({ message: 'You need to get your captcha first!' });
     if (!req.body.username) return res.status(403).json({ message: 'You need to input your username!' });
     if (!req.body.password) return res.status(403).json({ message: 'You need to input your password!' });
 
@@ -21,7 +21,7 @@ function login(req, res) {
     });
 
     request({
-        url: global.urls.login,
+        url: url ? url + global.defaultURLs.login : global.urls.login,
         method: 'POST',
         headers: {
             "cookie": sessionID,

@@ -37,7 +37,7 @@ window.execute = async () => {
 
     scoreData.forEach(dt => {
         list += `
-            <tr onclick="goPage('/score?score=${dt.year}-${dt.term}-${dt.times}')" style="cursor: pointer">
+            <tr onclick="goPage('/score?score=${dt.year}-${dt.term}-${dt.times}-${dt.testID}')" style="cursor: pointer">
                 <td>${dt.name}</td>
                 <td>${dt.year}</td>
                 <td>${dt.term === "1" ? "上" : "下"}</td>

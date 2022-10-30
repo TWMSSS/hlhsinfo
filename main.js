@@ -22,21 +22,25 @@ require('dotenv').config();
 
 const PORT = global.PORT = process.env.PORT || 1156;
 const defaultURL = "http://shinher.hlhs.hlc.edu.tw/online/";
-const urls = global.urls = {
-    main: defaultURL,
-    grade: defaultURL + "selection_student/student_subjects_number.asp?action=%action%&thisyear=%year%&thisterm=%term%&number=%grade_ID%&exam_name=%exam_name%",
-    login: defaultURL + "login.asp",
-    availableScore: defaultURL + "selection_student/student_subjects_number.asp?action=open_window_frame",
-    profile: defaultURL + "selection_student/fundamental.asp",
-    profileImg: defaultURL + "utility/file1.asp?q=x&id=%imgID%",
-    classInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_top&school_class=&division=",
-    userShortInfo: defaultURL + "student/selection_look_over_data.asp?look_over=right_below&school_class=",
-    rewandpun: defaultURL + "selection_student/moralculture_%20bonuspenalty.asp",
-    lack: defaultURL + "selection_student/absentation_skip_school.asp",
-    allScores: defaultURL + "selection_student/grade_chart_all.asp",
-    scheduleList: defaultURL + "student/select_preceptor.asp?action=open_sel",
-    schedule: defaultURL + "student/school_class_tabletime.asp?teacher_classnumber=%class%&teacher_name=%teacher%",
+const defautlURLs = global.defaultURLs = {
+    main: "",
+    grade: "selection_student/student_subjects_number.asp?action=%action%&thisyear=%year%&thisterm=%term%&number=%grade_ID%&exam_name=%exam_name%",
+    login: "login.asp",
+    availableScore: "selection_student/student_subjects_number.asp?action=open_window_frame",
+    profile: "selection_student/fundamental.asp",
+    profileImg: "utility/file1.asp?q=x&id=%imgID%",
+    classInfo: "student/selection_look_over_data.asp?look_over=right_top&school_class=&division=",
+    userShortInfo: "student/selection_look_over_data.asp?look_over=right_below&school_class=",
+    rewandpun: "selection_student/moralculture_%20bonuspenalty.asp",
+    lack: "selection_student/absentation_skip_school.asp",
+    allScores: "selection_student/grade_chart_all.asp",
+    scheduleList: "student/select_preceptor.asp?action=open_sel",
+    schedule: "student/school_class_tabletime.asp?teacher_classnumber=%class%&teacher_name=%teacher%",
 };
+
+var h = { ...defautlURLs };
+for (var f in h) h[f] = defaultURL + h[f];
+const urls = global.urls = h;
 const homePage = global.homePage = "https://www.hlhs.hlc.edu.tw/";
 
 if (!fs.existsSync("storaged")) {  

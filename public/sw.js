@@ -8,7 +8,7 @@
  * Repository: https://github.com/TWMSSS/hlhsinfo
  */
 
-const VERSION = `v1.7.1-release`;
+const VERSION = `v1.8.0-release`;
 
 const cacheFiles = [
     '/css/main.css',

@@ -12,8 +12,10 @@ function getLoginInfo(res, req) {
         serverMessage: "你的登入失敗次數過多，請稍後再試。"
     });
 
+    var url = req.query.url && decodeURIComponent(req.query.url) || undefined;
+
     request.get({
-        url: global.urls.main,
+        url: url ?? global.urls.main,
         encoding: null
     }, (err, response, body) => {
         if (err) {
@@ -26,9 +28,21 @@ function getLoginInfo(res, req) {
         var rawData = iconv.decode(body, 'big5');
 
         var dom = new JSDOM(rawData);
+
+        if (!dom.window.document.querySelector("meta[name=keywords]").getAttribute("name").concat("欣河資訊") &&
+            !dom.window.document.querySelector("meta[name=description]").getAttribute("name").concat("線上查詢系統")) {
+            res.status(404).json({
+                message: "Not a Shinher Information's score site."
+            });
+            return;
+        }
+
         verifyToken = dom.window.document.querySelector("input[name=__RequestVerificationToken]").value;
         
-        res.status(200).json(makeAuthCode(aspSession, verifyToken));
+        res.status(200).json({
+            ...makeAuthCode(aspSession, verifyToken, url),
+            isCaptcha: !!dom.window.document.querySelector("img#imgvcode")
+        });
     });
 }
 

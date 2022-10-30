@@ -11,11 +11,10 @@ function getScoreInfo(req, res) {
     if (!req.body.year) return res.status(403).json({ message: 'You need to provide the year!' });
     if (!req.body.term) return res.status(403).json({ message: 'You need to provide the term!' });
     if (!req.body.times) return res.status(403).json({ message: 'You need to provide the times!' });
+    if (!req.body.testID) return res.status(403).json({ message: 'You need to provide the testID!' });
     if (!req.body.examName) return res.status(403).json({ message: 'You need to provide the exam name!' });
 
-    var scoreID = `${getN1(req.body.year, 0, req.body.term)}${req.body.term}${req.body.times}`;
-
-    var url = global.urls.grade.replace("%action%", "%A6U%A6%A1%A6%A8%C1Z").replace("%year%", req.body.year).replace("%term%", req.body.term).replace("%grade_ID%", scoreID).replace("%exam_name%", urlEncode(req.body.examName, 'big5'));
+    var url = global.urls.grade.replace("%action%", "%A6U%A6%A1%A6%A8%C1Z").replace("%year%", req.body.year).replace("%term%", req.body.term).replace("%grade_ID%", req.body.testID).replace("%exam_name%", urlEncode(req.body.examName, 'big5'));
 
     request.get({
         url: url,

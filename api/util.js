@@ -1,7 +1,8 @@
-function makeAuthCode(sessionID, verifyToken) {
+function makeAuthCode(sessionID, verifyToken, url = null) {
     var auth = JSON.stringify({
         cookie: Buffer.from(sessionID).toString('hex'),
-        verifyToken: Buffer.from(verifyToken).toString('base64')
+        verifyToken: Buffer.from(verifyToken).toString('base64'),
+        url: url !== null && Buffer.from(url).toString('base64')
     });
     return { authToken: Buffer.from(auth).toString('base64') }
 }
@@ -15,7 +16,8 @@ function decodeAuthCode(authCode, isnJWT) {
         }
         return {
             sessionID: Buffer.from(auth.cookie, "hex").toString('utf8'),
-            verifyToken: Buffer.from(auth.verifyToken, "base64").toString("utf8")
+            verifyToken: Buffer.from(auth.verifyToken, "base64").toString("utf8"),
+            url: auth.url && Buffer.from(auth.url, "base64").toString("utf8")
         }
     }
     
@@ -26,6 +28,7 @@ function decodeAuthCode(authCode, isnJWT) {
     return {
         sessionID: authtkn.sessionID,
         verifyToken: authtkn.verifyToken,
+        url: authtkn.url,
         userInfo: decode.userInfo
     }
 }

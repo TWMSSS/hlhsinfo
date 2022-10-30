@@ -16,6 +16,7 @@ window.execute = async () => {
     var scoreYear = scoreArr[0];
     var scoreTerm = scoreArr[1];
     var scoreTimes = scoreArr[2];
+    var scoreTestID = scoreArr[3];
 
     if (!sharedScore) {
         var sharedScore;
@@ -33,6 +34,7 @@ window.execute = async () => {
                         year: scoreYear,
                         term: scoreTerm,
                         times: scoreTimes,
+                        testID: scoreTestID,
                         examName: "t"
                     })
                 }).then(res => res.json()).then(res => {
@@ -183,6 +185,7 @@ window.execute = async () => {
                 year: scoreYear,
                 term: scoreTerm,
                 times: scoreTimes,
+                testID: scoreTestID,
                 examName: "t"
             })
         }).then(res => res.json()).then(res => {
@@ -243,6 +246,7 @@ window.execute = async () => {
                     year: preScore.year,
                     term: preScore.term,
                     times: preScore.times,
+                    testID: preScore.testID,
                     examName: "t"
                 })
             }).then(res => res.json()).then(res => {
