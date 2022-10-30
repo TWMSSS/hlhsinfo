@@ -142,7 +142,8 @@ window.execute = async () => {
                 body: new URLSearchParams({
                     year: scoreYear,
                     term: scoreTerm,
-                    times: scoreTimes
+                    times: scoreTimes,
+                    testID: scoreTestID,
                 })
             }).then(res => res.blob()).then(res => {
                 imgUrl = URL.createObjectURL(res);

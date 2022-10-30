@@ -13,6 +13,7 @@ async function getScoreImg(req, res) {
         if (!req.body.year) return res.status(403).json({ message: 'You need to provide the year!' });
         if (!req.body.term) return res.status(403).json({ message: 'You need to provide the term!' });
         if (!req.body.times) return res.status(403).json({ message: 'You need to provide the times!' });
+        if (!req.body.testID) return res.status(403).json({ message: 'You need to provide the testID!' });
 
         var userInfo = authDt.userInfo;
         userInfo.userName = Buffer.from(userInfo.userName, "hex").toString('utf8');
@@ -34,6 +35,7 @@ async function getScoreImg(req, res) {
                     year: req.body.year,
                     term: req.body.term,
                     times: req.body.times,
+                    testID: req.body.testID,
                     examName: "t"
                 },
             }, (err, response, body) => {

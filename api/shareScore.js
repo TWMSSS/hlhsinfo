@@ -10,6 +10,7 @@ async function shareScore(req, res) {
     if (!req.body.year) return res.status(403).json({ message: 'You need to provide the year!' });
     if (!req.body.term) return res.status(403).json({ message: 'You need to provide the term!' });
     if (!req.body.times) return res.status(403).json({ message: 'You need to provide the times!' });
+    if (!req.body.testID) return res.status(403).json({ message: 'You need to provide the testID!' });
 
     var userInfo = authDt.userInfo;
     userInfo.userName = Buffer.from(userInfo.userName, "hex").toString('utf8');
@@ -30,6 +31,7 @@ async function shareScore(req, res) {
                     year: req.body.year,
                     term: req.body.term,
                     times: req.body.times,
+                    testID: req.body.testID,
                     examName: "t"
                 },
             }, (err, response, body) => {
@@ -44,7 +46,7 @@ async function shareScore(req, res) {
         });
     }
 
-    var verifyText = `${userInfo.schoolNumber}-${req.body.year}-${req.body.term}-${req.body.times}`;
+    var verifyText = `${userInfo.schoolNumber}-${req.body.year}-${req.body.term}-${req.body.times}-${req.body.testID}`;
     var hashedTkn = crypto.createHash('sha256').update(Buffer.from(verifyText)).digest('hex');
     var dataTemp = global.sharedScores.scores.find(x => x.hashedTkn === hashedTkn);
     if (dataTemp && dataTemp.expiredTimestamp <= Date.now()) {
@@ -66,6 +68,7 @@ async function shareScore(req, res) {
                 year: req.body.year,
                 term: req.body.term,
                 times: req.body.times,
+                testID: req.body.testID,
                 userInfo,
                 userScore
             },
