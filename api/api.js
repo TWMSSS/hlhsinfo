@@ -25,6 +25,7 @@ const { getScoreImg } = require('./getScoreImg.js');
 const { getScheduleList } = require('./getScheduleList.js');
 const { getSchedule } = require('./getSchedule.js');
 const { status } = require('./status.js');
+const { clearCache } = require("./clearCache");
 
 module.exports = {
     getLoginInfo,
@@ -42,5 +43,6 @@ module.exports = {
     getScoreImg,
     getScheduleList,
     getSchedule,
-    status
+    status,
+    clearCache
 }

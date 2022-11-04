@@ -27,7 +27,8 @@
     "jsdom": "^19.0.0",
     "jsonwebtoken": "^8.5.1",
     "node-html-to-image": "^3.2.4",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "uuid": "^9.0.0"
   },
   "type": "commonjs"
 }

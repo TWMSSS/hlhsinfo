@@ -3,7 +3,7 @@ async function getScoreImg(req, res) {
     const Handlebars = require("handlebars");
     const nodeHtmlToImage = require('node-html-to-image');
     const fs = require('fs');
-    const { decodeAuthorization } = require('./util.js');
+    const { decodeAuthorization, saveAsCache, readCache, generateCacheKey } = require('./util.js');
 
     if (!req.query.shared) {
         if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
@@ -14,6 +14,18 @@ async function getScoreImg(req, res) {
         if (!req.body.term) return res.status(403).json({ message: 'You need to provide the term!' });
         if (!req.body.times) return res.status(403).json({ message: 'You need to provide the times!' });
         if (!req.body.testID) return res.status(403).json({ message: 'You need to provide the testID!' });
+
+        var { id, key, iv } = generateCacheKey(authDt.userInfo.schoolNumber, Buffer.from(authDt.userInfo.userName, "hex").toString("utf-8"), authDt.userInfo.classNumber);
+        var cacheData = readCache(id, `scoreImg-${req.query.year}-${req.body.term}-${req.body.times}-${req.body.testID}`, key, iv);
+
+        if (cacheData) {
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Cache-Control': `immutable, no-transform, s-max-age=2592000, max-age=2592000` // 30 days cache
+            });
+            res.end(cacheData);
+            return;
+        }
 
         var userInfo = authDt.userInfo;
         userInfo.userName = Buffer.from(userInfo.userName, "hex").toString('utf8');
@@ -82,6 +94,7 @@ async function getScoreImg(req, res) {
         var year = req.body.year;
         var term = req.body.term;
         var times = req.body.times;
+        var testID = req.body.testID;
     } else {
         await g2();
         if (!userScore) return res.status(403).json({ message: 'Invalid shared token!' });
@@ -91,6 +104,19 @@ async function getScoreImg(req, res) {
         var year = userScore.scoreInfo.year;
         var term = userScore.scoreInfo.term;
         var times = userScore.scoreInfo.times;
+        var testID = userScore.scoreInfo.testID;
+
+        var { id, key, iv } = generateCacheKey(userInfo.schoolNumber, userInfo.userName, userInfo.classNumber);
+        var cacheData = readCache(id, `scoreImg-${year}-${term}-${times}-${testID}`, key, iv);
+
+        if (cacheData) {
+            res.writeHead(200, {
+                'Content-Type': 'image/png',
+                'Cache-Control': `immutable, no-transform, s-max-age=2592000, max-age=2592000` // 30 days cache
+            });
+            res.end(cacheData);
+            return;
+        }
     }
 
     var list = "";
@@ -122,7 +148,9 @@ async function getScoreImg(req, res) {
         height: 600,
         quality: 1,
         type: "png"
-    })
+    });
+
+    saveAsCache(id, `scoreImg-${year}-${term}-${times}-${testID}`, image, key, iv);
 
     res.writeHead(200, {
         'Content-Type': 'image/png',

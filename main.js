@@ -16,6 +16,7 @@ const api = require('./api/api.js');
 const bodyParser = require('body-parser');
 const { generateKeyPairSync } = require('crypto');
 const cros = require('cors');
+const { getCacheEnv, removeCache } = require("./api/util");
 
 // Initilize the server
 require('dotenv').config();
@@ -45,6 +46,7 @@ const homePage = global.homePage = "https://www.hlhs.hlc.edu.tw/";
 
 if (!fs.existsSync("storaged")) {  
     fs.mkdirSync("storaged");
+    fs.mkdirSync("storaged/cache");
 }
 
 if (!fs.existsSync("storaged/sharedScore.json")) {
@@ -87,13 +89,26 @@ global.sharedScores.scores.forEach((e, index) => {
         }
         return;
     }
-    setTimeout(() => {
+});
+
+setInterval(() => {
+    global.sharedScores.scores.forEach((e, index) => {
+        if (e.expiredTimestamp > Date.now()) return;
+
         var index = global.sharedScores.scores.findIndex(dt => dt.id === e.id);
         if (index >= 0) {
             global.sharedScores.scores.splice(index, 1);
         }
-    }, e.expiredTimestamp - Date.now());
-});
+    });
+    var caches = fs.readdirSync("storaged/cache");
+    for (var h of caches) {
+        var metadata = JSON.parse(fs.readFileSync(`storaged/cache/${h}/metadata.json`));
+        if (metadata.expired > Date.now()) continue;
+
+        console.log(`[Cache Manager] Deleting expired cache: ${h}.`);
+        removeCache(h);
+    }
+}, getCacheEnv().CACHE_CHECK_CYCLE * 60000);
 
 const loginFailed = global.loginFailed = [];
 
@@ -134,6 +149,7 @@ app.post("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 app.get("/api/getScoreImg", (req, res) => api.getScoreImg(req, res));
 app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
 app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
+app.get("/api/clearCache", (req, res) => api.clearCache(req, res));
 
 app.get("/api/notify", (req, res) => res.sendFile(__dirname + "/notify.json"));
 app.get("/api/status", (req, res) => api.status(req, res));

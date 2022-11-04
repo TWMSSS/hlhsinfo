@@ -8,7 +8,7 @@
  * Repository: https://github.com/TWMSSS/hlhsinfo
  */
 
-const VERSION = `v1.8.0-release`;
+const VERSION = `v1.9.0-release`;
 
 const cacheFiles = [
     '/css/main.css',
@@ -254,7 +254,8 @@ async function addNotifyBD(data) {
 
 async function getNotifyDB(dbKey) {
     function b() {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
+            // var db = await initIndexedDB();
             var transaction = db.transaction(["notify"], "readwrite");
 
             transaction.onerror = (event) => {

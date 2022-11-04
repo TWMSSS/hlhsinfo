@@ -76,13 +76,6 @@ async function shareScore(req, res) {
             createdTimestamp: created,
             hashedTkn
         });
-
-        setTimeout(() => {
-            var index = global.sharedScores.scores.findIndex(dt => dt.id === sharedID);
-            if (index >= 0) {
-                global.sharedScores.scores.splice(index, 1);
-            }
-        }, expired - created);
     } else {
         var expired = dataTemp.expiredTimestamp;
         var created = dataTemp.createdTimestamp;

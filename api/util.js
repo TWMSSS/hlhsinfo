@@ -125,6 +125,124 @@ function jwtDecode(token) {
     }
 }
 
+function createHash(data, type = "sha1") {
+    const { createHash } = require("crypto");
+
+    const hash = createHash(type).update(data).digest("hex");
+    console.log(`[Crypto Manager] Created hash ${hash} with ${type}`);
+    return hash;
+}
+
+function generateCacheKey(schoolNumber, username, className) {
+    const orgHash = createHash(Buffer.from(schoolNumber).toString("hex") + "@" + Buffer.from(username).toString("hex") + className, "sha512");
+
+    return {
+        id: orgHash.substring(0, 32),
+        key: orgHash.substring(34, 98),
+        iv: orgHash.substring(81, 113)
+    }
+}
+
+function encryptoCacheData(buffer, key, iv) {
+    const crpyto = require("crypto");
+    const cipher = crpyto.createCipheriv("aes-256-cbc", Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
+    var encryptoed = cipher.update(buffer);
+    encryptoed = Buffer.concat([encryptoed, cipher.final()]);
+
+    return encryptoed;
+}
+
+function decryptoCacheData(buffer, key, iv) {
+    const crpyto = require("crypto");
+    const cipher = crpyto.createDecipheriv("aes-256-cbc", Buffer.from(key, "hex"), Buffer.from(iv, "hex"));
+    var decryptoed = cipher.update(buffer);
+    decryptoed = Buffer.concat([decryptoed, cipher.final()]);
+
+    return decryptoed;
+}
+
+function saveAsCache(id, file, buffer, key, iv) {
+    if (!getCacheEnv().CACHE_ENABLE) return false;
+
+    const fs = require("fs");
+    const { v4 } = require("uuid")
+
+    if (!fs.existsSync(`storaged/cache/${id}`)) fs.mkdirSync(`storaged/cache/${id}`);
+    if (!fs.existsSync(`storaged/cache/${id}/metadata.json`)) {
+        console.log(`[Cache Manager] Creating cache file set: ${id}`);
+
+        fs.writeFileSync(`storaged/cache/${id}/metadata.json`, JSON.stringify({
+            cacheID: id,
+            files: [],
+            keyHash: createHash(key),
+            ivHash: createHash(iv),
+            created: Date.now(),
+        }));
+    }
+
+    const metadata = JSON.parse(fs.readFileSync(`storaged/cache/${id}/metadata.json`));
+    
+    if (metadata.keyHash !== createHash(key) || metadata.ivHash !== createHash(iv)) return false;
+
+    const expired = Date.now() + getCacheEnv().CACHE_EXPIRE * 3600000;
+    console.log(`[Cache Manager] Set cache file set ${id} expire timestamp from ${metadata.expired} to ${expired}`);
+    metadata.expired = expired;
+
+    if (metadata.files.findIndex(e => e.filetype === file) !== -1) return false;
+
+    const cacheFileID = v4();
+    const cacheFileHash = createHash(buffer);
+
+    console.log(`[Cache Manager] Caching file ${file} as ${cacheFileID} with sha1 verifiction ${cacheFileHash} in cache set ${id}`);
+
+    metadata.files.push({
+        id: cacheFileID,
+        hash: cacheFileHash,
+        filetype: file
+    });
+
+    fs.writeFileSync(`storaged/cache/${id}/${cacheFileID}`, encryptoCacheData(buffer, key, iv));
+    fs.writeFileSync(`storaged/cache/${id}/metadata.json`, JSON.stringify(metadata));
+
+    return true;
+}
+
+function readCache(id, file, key, iv) {
+    if (!getCacheEnv().CACHE_ENABLE) return false;
+
+    const fs = require("fs");
+
+    if (!fs.existsSync(`storaged/cache/${id}`) || !fs.existsSync(`storaged/cache/${id}/metadata.json`)) return false;
+
+    const metadata = JSON.parse(fs.readFileSync(`storaged/cache/${id}/metadata.json`));
+    if (metadata.expired < Date.now()) {
+        fs.unlinkSync(`storaged/cache/${id}`);
+        return false;
+    }
+
+    if (metadata.keyHash !== createHash(key) || metadata.ivHash !== createHash(iv)) return false;
+
+    const fileData = metadata.files.find(e => e.filetype === file);
+    if (!fileData) return false;
+
+    const cacheFile = decryptoCacheData(fs.readFileSync(`storaged/cache/${id}/${fileData.id}`), key, iv);
+
+    if (fileData.hash !== createHash(cacheFile)) return false;
+
+    return cacheFile;
+}
+
+function removeCache(id) {
+    const fs = require("fs");
+    if (!fs.existsSync(`storaged/cache/${id}`)) return false;
+
+    console.log(`[Cache Manager] Deldting cache file set: ${id}`);
+
+    fs.rmSync(`storaged/cache/${id}`, { recursive: true, force: true });
+
+    return true;
+}
+
 function getExpiredTime() {
     return Number(process.env.SHARE_EXPIRED) || 1800000;
 }
@@ -135,6 +253,14 @@ function getFailedExpiredTime() {
 
 function getFailedTimesLock() {
     return Number(process.env.FAILED_TIMES_LOCK) || 5;
+}
+
+function getCacheEnv() {
+    return {
+        CACHE_ENABLE: Boolean(process.env.CACHE_ENABLE) || true,
+        CACHE_EXPIRE: Number(process.env.CACHE_EXPIRE) || 48,
+        CACHE_CHECK_CYCLE: Number(process.env.CACHE_CHECK_CYCLE) || 5
+    }
 }
 
 module.exports = {
@@ -148,7 +274,14 @@ module.exports = {
     makeRandomString,
     jwtEncode,
     jwtDecode,
+    generateCacheKey,
+    encryptoCacheData,
+    decryptoCacheData,
+    saveAsCache,
+    readCache,
+    removeCache,
     getExpiredTime,
     getFailedExpiredTime,
-    getFailedTimesLock
+    getFailedTimesLock,
+    getCacheEnv
 }

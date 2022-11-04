@@ -2,7 +2,7 @@ function getScoreInfo(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, urlEncode, getN1 } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, urlEncode, saveAsCache, readCache, generateCacheKey } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -15,6 +15,16 @@ function getScoreInfo(req, res) {
     if (!req.body.examName) return res.status(403).json({ message: 'You need to provide the exam name!' });
 
     var url = global.urls.grade.replace("%action%", "%A6U%A6%A1%A6%A8%C1Z").replace("%year%", req.body.year).replace("%term%", req.body.term).replace("%grade_ID%", req.body.testID).replace("%exam_name%", urlEncode(req.body.examName, 'big5'));
+
+    const { id, key, iv } = generateCacheKey(authDt.userInfo.schoolNumber, Buffer.from(authDt.userInfo.userName, "hex").toString("utf-8"), authDt.userInfo.classNumber);
+    var cacheData = readCache(id, `score-${req.body.year}-${req.body.term}-${req.body.times}-${req.body.testID}`, key, iv);
+
+    if (cacheData) return res.status(200).json({
+        message: "Success!",
+        cached: true,
+        data: JSON.parse(cacheData.toString()),
+        url
+    });
 
     request.get({
         url: url,
@@ -62,6 +72,8 @@ function getScoreInfo(req, res) {
                 });
             }
         }
+
+        saveAsCache(id, `score-${req.body.year}-${req.body.term}-${req.body.times}-${req.body.testID}`, Buffer.from(JSON.stringify(scores)), key, iv);
 
         res.status(200).json({ message: "Success!", data: scores, url});
     });

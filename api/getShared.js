@@ -26,6 +26,7 @@ async function getShared(req, res) {
                 year: data.data.year,
                 term: data.data.term,
                 times: data.data.times,
+                testID: data.data.testID
             }
         }
     });

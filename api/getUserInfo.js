@@ -2,11 +2,21 @@ function getUserInfo(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, urlEncode, getN1 } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
     if (!authDt) return res.status(403).json({ message: 'Invalid authorization token!' });
+
+    const { id, key, iv } = generateCacheKey(authDt.userInfo.schoolNumber, Buffer.from(authDt.userInfo.userName, "hex").toString("utf-8"), authDt.userInfo.classNumber);
+    var cacheData = readCache(id, "profile", key, iv);
+
+    if (cacheData) return res.status(200).json({
+        message: "Success!",
+        cached: true,
+        data: JSON.parse(cacheData.toString()),
+        url: global.urls.profile
+    });
 
     request.get({
         url: global.urls.profile,
@@ -64,6 +74,8 @@ function getUserInfo(req, res) {
                 t++;
             })
         });
+
+        saveAsCache(id, "profile", Buffer.from(JSON.stringify(dt)), key, iv);
 
         res.status(200).json({ message: "Success!", data: dt, url: global.urls.profile});
     });

@@ -78,6 +78,24 @@ window.execute = async () => {
         goPage("/");
     }
 
+    window.pageData.function.clearServerCache = async () => {
+        var task = addTaskList("清除暫存");
+        
+        await fetch("/api/clearCache", {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${sessionStorage.getItem("auth")}`
+            }
+        });
+
+        setTaskStatus(task, "success");
+        alertBox("已清除伺服器暫存!", "success");
+
+        setTimeout(() => {
+            finishTask();
+        }, 3000);
+    }
+
     if (sessionStorage.getItem("auth") === null) {
         var reslogin = "";
         if (localStorage.getItem("reslogin") === null || localStorage.getItem("reslogin") === "[]") {
@@ -348,12 +366,16 @@ window.execute = async () => {
                 <h1 class="pageTitle">功能選擇</h1>
                 <div class="function">
                     <button type="button" onclick="goPage('/profile');">查詢個人資料</button>
+                    <hr>
                     <button type="button" onclick="goPage('/availableScore');">查詢成績資料</button>
                     <button type="button" onclick="goPage('/rewandpun');">查詢獎懲紀錄</button>
                     <button type="button" onclick="goPage('/lack');">查詢缺曠紀錄</button>
                     <button type="button" onclick="goPage('/scheduleList');">查詢課表</button>
                     <button type="button" onclick="goPage('/compare');">比較歷史成績</button>
-                    <button type="button" style="background-color: green;" onclick="goPage('/donation');">支持開發者!</button>
+                    <hr>
+                    <!--<button type="button" style="background-color: green;" onclick="goPage('/donation');">支持開發者!</button>-->
+                    <button type="button" style="background-color: red;" onclick="window.pageData.function.clearServerCache();">清除伺服器暫存</button>
+                    <hr>
                     <button type="button" style="background-color: red;" onclick="sessionStorage.removeItem('auth');goPage('/');">登出</button>
                 </div>
             </div>

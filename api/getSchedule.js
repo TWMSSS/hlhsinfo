@@ -2,7 +2,7 @@ function getSchedule(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey } = require('./util.js');
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -10,6 +10,15 @@ function getSchedule(req, res) {
 
     if (!req.query.class) return res.status(403).json({ message: 'You need to provide the class!' });
     if (!req.query.teacher) return res.status(403).json({ message: 'You need to provide the teacher!' });
+
+    const { id, key, iv } = generateCacheKey(authDt.userInfo.schoolNumber, Buffer.from(authDt.userInfo.userName, "hex").toString("utf-8"), authDt.userInfo.classNumber);
+    var cacheData = readCache(id, `schedule-${req.query.class}-${Buffer.from(req.query.teacher).toString("hex")}`, key, iv);
+
+    if (cacheData) return res.status(200).json({
+        message: "Success!",
+        cached: true,
+        data: JSON.parse(cacheData.toString())
+    });
 
     var url = global.urls.schedule.replace("%class%", req.query.class).replace("%teacher%", encodeURIComponent(req.query.teacher));
 
@@ -84,15 +93,19 @@ function getSchedule(req, res) {
         var start = dO[0];
         var end = dO[1];
 
+        var data = {
+            schedule: l,
+            time: {
+                start,
+                end
+            }
+        };
+
+        saveAsCache(id, `schedule-${req.query.class}-${Buffer.from(req.query.teacher).toString("hex")}`, Buffer.from(JSON.stringify(data)), key, iv);
+
         res.status(200).json({
             message: "Success!",
-            data: {
-                schedule: l,
-                time: {
-                    start,
-                    end
-                }
-            }
+            data
         });
     });
 }
