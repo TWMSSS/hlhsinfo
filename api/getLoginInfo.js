@@ -2,7 +2,9 @@ function getLoginInfo(res, req) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { makeAuthCode, getFailedTimesLock } = require('./util.js');
+    const { makeAuthCode, getFailedTimesLock, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getLoginInfo", "pendding");
 
     var aspSession, verifyToken;
 
@@ -38,6 +40,8 @@ function getLoginInfo(res, req) {
         }
 
         verifyToken = dom.window.document.querySelector("input[name=__RequestVerificationToken]").value;
+
+        recordAPIUsage("getLoginInfo", "success");
         
         res.status(200).json({
             ...makeAuthCode(aspSession, verifyToken, url),

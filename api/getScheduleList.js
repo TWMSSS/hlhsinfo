@@ -2,7 +2,9 @@ function getScheduleList(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getScheduleList", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -51,6 +53,7 @@ function getScheduleList(req, res) {
         };
 
         saveAsCache(id, "scheduleList", Buffer.from(JSON.stringify(data)), key, iv);
+        recordAPIUsage("getSchedule", "success");
 
         res.status(200).json({
             message: "Success!",

@@ -1,6 +1,8 @@
 function getLoginCaptcha(req, res) {
     const request = require('request');
-    const { decodeAuthorization } = require('./util.js');
+    const { decodeAuthorization, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getLoginCaptcha", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization, true);
@@ -18,6 +20,8 @@ function getLoginCaptcha(req, res) {
             return res.status(500).json({ message: 'Something went wrong!' });
         };
         if (response.statusCode !== 200) return res.status(response.statusCode).json({ message: 'You might need to renew your authorization token!' });
+
+        recordAPIUsage("getLoginCaptcha", "success");
 
         res.writeHead(200, {
             'Content-Type': 'image/png',

@@ -3,7 +3,9 @@ async function getScoreImg(req, res) {
     const Handlebars = require("handlebars");
     const nodeHtmlToImage = require('node-html-to-image');
     const fs = require('fs');
-    const { decodeAuthorization, saveAsCache, readCache, generateCacheKey } = require('./util.js');
+    const { decodeAuthorization, saveAsCache, readCache, generateCacheKey, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getScoreImg", "pendding");
 
     if (!req.query.shared) {
         if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
@@ -151,6 +153,7 @@ async function getScoreImg(req, res) {
     });
 
     saveAsCache(id, `scoreImg-${year}-${term}-${times}-${testID}`, image, key, iv);
+    recordAPIUsage("getScoreImg", "success");
 
     res.writeHead(200, {
         'Content-Type': 'image/png',

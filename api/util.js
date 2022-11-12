@@ -33,6 +33,58 @@ function decodeAuthCode(authCode, isnJWT) {
     }
 }
 
+function makeDirs(path) {
+    const fs = require("fs");
+
+    var d = path.split("/");
+    var t = "";
+
+    for (var h of d) {
+        t += `${h}/`;
+        if (fs.existsSync(t)) continue;
+        fs.mkdirSync(t);
+    }
+}
+
+function recordAPIUsage(api, type) {
+    if (!getRecordAPI()) return;
+
+    const fs = require("fs");
+
+    const todayTime = new Date();
+    const pathString = `${todayTime.getFullYear()}/${todayTime.getMonth()}`;
+    const dateString = pathString + `/${todayTime.getDate()}`;
+
+    makeDirs(`storaged/record/${pathString}`);
+
+    if (!fs.existsSync(`storaged/record/${dateString}.json`))
+        fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify({}));
+
+    const data = JSON.parse(fs.readFileSync(`storaged/record/${dateString}.json`));
+    if (data.findIndex(e => e.date === dateString) === -1) {
+        data.push({
+            date: dateString,
+            record: [
+                {
+                    timestamp: Date.now(),
+                    type,
+                    api
+                }
+            ]
+        });
+    } else {
+        data.find(e => e.date === dateString).record.push({
+            timestamp: Date.now(),
+            type,
+            api
+        });
+    }
+
+    fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify(data));
+
+    return true;
+}
+
 function decodeAuthorization(authCode, isnJWT) {
     var auth = authCode.replace("Bearer ", "");
     return decodeAuthCode(auth, isnJWT);
@@ -236,36 +288,49 @@ function removeCache(id) {
     const fs = require("fs");
     if (!fs.existsSync(`storaged/cache/${id}`)) return false;
 
-    console.log(`[Cache Manager] Deldting cache file set: ${id}`);
+    console.log(`[Cache Manager] Deleting cache file set: ${id}`);
 
     fs.rmSync(`storaged/cache/${id}`, { recursive: true, force: true });
 
     return true;
 }
 
+function checkUndefined(type) {
+    return type === undefined;
+}
+
+function undefinedValue(value, defaultValue) {
+    return checkUndefined(value) ? defaultValue : value;
+}
+
 function getExpiredTime() {
-    return Number(process.env.SHARE_EXPIRED) || 1800000;
+    return Number(undefinedValue(process.env.SHARE_EXPIRED, 1800000));
 }
 
 function getFailedExpiredTime() {
-    return Number(process.env.FAILED_EXPIRED) || 3600000;
+    return Number(undefinedValue(process.env.FAILED_EXPIRED, 3600000));
 }
 
 function getFailedTimesLock() {
-    return Number(process.env.FAILED_TIMES_LOCK) || 5;
+    return Number(undefinedValue(process.env.FAILED_TIMES_LOCK, 5));
 }
 
 function getCacheEnv() {
     return {
-        CACHE_ENABLE: Boolean(process.env.CACHE_ENABLE) || true,
-        CACHE_EXPIRE: Number(process.env.CACHE_EXPIRE) || 48,
-        CACHE_CHECK_CYCLE: Number(process.env.CACHE_CHECK_CYCLE) || 5
+        CACHE_ENABLE: Boolean(undefinedValue(process.env.CACHE_ENABLE, true)),
+        CACHE_EXPIRE: Number(undefinedValue(process.env.CACHE_EXPIRE, 48)),
+        CACHE_CHECK_CYCLE: Number(undefinedValue(process.env.CACHE_CHECK_CYCLE, 5))
     }
+}
+
+function getRecordAPI() {
+    return Boolean(undefinedValue(process.env.ENABLE_RECORD, true));
 }
 
 module.exports = {
     makeAuthCode,
     decodeAuthCode,
+    recordAPIUsage,
     decodeAuthorization,
     isNotLogin,
     urlEncode,

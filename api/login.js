@@ -2,7 +2,9 @@ function login(req, res) {
     const request = require('request');
     const iconv = require('iconv-lite');
     const { JSDOM } = require('jsdom');
-    const { decodeAuthorization, jwtEncode, getFailedExpiredTime, getFailedTimesLock } = require('./util.js');
+    const { decodeAuthorization, jwtEncode, getFailedExpiredTime, getFailedTimesLock, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("login", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization, true);
@@ -58,6 +60,8 @@ function login(req, res) {
             failed.expire = Date.now() + getFailedExpiredTime();
             failed.count++;
 
+            recordAPIUsage("login", "failed");
+
             return res.status(403).json({
                 message: 'Auth failed!',
                 serverMessage: dom.window.document.querySelector("#msg").value
@@ -87,6 +91,7 @@ function login(req, res) {
         await g1();
         userInfo.userName = Buffer.from(userInfo.userName).toString("hex");
         userInfo.gender = Buffer.from(userInfo.gender).toString("hex");
+        recordAPIUsage("login", "success");
 
         return res.status(200).json({ message: 'Login success!', authtoken: jwtEncode({ userInfo, authtoken: req.headers.authorization.replace("Bearer ", "") }) });
     });

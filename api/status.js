@@ -1,6 +1,9 @@
 async function status(req, res) {
     const request = require('request');
     const package = require('../package.json');
+    const { recordAPIUsage } = require("./util");
+
+    recordAPIUsage("status", "pendding");
 
     var isShinerOnline = true;
     var shinerPing = {};
@@ -37,6 +40,8 @@ async function status(req, res) {
     }
 
     await Promise.all([g1(), g2()]);
+
+    recordAPIUsage("status", "success");
 
     res.status(200).json({
         message: "Success!",

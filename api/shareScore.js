@@ -1,7 +1,9 @@
 async function shareScore(req, res) {
     const request = require('request');
     const crypto = require('crypto');
-    const { decodeAuthorization, makeRandomString, getExpiredTime } = require('./util.js');
+    const { decodeAuthorization, makeRandomString, getExpiredTime, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("shareScore", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -84,6 +86,8 @@ async function shareScore(req, res) {
         userInfo = dataTemp.data.userInfo;
         userScore = dataTemp.data.userScore;
     }
+
+    recordAPIUsage("shareScore", "success");
 
     res.status(200).json({
         message: "Success!",

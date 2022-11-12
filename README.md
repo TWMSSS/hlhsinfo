@@ -34,6 +34,7 @@ ___IOS等其他系統 可以至[hlhsinfo.ml](https://hlhsinfo.ml)安裝PWA應用
 `CACHE_ENABLE`      | 啟用暫存              | `true`
 `CACHE_EXPIRE`      | 暫存過期時間(小時)     | `48`
 `CACHE_CHECK_CYCLE` | 暫存刪除檢查週期(分鐘) | `5`
+`ENABLE_RECORD`     | 紀錄API的使用次數      | `true`
 
 ## 聲明
 此程式為類瀏覽器的操作，使用HTTP Request和DOM分析來取得學生的公開資料，且此程式並不會在使用者使用的時候，不經使用者認可，而去儲存使用者的資料，也不會儲存資料。

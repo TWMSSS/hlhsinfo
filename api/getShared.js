@@ -1,4 +1,7 @@
 async function getShared(req, res) {
+    const { recordAPIUsage } = require("./util");
+
+    recordAPIUsage("getShared", "pendding");
 
     if (!req.body.sharedID) return res.status(403).json({ message: 'You need to provide the sharedID!' });
 
@@ -11,6 +14,8 @@ async function getShared(req, res) {
         global.sharedScores.scores.splice(index, 1);
         return res.status(404).json({ message: 'The shared score is expired!' });
     }
+
+    recordAPIUsage("getShared", "success");
 
     res.status(200).json({
         message: 'Success!',

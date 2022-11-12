@@ -2,7 +2,9 @@ function getAvailableScore(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, saveAsCache, readCache, generateCacheKey, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getAvailableScore", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -54,6 +56,7 @@ function getAvailableScore(req, res) {
         });
 
         saveAsCache(id, "availableScore", Buffer.from(JSON.stringify(optt)), key, iv);
+        recordAPIUsage("getAvailableScore", "success");
 
         res.status(200).json({ message: 'Success!', data: optt });
     });

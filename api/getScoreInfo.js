@@ -2,7 +2,9 @@ function getScoreInfo(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, urlEncode, saveAsCache, readCache, generateCacheKey } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, urlEncode, saveAsCache, readCache, generateCacheKey, recordAPIUsage } = require('./util.js');
+
+    recordAPIUsage("getScoreInfo", "pendding");
 
     if (!req.headers.authorization) return res.status(403).json({ message: 'You need to get your authorization token first!' });
     var authDt = decodeAuthorization(req.headers.authorization);
@@ -74,6 +76,7 @@ function getScoreInfo(req, res) {
         }
 
         saveAsCache(id, `score-${req.body.year}-${req.body.term}-${req.body.times}-${req.body.testID}`, Buffer.from(JSON.stringify(scores)), key, iv);
+        recordAPIUsage("getScoreInfo", "success");
 
         res.status(200).json({ message: "Success!", data: scores, url});
     });
