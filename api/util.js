@@ -58,11 +58,7 @@ function recordAPIUsage(api, type) {
     makeDirs(`storaged/record/${pathString}`);
 
     if (!fs.existsSync(`storaged/record/${dateString}.json`))
-        fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify({}));
-
-    const data = JSON.parse(fs.readFileSync(`storaged/record/${dateString}.json`));
-    if (data.findIndex(e => e.date === dateString) === -1) {
-        data.push({
+        fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify({
             date: dateString,
             record: [
                 {
@@ -71,14 +67,14 @@ function recordAPIUsage(api, type) {
                     api
                 }
             ]
-        });
-    } else {
-        data.find(e => e.date === dateString).record.push({
-            timestamp: Date.now(),
-            type,
-            api
-        });
-    }
+        }));
+
+    const data = JSON.parse(fs.readFileSync(`storaged/record/${dateString}.json`));
+    data.record.push({
+        timestamp: Date.now(),
+        type,
+        api
+    });
 
     fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify(data));
 
