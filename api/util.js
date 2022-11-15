@@ -52,7 +52,7 @@ function recordAPIUsage(api, type) {
     const fs = require("fs");
 
     const todayTime = new Date();
-    const pathString = `${todayTime.getFullYear()}/${todayTime.getMonth()}`;
+    const pathString = `${todayTime.getFullYear()}/${todayTime.getMonth() + 1}`;
     const dateString = pathString + `/${todayTime.getDate()}`;
 
     makeDirs(`storaged/record/${pathString}`);
@@ -77,8 +77,6 @@ function recordAPIUsage(api, type) {
     });
 
     fs.writeFileSync(`storaged/record/${dateString}.json`, JSON.stringify(data));
-
-    return true;
 }
 
 function decodeAuthorization(authCode, isnJWT) {
