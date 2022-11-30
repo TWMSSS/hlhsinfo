@@ -2,7 +2,7 @@ function getAllScores(req, res) {
     const request = require('request');
     const { JSDOM } = require('jsdom');
     const iconv = require('iconv-lite');
-    const { decodeAuthorization, isNotLogin, getScoreType, saveAsCache, readCache, generateCacheKey, recordAPIUsage } = require('./util.js');
+    const { decodeAuthorization, isNotLogin, getScoreType, saveAsCache, readCache, generateCacheKey, recordAPIUsage, getClassInfo } = require('./util.js');
 
     recordAPIUsage("getAllScores", "pendding");
 
@@ -46,24 +46,24 @@ function getAllScores(req, res) {
             for (var f = 1; f < tableName.length; f++) {
                 if (tableName[f].textContent === "") continue;
                 if (tableValue[0].textContent.includes("平時成績")) {
-                    if (!dataNormal.find(e => e.name === tableName[f].textContent)) {
+                    if (!dataNormal.find(e => e.name === getClassInfo(tableName[f].textContent).name)) {
                         dataNormal.push({
-                            name: tableName[f].textContent,
+                            name: getClassInfo(tableName[f].textContent).name,
                             values: [{name: tableValue[0].textContent, value: Number(tableValue[f].textContent)}],
                         })
                     } else {
-                        var l = dataNormal.find(e => e.name === tableName[f].textContent);
+                        var l = dataNormal.find(e => e.name === getClassInfo(tableName[f].textContent).name);
                         l.values.push({name: tableValue[0].textContent, value: Number(tableValue[f].textContent)})
                     }
                     continue;
                 }
-                if (!dataTest.find(e => e.name === tableName[f].textContent)) {
+                if (!dataTest.find(e => e.name === getClassInfo(tableName[f].textContent).name)) {
                     dataTest.push({
-                        name: tableName[f].textContent,
+                        name: getClassInfo(tableName[f].textContent).name,
                         values: [{name: getScoreType(tableValue[0].textContent), value: Number(tableValue[f].textContent)}],
                     })
                 } else {
-                    var l = dataTest.find(e => e.name === tableName[f].textContent);
+                    var l = dataTest.find(e => e.name === getClassInfo(tableName[f].textContent).name);
                     l.values.push({name: getScoreType(tableValue[0].textContent), value: Number(tableValue[f].textContent)})
                 }
             }

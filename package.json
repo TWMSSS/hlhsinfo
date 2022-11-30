@@ -1,6 +1,6 @@
 {
   "name": "hlhsinfo",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "This program can let you get the information of Hualien High School's score info.",
   "main": "main.js",
   "scripts": {
