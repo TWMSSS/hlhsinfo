@@ -221,6 +221,9 @@ window.execute = async () => {
                                 </div>
                                 <button type="button" id="refreshCaptcha">重新取得</button>
                                 <button type="button" id="submitCaptcha">確定</button>
+
+                                <button type="button" id="noCaptcha">試用免驗證碼登入</button>
+
                                 <button type="button" id="cancelCaptcha" style="background-color: red;">取消</button>
                             </div>
                         </div>
@@ -242,6 +245,20 @@ window.execute = async () => {
                         resolve(null);
                         doc.remove();
                     });
+
+                    document.querySelector("#noCaptcha").addEventListener("click", async () => {
+                        var data = await fetch(await getCaptchaDataURL()).then(e => e.blob());
+                        var fm = new FormData();
+                        fm.append("image", data);
+
+                        var captcha = await fetch("https://captcha.hlhsinfo.ml/detect?key=test", {
+                            method: "POST",
+                            body: fm
+                        }).then(e => e.text());
+
+                        resolve(captcha);
+                        doc.remove();
+                    })
                 });
             }
             var captcha = await getCaptcha();
