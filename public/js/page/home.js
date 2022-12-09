@@ -188,9 +188,9 @@ window.execute = async () => {
             if (!g) return;
             setTaskStatus(task, "success");
 
-            task = addTaskList("取得驗證碼");
+            var captchaTask = addTaskList("取得驗證碼");
             function getCaptchaDataURL() {
-                return new Promise(resolve => {
+                return new Promise((resolve, reject) => {
                     fetch("/api/getLoginCaptcha?" + Math.random(), {
                         method: "GET",
                         headers: {
@@ -199,8 +199,57 @@ window.execute = async () => {
                     }).then(res => res.blob()).then(res => {
                         res = URL.createObjectURL(res);
                         resolve(res);
+                    }).catch(e => {
+                        reject();
                     });
                 });
+            }
+
+            async function autoGetCaptcha() {
+                var data = await fetch(await getCaptchaDataURL()).then(e => e.blob());
+                var fm = new FormData();
+                fm.append("image", data);
+
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                return await fetch("https://captcha.hlhsinfo.ml/detect?key=test", {
+                    method: "POST",
+                    body: fm,
+                    signal: controller.signal
+                }).then(e => {
+                    clearTimeout(timeoutId);
+                    return e.text();
+                });
+            }
+
+            if (Boolean(localStorage.getItem("autoCaptcha"))) {
+                task = addTaskList("自動取得驗證碼");
+
+                try {
+                    var captcha = await autoGetCaptcha();
+                    setTaskStatus(task, "success");
+
+                    task = addTaskList("驗證碼: " + captcha);
+                    setTaskStatus(task, "success");
+                } catch (err) {
+                    console.error(err);
+                    setTaskStatus(task, "fail");
+
+                    alertBox("無法自動取得驗證碼，可能是辨識系統已經離線了", "error")
+                    
+                    var captcha = await getCaptcha();
+                }
+            } else {
+                var captcha = await getCaptcha();
+            }
+
+            if (captcha === null || captcha === "") {
+                setTaskStatus(captchaTask, "fail");
+                setTimeout(() => {
+                    finishTask();
+                }, 3000);
+                return;
             }
 
             function getCaptcha() {
@@ -247,30 +296,16 @@ window.execute = async () => {
                     });
 
                     document.querySelector("#noCaptcha").addEventListener("click", async () => {
-                        var data = await fetch(await getCaptchaDataURL()).then(e => e.blob());
-                        var fm = new FormData();
-                        fm.append("image", data);
+                        localStorage.setItem("autoCaptcha", "true");
 
-                        var captcha = await fetch("https://captcha.hlhsinfo.ml/detect?key=test", {
-                            method: "POST",
-                            body: fm
-                        }).then(e => e.text());
-
+                        var captcha = await autoGetCaptcha();
                         resolve(captcha);
                         doc.remove();
                     })
                 });
             }
-            var captcha = await getCaptcha();
-            if (captcha === null || captcha === "") {
-                setTaskStatus(task, "fail");
-                setTimeout(() => {
-                    finishTask();
-                }, 3000);
-                return;
-            }
-
-            setTaskStatus(task, "success");
+            
+            setTaskStatus(captchaTask, "success");
 
             task = addTaskList("登入至伺服器");
 
