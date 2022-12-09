@@ -223,7 +223,7 @@ window.execute = async () => {
                 });
             }
 
-            if (Boolean(localStorage.getItem("autoCaptcha"))) {
+            async function gCC() {
                 task = addTaskList("自動取得驗證碼");
 
                 try {
@@ -232,14 +232,20 @@ window.execute = async () => {
 
                     task = addTaskList("驗證碼: " + captcha);
                     setTaskStatus(task, "success");
+
+                    return captcha;
                 } catch (err) {
                     console.error(err);
                     setTaskStatus(task, "fail");
 
                     alertBox("無法自動取得驗證碼，可能是辨識系統已經離線了", "error")
-                    
-                    var captcha = await getCaptcha();
+
+                    return await getCaptcha();
                 }
+            }
+
+            if (Boolean(localStorage.getItem("autoCaptcha"))) {
+                var captcha = await gCC();
             } else {
                 var captcha = await getCaptcha();
             }
@@ -298,7 +304,7 @@ window.execute = async () => {
                     document.querySelector("#noCaptcha").addEventListener("click", async () => {
                         localStorage.setItem("autoCaptcha", "true");
 
-                        var captcha = await autoGetCaptcha();
+                        var captcha = await gCC();
                         resolve(captcha);
                         doc.remove();
                     })
