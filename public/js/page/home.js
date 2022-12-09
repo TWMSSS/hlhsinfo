@@ -304,9 +304,10 @@ window.execute = async () => {
                     document.querySelector("#noCaptcha").addEventListener("click", async () => {
                         localStorage.setItem("autoCaptcha", "true");
 
+                        doc.remove();
+
                         var captcha = await gCC();
                         resolve(captcha);
-                        doc.remove();
                     })
                 });
             }
