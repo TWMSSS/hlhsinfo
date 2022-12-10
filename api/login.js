@@ -52,7 +52,11 @@ function login(req, res) {
             var ip = req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"]?.split(", ")[0] || req.ip;
 
             var userAgent = req.headers['user-agent'];
-            var device = userAgent.split("(")[1].split(")")[0];
+            try {
+                var device = userAgent.split("(")[1].split(")")[0];
+            } catch (err) {
+                var device = userAgent
+            }
 
             var failed = global.loginFailed.find(e => e.ip == ip && e.device == device);
             if (failed && failed.expire < Date.now()) {
