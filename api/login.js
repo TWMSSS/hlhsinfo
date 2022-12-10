@@ -49,13 +49,18 @@ function login(req, res) {
         var dom = new JSDOM(iconv.decode(body, 'big5'));
         
         if (response.headers.location != "student/frames.asp") {
-            var failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+            var ip = req.headers["cf-connecting-ip"] || req.headers["x-forwarded-for"]?.split(", ")[0] || req.ip;
+
+            var userAgent = req.headers['user-agent'];
+            var device = userAgent.split("(")[1].split(")")[0];
+
+            var failed = global.loginFailed.find(e => e.ip == ip && e.device == device);
             if (failed && failed.expire < Date.now()) {
                 global.loginFailed.splice(global.loginFailed.indexOf(failed), 1);
-                global.loginFailed.push({ ip: req.ip, device: req.headers['user-agent'], start: Date.now(), count: 0 });
+                global.loginFailed.push({ ip: ip, device: device, start: Date.now(), count: 0 });
             } else if (!failed) {
-                global.loginFailed.push({ ip: req.ip, device: req.headers['user-agent'], start: Date.now(), count: 0 });
-                failed = global.loginFailed.find(e => e.ip == req.ip && e.device == req.headers['user-agent']);
+                global.loginFailed.push({ ip: ip, device: device, start: Date.now(), count: 0 });
+                failed = global.loginFailed.find(e => e.ip == ip && e.device == device);
             }
             failed.expire = Date.now() + getFailedExpiredTime();
             failed.count++;
