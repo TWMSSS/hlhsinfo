@@ -372,32 +372,12 @@ function getClassInfo(data) {
             name: "歷史",
             regex: new RegExp("歷史"),
             classTime: 2
-        },
-        {
-            name: "總分",
-            regex: new RegExp("總分"),
-            classTime: 0
-        },
-        {
-            name: "平均",
-            regex: new RegExp("平均"),
-            classTime: 0
-        },
-        {
-            name: "班級排名",
-            regex: new RegExp("班級排名"),
-            classTime: 0
-        },
-        {
-            name: "年級排名",
-            regex: new RegExp("年級排名"),
-            classTime: 2
-        },
+        }
     ];
 
     return classes.find(e => data.match(e.regex)) ?? {
-        name: null,
-        regex: null,
+        name: data,
+        regex: new RegExp(data),
         classTime: 0
     };
 }

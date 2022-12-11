@@ -55,7 +55,7 @@ function login(req, res) {
             try {
                 var device = userAgent.split("(")[1].split(")")[0];
             } catch (err) {
-                var device = userAgent
+                var device = userAgent;
             }
 
             var failed = global.loginFailed.find(e => e.ip == ip && e.device == device);
