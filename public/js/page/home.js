@@ -309,14 +309,16 @@ window.execute = async () => {
                         doc.remove();
                     });
 
-                    document.querySelector("#noCaptcha").addEventListener("click", async () => {
-                        localStorage.setItem("autoCaptcha", "true");
+                    // Deprecated API
 
-                        doc.remove();
+                    // document.querySelector("#noCaptcha").addEventListener("click", async () => {
+                    //     localStorage.setItem("autoCaptcha", "true");
 
-                        var captcha = await gCC();
-                        resolve(captcha);
-                    })
+                    //     doc.remove();
+
+                    //     var captcha = await gCC();
+                    //     resolve(captcha);
+                    // })
                 });
             }
             
