@@ -206,6 +206,9 @@ window.execute = async () => {
             }
 
             async function autoGetCaptcha() {
+                console.error("This API is deprecated!");
+                return;
+
                 var data = await fetch(await getCaptchaDataURL()).then(e => e.blob());
                 var fm = new FormData();
                 fm.append("image", data);
@@ -224,6 +227,9 @@ window.execute = async () => {
             }
 
             async function gCC() {
+                console.error("This API is deprecated!");
+                return;
+
                 task = addTaskList("自動取得驗證碼");
 
                 try {
@@ -244,11 +250,13 @@ window.execute = async () => {
                 }
             }
 
-            if (Boolean(localStorage.getItem("autoCaptcha"))) {
-                var captcha = await gCC();
-            } else {
-                var captcha = await getCaptcha();
-            }
+            // if (Boolean(localStorage.getItem("autoCaptcha"))) {
+            //     var captcha = await gCC();
+            // } else {
+            //     var captcha = await getCaptcha();
+            // }
+
+            var captcha = await getCaptcha();
 
             if (captcha === null || captcha === "") {
                 setTaskStatus(captchaTask, "fail");
@@ -277,7 +285,7 @@ window.execute = async () => {
                                 <button type="button" id="refreshCaptcha">重新取得</button>
                                 <button type="button" id="submitCaptcha">確定</button>
 
-                                <button type="button" id="noCaptcha">試用免驗證碼登入</button>
+                                <!--<button type="button" id="noCaptcha">試用免驗證碼登入</button>-->
 
                                 <button type="button" id="cancelCaptcha" style="background-color: red;">取消</button>
                             </div>
