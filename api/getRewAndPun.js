@@ -38,7 +38,7 @@ function getRewAndPun(req, res) {
         var dom = new JSDOM(data);
         var status = [];
 
-        let list = Array.from(document.querySelectorAll("table>tbody")).slice(-2);
+        let list = Array.from(dom.window.document.querySelectorAll("table>tbody")).slice(-2);
         let r = Array.from(list[0].querySelectorAll("td"));
         var y = 0;
         for (var i = 0; i < r.length; i++) {
