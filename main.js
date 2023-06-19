@@ -17,6 +17,7 @@ const bodyParser = require('body-parser');
 const { generateKeyPairSync } = require('crypto');
 const cros = require('cors');
 const { getCacheEnv, removeCache } = require("./api/util");
+const { Worker, workerData } = require("worker_threads");
 
 // Initilize the server
 require('dotenv').config();
@@ -129,6 +130,11 @@ app.use(cros());
 
 app.get("/", (req, res) => res.sendFile(__dirname + "/public/index.html"));
 
+// TODO: Multi-threading
+// const threadWorker = (req, res, file) => {
+//     const worker = new Worker()
+// }
+
 // API Routes
 app.get("/api", (req, res) => res.sendFile(__dirname + "/api/document.html"));
 app.get("/api/openapi.json", (req, res) => res.sendFile(__dirname + "/api/openapi.json"));
@@ -151,13 +157,14 @@ app.get("/api/getScheduleList", (req, res) => api.getScheduleList(req, res));
 app.get("/api/getSchedule", (req, res) => api.getSchedule(req, res));
 app.get("/api/clearCache", (req, res) => api.clearCache(req, res));
 
-app.get("/api/notify", (req, res) => res.sendFile(__dirname + "/notify.json"));
+app.get("/api/notify", (req, res) => {
+    if (fs.existsSync(__dirname + "/notify.json")) res.sendFile(__dirname + "/notify.json");
+    res.json([]);
+});
 app.get("/api/status", (req, res) => api.status(req, res));
 
 // Score Share Redirect
-app.get("/s/:sharedID", (req, res) => {
-    res.redirect(`/score?shared=${req.params.sharedID}`);
-});
+app.get("/s/:sharedID", (req, res) => res.redirect(`/score?shared=${req.params.sharedID}`));
 
 app.use(express.static(__dirname + "/public"));
 

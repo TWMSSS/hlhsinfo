@@ -38,10 +38,10 @@ function getRewAndPun(req, res) {
         var dom = new JSDOM(data);
         var status = [];
 
-        var t = Array.from(dom.window.document.querySelector("#Table2").querySelectorAll("td"));
-        t.shift();
+        let list = Array.from(document.querySelectorAll("table>tbody")).slice(-2);
+        let r = Array.from(list[0].querySelectorAll("td"));
         var y = 0;
-        for (var i = 0; i < t.length; i++) {
+        for (var i = 0; i < r.length; i++) {
             if (y === 0) {
                 y++;
                 continue;
@@ -51,7 +51,7 @@ function getRewAndPun(req, res) {
                 continue;
             }
             if (y % 2 === 0) {
-                status.push({ type: t[i - 1].textContent, times: t[i].textContent });
+                status.push({ type: r[i - 1].textContent, times: r[i].textContent });
             }
             y++;
         }
