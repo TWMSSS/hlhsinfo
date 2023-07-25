@@ -17,7 +17,7 @@
       "url": "{server}/api",
       "variables": {
         "server": {
-          "default": "https://hlhsinfo.ml"
+          "default": "https://hlhsinfo.muisnowdevs.one"
         }
       }
     }

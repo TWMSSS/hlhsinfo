@@ -205,27 +205,6 @@ window.execute = async () => {
                 });
             }
 
-            async function autoGetCaptcha() {
-                console.error("This API is deprecated!");
-                return;
-
-                var data = await fetch(await getCaptchaDataURL()).then(e => e.blob());
-                var fm = new FormData();
-                fm.append("image", data);
-
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-
-                return await fetch("https://captcha.hlhsinfo.ml/detect?key=test", {
-                    method: "POST",
-                    body: fm,
-                    signal: controller.signal
-                }).then(e => {
-                    clearTimeout(timeoutId);
-                    return e.text();
-                });
-            }
-
             async function gCC() {
                 console.error("This API is deprecated!");
                 return;
@@ -249,12 +228,6 @@ window.execute = async () => {
                     return await getCaptcha();
                 }
             }
-
-            // if (Boolean(localStorage.getItem("autoCaptcha"))) {
-            //     var captcha = await gCC();
-            // } else {
-            //     var captcha = await getCaptcha();
-            // }
 
             var captcha = await getCaptcha();
 

@@ -59,8 +59,8 @@ function getScoreInfo(req, res) {
                 var name = tds[0].textContent.replace(/ /gm, "");
                 var score = tds[1].textContent.replace(/ /gm, "").replace(/\r\n/gm, "").replace(/\n/gm, "");
                 var gpa = tds[2].textContent.replace(/ /gm, "").replace(/\r\n/gm, "").replace(/\n/gm, "");
-                if (tds[1].querySelector("span").style.color === "red") scores.unpass.push({ name, type: "score"});
-                if (tds[2].querySelector("span").classList.contains("unpass")) scores.unpass.push({ name, type: "gpa"});
+                if (tds[1].querySelector("span") && tds[1].querySelector("span").style.color === "red") scores.unpass.push({ name, type: "score"});
+                if (tds[2].querySelector("span") && tds[2].querySelector("span").classList.contains("unpass")) scores.unpass.push({ name, type: "gpa"});
                 scores.data.push({ name, score, gpa });
             }
         });

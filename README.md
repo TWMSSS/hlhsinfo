@@ -8,7 +8,7 @@
 立刻於Google Play下載(詳細圖片 可以至Google Play查看)  
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/zh-tw_badge_print_generic.png" width="25%">](https://play.google.com/store/apps/details?id=ml.hlhsinfo.twa)
 
-___IOS等其他系統 可以至[hlhsinfo.ml](https://hlhsinfo.ml)安裝PWA應用___
+___IOS等其他系統 可以至[hlhsinfo.muisnowdevs.one](https://hlhsinfo.muisnowdevs.one)安裝PWA應用___
 
 ## 特色
 
@@ -47,4 +47,4 @@ ___IOS等其他系統 可以至[hlhsinfo.ml](https://hlhsinfo.ml)安裝PWA應用
 我如何分析的: [HowToAnalysis.md](/HowToAnalysis.md)
 
 ## 其他
-您可以到[https://hlhsinfo.ml](https://hlhsinfo.ml)來使用此程式的相關資訊。
+您可以到[https://hlhsinfo.muisnowdevs.one](https://hlhsinfo.muisnowdevs.one)來使用此程式的相關資訊。

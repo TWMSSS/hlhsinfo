@@ -17,7 +17,6 @@ const bodyParser = require('body-parser');
 const { generateKeyPairSync } = require('crypto');
 const cros = require('cors');
 const { getCacheEnv, removeCache } = require("./api/util");
-const { Worker, workerData } = require("worker_threads");
 
 // Initilize the server
 require('dotenv').config();
