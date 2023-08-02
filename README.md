@@ -1,6 +1,10 @@
 # hlhsinfo
 
 > **Note**  
+> 我們已經停止花中查詢系列應用的維護了  
+> 詳情 [Muisnow Devs](https://muisnowdevs.one/article/2) 或 [StopSupport.md](/StopSupport.md)
+
+> **Note**  
 > 這個儲存庫將不會繼續維護，除了(未轉移時)緊急BUG修復外，將不會有新的Commit。詳情請看 #1
 
 這是一個可以取得學校公開資料的一個類Proxy伺服器，並包含了許多官方沒有的新功能。

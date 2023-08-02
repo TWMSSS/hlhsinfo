@@ -1,6 +1,59 @@
 window.execute = async () => {
     var pageElement = document.querySelector("#mainContent");
 
+    function showMaintain() {
+        let doc = document.createElement("div");
+        doc.classList.add("taskBox");
+        doc.innerHTML = `
+            <style>
+                .mt p {
+                    margin: 20px 0;
+                }
+            </style>
+
+            <div class="tskbx">
+                <div class="taskBoxTitle">
+                    <h1>服務中止</h1>
+                </div>
+                <div class="taskBoxContent mt" style="overflow: auto;overflow-x: hidden;">
+                    <p>
+                        由於近期發生了許多的意外，花中查詢系統因而經歷了風風雨雨。
+                    </p>
+                    <p>
+                        於本月(2023/08)時，花蓮高中線上查詢系統關閉，並進行資料轉移的動作。就此，花中查詢服務中斷。
+                        由於花中查詢的維護團隊僅剩下我一人(@Muisnow)，而且我需要準備學測，並沒有餘力去解析新的查詢系統。
+                    </p>
+                    <p>
+                        這是一個艱難的決定，花中查詢自首次公測(2022/05/11)以來我們已經持續維護花中查詢超過了一年，
+                        在這期間，我們為了手機使用者重新設計了手機版本的介面，但事情並非永遠順遂。
+                        最近(2023/07附近)花中查詢的官方域名hlhsinfo.ml因Freenom約期到期的緣故，被強制關閉了。
+                        也就是這個原因，我們的手機版本被Google Play所隱藏(僅能透過連結下載)，原本良好的SEO瞬間歸零。
+                        簡單來說，一切從零開始。
+                    </p>
+                    <p>
+                        因為這些種種原因，我決定停止維護花中查詢以及其系列應用(包括正在開發的Rust伺服器端)，這些儲存庫將會被封存。
+                        Google Play上的花中查詢手機版本不再開放下載，與停止其維護。
+                    </p>
+                    <p>
+                        以上是有關於花中查詢近期所發生的問題，與我們對其的應對方式。
+                    </p>
+                    <p>若您有意願繼續維護花中查詢，或是對於我們的說明有任何問題，使用以下方式聯繫：</p>
+                    <ol>
+                        <li>Muisnow 的 X (原Twitter): <a href="https://twitter.com/Hen000000hen">@Hen000000hen</a></li>
+                        <li>Muisnow 的電子郵件: <a href="mailto:me@muisnowdevs.one">me@muisnowdevs.one</a></li>
+                        <li>TWMSSS 的 Github: <a href="https://github.com/TWMSSS">@TWMSSS</a></li>
+                        <li>Muisnow 的官方網站: <a href="https://muisnowdevs.one">https://muisnowdevs.one</a></li>
+                    </ol>
+                    <br />
+                    <p>--TWMSSS開發者 @000hen</p>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(doc);
+    }
+
+    showMaintain();
+
     window.pageData.function.editAccount = (id) => {
         var reslogin = localStorage.getItem("reslogin");
         if (!reslogin) return;
